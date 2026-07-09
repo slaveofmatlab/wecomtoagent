@@ -78,6 +78,14 @@ function serveStatic(res, filePath) {
 const server = http.createServer((req, res) => {
   const urlPath = decodeURIComponent(req.url.split("?")[0]);
 
+  // GET /api/auth — 检查认证状态
+  if (urlPath === "/api/auth" && req.method === "GET") {
+    const authenticated = !SITE_PASSWORD || getCookie(req.headers.cookie, "wecom_auth") === "1";
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ authenticated }));
+    return;
+  }
+
   // POST /api/auth — 密码验证
   if (urlPath === "/api/auth" && req.method === "POST") {
     let body = "";
@@ -90,20 +98,26 @@ const server = http.createServer((req, res) => {
             "Content-Type": "application/json",
             "Set-Cookie": "wecom_auth=1; Path=/; Max-Age=86400; HttpOnly; SameSite=Lax",
           });
-          res.end(JSON.stringify({ ok: true }));
+          res.end(JSON.stringify({ success: true }));
           return;
         }
       } catch (e) {}
       res.writeHead(401, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ ok: false, error: "密码错误" }));
+      res.end(JSON.stringify({ success: false, error: "密码错误" }));
     });
     return;
   }
 
-  // 检查 auth cookie（未设密码则跳过）
+  // index.html 始终放行（认证由客户端处理）
+  if (urlPath === "/" || urlPath === "/index.html") {
+    serveStatic(res, path.join(ROOT, "index.html"));
+    return;
+  }
+
+  // 其他资源：检查 auth cookie
   if (SITE_PASSWORD && getCookie(req.headers.cookie, "wecom_auth") !== "1") {
-    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
-    res.end(LOGIN_HTML);
+    res.writeHead(401, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Unauthorized" }));
     return;
   }
 
@@ -120,5 +134,4 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`企业微信看板已启动: http://0.0.0.0:${PORT}/`);
-  console.log(`[debug] SITE_PASSWORD set=${!!SITE_PASSWORD} len=${SITE_PASSWORD.length}`);
 });

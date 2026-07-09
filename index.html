@@ -1,0 +1,1843 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>企业微信转单看板</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --line: #d9e0ea;
+      --text: #172033;
+      --muted: #64748b;
+      --accent: #b0d882;
+      --accent-dark: #6d8f3c;
+      --accent-soft: #f4f9ed;
+      --ok: #15803d;
+      --ok-soft: #dcfce7;
+      --warn: #b45309;
+      --warn-soft: #fef3c7;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    header {
+      background: linear-gradient(135deg, #8ab848, #5a7a2e);
+      color: #fff;
+      padding: 18px 28px 28px;
+    }
+
+    header h1 {
+      margin: 0 0 4px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    header p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 13px;
+    }
+
+    main {
+      width: calc(100% - 32px);
+      max-width: none;
+      margin: -20px auto 40px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+
+    /* ---- 上传区域 ---- */
+    .toolbar {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .upload-card {
+      border: 1px dashed #b7c4d8;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #fbfdff;
+    }
+
+    .upload-card h3 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .upload-card .file-name {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      word-break: break-all;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      padding: 5px 6px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    input[type="file"]::file-selector-button {
+      border: 0;
+      border-radius: 5px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: #fff;
+      background: var(--accent-dark);
+      cursor: pointer;
+      margin-right: 6px;
+    }
+
+    .cutoff-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .cutoff-card h3 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .cutoff-card input[type="text"] {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      align-items: center;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 7px 16px;
+      font-size: 13px;
+      color: #fff;
+      background: var(--accent-dark);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:hover { opacity: 0.9; }
+
+    button.secondary {
+      color: var(--accent-dark);
+      background: var(--accent-soft);
+      border: 1px solid #c8dba3;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    #statusMsg {
+      font-size: 12px;
+      margin-top: 0;
+      padding: 6px 10px;
+      border-radius: 8px;
+      line-height: 1.5;
+    }
+
+    #statusMsg.loading { color: var(--muted); background: #f1f5f9; }
+    #statusMsg.ok { color: var(--ok); background: var(--ok-soft); }
+    #statusMsg.warn { color: var(--warn); background: var(--warn-soft); }
+    #statusMsg.err { color: #b91c1c; background: #fee2e2; }
+
+    .help-text {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ---- KPI 摘要 ---- */
+    .summary-metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .metric-groups {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .metric-group {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .metric-group-header {
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .metric-group.config .metric-group-header { background: #6d8f3c; }
+    .metric-group.order  .metric-group-header { background: #15803d; }
+
+    .metric-group-body {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .metric {
+      padding: 12px 10px;
+      background: #fff;
+      border-top: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-height: 88px;
+    }
+
+    .metric:last-child { border-right: 0; }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      min-height: 2.8em;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .rate-high { color: var(--ok); }
+    .rate-mid  { color: var(--warn); }
+    .rate-low  { color: #b91c1c; }
+    .rate-none { color: var(--muted); }
+
+    .metric strong.rate-high,
+    .metric strong.rate-mid,
+    .metric strong.rate-low,
+    .metric strong.rate-none {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .metric strong.rate-high { background: var(--ok-soft); }
+    .metric strong.rate-mid  { background: var(--warn-soft); }
+    .metric strong.rate-low  { background: #fee2e2; }
+    .metric strong.rate-none { background: #f1f5f9; }
+
+    /* ---- 表格 ---- */
+    .table-section-title {
+      margin: 20px 0 10px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent-dark);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      table-layout: auto;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    th.group {
+      background: #f4f9ed;
+      color: #5a7a2e;
+    }
+
+    td:first-child, th:first-child {
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .summary-table tbody tr.total-row td {
+      font-weight: 700;
+      background: #f4f9ed;
+      border-top: 2px solid var(--accent);
+    }
+
+    td.rate-cell {
+      font-weight: 600;
+    }
+
+    td.rate-cell.rate-high { color: var(--ok); }
+    td.rate-cell.rate-mid  { color: var(--warn); }
+    td.rate-cell.rate-low  { color: #b91c1c; }
+    td.rate-cell.rate-none { color: var(--muted); }
+
+    td.zero-cell { color: #bbb; }
+
+    .number {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ---- 待转单辅助 ---- */
+    .pending-stats {
+      display: flex;
+      gap: 32px;
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+
+    .pending-stats b {
+      font-size: 18px;
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* ---- 隐藏面板 ---- */
+    [hidden] { display: none !important; }
+
+    .empty {
+      color: var(--muted);
+      padding: 24px;
+      text-align: center;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 14px;
+    }
+
+    /* ---- 日志分析 ---- */
+    .log-kpi-row {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .log-kpi {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 18px;
+      min-width: 120px;
+      text-align: center;
+      background: #fff;
+    }
+
+    .log-kpi span {
+      font-size: 12px;
+      color: var(--muted);
+      display: block;
+    }
+
+    .log-kpi strong {
+      font-size: 22px;
+      font-weight: 700;
+      display: block;
+      line-height: 1.3;
+    }
+
+    .log-kpi .sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .reason-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+
+    .reason-table th {
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      padding: 7px 10px;
+      text-align: left;
+    }
+
+    .reason-table th.num { text-align: right; }
+
+    .reason-table td {
+      border: 1px solid var(--line);
+      padding: 7px 10px;
+      vertical-align: middle;
+    }
+
+    .reason-table td.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+    }
+
+    .reason-table td.pct { text-align: right; color: var(--muted); font-size: 12px; }
+
+    .reason-tag {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .tag-normal   { background: #f1f5f9; color: #64748b; }
+    .tag-warn     { background: var(--warn-soft); color: var(--warn); }
+    .tag-error    { background: #fee2e2; color: #b91c1c; }
+
+    .log-detail {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .log-detail summary {
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    .log-detail summary::-webkit-details-marker { display: none; }
+
+    .log-detail summary::before {
+      content: "▶";
+      font-size: 11px;
+      color: var(--muted);
+      transition: transform 0.15s;
+    }
+
+    .log-detail[open] summary::before { transform: rotate(90deg); }
+
+    .log-detail summary:hover { color: #5a7a2e; }
+
+    .log-detail-body {
+      padding: 0 14px 14px;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .log-detail-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0 0 8px;
+    }
+  /* ---- 登录遮罩 ---- */
+  .login-overlay {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #eef2e0, #d4dcc3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  .login-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.15);
+    padding: 40px 36px 32px;
+    width: 360px;
+    max-width: calc(100vw - 40px);
+    text-align: center;
+  }
+
+  .login-card h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #5a7a2e;
+  }
+
+  .login-card .desc {
+    margin: 0 0 24px;
+    font-size: 13px;
+    color: #64748b;
+  }
+
+  .login-card input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d9e0ea;
+    border-radius: 10px;
+    font-size: 15px;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+  }
+
+  .login-card input:focus {
+    border-color: #8ab848;
+    box-shadow: 0 0 0 3px rgba(138, 184, 72, 0.15);
+  }
+
+  .login-card button {
+    width: 100%;
+    margin-top: 16px;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    border: 0;
+    border-radius: 10px;
+    color: #fff;
+    background: linear-gradient(135deg, #8ab848, #5a7a2e);
+    cursor: pointer;
+  }
+
+  .login-card button:hover { opacity: 0.9; }
+
+  .login-card button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .login-error {
+    margin: 12px 0 0;
+    font-size: 13px;
+    color: #b91c1c;
+    background: #fee2e2;
+    padding: 8px;
+    border-radius: 8px;
+  }
+  </style>
+</head>
+<body>
+
+<div id="loginOverlay" class="login-overlay">
+  <div class="login-card">
+    <h2>🏢 企业微信转单看板</h2>
+    <p class="desc">请输入访问密码</p>
+    <input type="password" id="passwordInput" placeholder="访问密码" autofocus>
+    <button id="loginBtn">进入看板</button>
+    <p id="loginError" class="login-error" style="display:none;"></p>
+  </div>
+</div>
+<div id="appContent">
+
+<header>
+  <h1>企业微信转单看板</h1>
+  <p id="metaLine">加载中…</p>
+</header>
+
+<main>
+
+  <!-- ====== 上传区域（页面顶部） ====== -->
+  <section class="panel">
+    <div class="toolbar">
+      <div class="upload-card">
+        <h3>📊 销售订单全链路</h3>
+        <div class="file-name" id="salesFileName">未选择文件</div>
+        <input type="file" id="fileSales" accept=".xlsx,.xls">
+      </div>
+      <div class="upload-card">
+        <h3>📋 待转单-全量</h3>
+        <div class="file-name" id="pendingFileName">未选择文件</div>
+        <input type="file" id="filePending" accept=".xlsx,.xls">
+      </div>
+      <div class="upload-card">
+        <h3>⚙ 企业微信AI转单推进表</h3>
+        <div class="file-name" id="progressFileName">未选择文件</div>
+        <input type="file" id="fileProgress" accept=".xlsx,.xls">
+      </div>
+      <div class="cutoff-card">
+        <h3>📅 统计截止时间（MMDD）</h3>
+        <input type="text" id="cutoffInput" value="" maxlength="4" placeholder="如 0709">
+        <div class="help-text" style="margin-top:4px;">晚于该时间的 OK-MMDD 状态不计入</div>
+      </div>
+      <div class="upload-card">
+        <h3>📝 企业微信消息日志</h3>
+        <div class="file-name" id="logFileName">未选择文件（可选）</div>
+        <input type="file" id="fileLog" accept=".xlsx,.xls">
+        <div class="help-text">上传后展示跳过原因 & 错误明细</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="recalcBtn">🔄 用上传的文件重新计算</button>
+      <button class="secondary" id="reloadBtn">📂 重新加载 page_data.json</button>
+    </div>
+    <div id="statusMsg" class="loading">正在加载示例数据…</div>
+  </section>
+
+  <!-- ====== KPI 卡片 ====== -->
+  <section id="summaryPanel" class="panel" hidden>
+    <div class="summary-metrics">
+      <div class="metric-groups">
+        <div class="metric-group config">
+          <div class="metric-group-header">企业微信配置情况</div>
+          <div class="metric-group-body">
+            <div class="metric">
+              <span>已登记企业微信群<br>项目点数</span>
+              <strong id="kpiRegistered">-</strong>
+            </div>
+            <div class="metric">
+              <span>IT 已配置</span>
+              <strong id="kpiItOk">-</strong>
+            </div>
+            <div class="metric">
+              <span>配置率</span>
+              <strong id="kpiConfigRate" class="rate-none">-</strong>
+            </div>
+          </div>
+        </div>
+        <div class="metric-group order">
+          <div class="metric-group-header">AI 转单情况（已上线项目点）</div>
+          <div class="metric-group-body">
+            <div class="metric">
+              <span>订单总行数</span>
+              <strong id="kpiOrderTotal">-</strong>
+            </div>
+            <div class="metric">
+              <span>AI 识别订单行数</span>
+              <strong id="kpiOrderAi">-</strong>
+            </div>
+            <div class="metric">
+              <span>AI 转单占比</span>
+              <strong id="kpiAiRate" class="rate-none">-</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 运营公司汇总表 ====== -->
+  <section id="resultPanel" class="panel" hidden>
+    <div class="table-section-title">运营公司汇总</div>
+    <div class="table-wrap">
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>运营公司</th>
+            <th class="group">已登记企业微信群<br>项目点数</th>
+            <th class="group">IT 已配置</th>
+            <th class="group">配置率</th>
+            <th class="group">已配置项目点<br>订单总行数</th>
+            <th class="group">AI 识别<br>订单行数</th>
+            <th class="group">AI 转单占比</th>
+          </tr>
+        </thead>
+        <tbody id="summaryBody"></tbody>
+      </table>
+    </div>
+
+    <div class="table-section-title">待转单辅助统计（不参与上方汇总口径）</div>
+    <div class="pending-stats" id="pendingStats">
+      <div>待转单总量<br><b>-</b></div>
+      <div>已转单<br><b>-</b></div>
+      <div>未转单<br><b>-</b></div>
+    </div>
+  </section>
+
+
+  <!-- ====== 数据趋势 ====== -->
+  <section id="trendPanel" class="panel" hidden>
+    <div class="table-section-title">📈 数据趋势</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
+      <span style="font-size:12px;color:var(--muted);">每次上传计算后自动存入浏览器本地，关掉页面也不会丢。</span>
+      <button class="secondary" onclick="clearHistory()" style="font-size:11px;padding:3px 10px;">清除历史</button>
+    </div>
+    <div style="height:300px;margin-bottom:8px;">
+      <canvas id="trendChart"></canvas>
+    </div>
+    <div id="historySummary" style="font-size:12px;color:var(--muted);"></div>
+  <!-- ====== 日志分析 ====== -->
+  <section id="logPanel" class="panel" hidden>
+    <div class="table-section-title">企业微信消息日志分析</div>
+
+    <!-- KPI 行 -->
+    <div class="log-kpi-row">
+      <div class="log-kpi">
+        <span>有效消息总数</span>
+        <strong id="logTotal">-</strong>
+        <span class="sub">ACCEPTED + SKIPPED</span>
+      </div>
+      <div class="log-kpi">
+        <span>成功触发转单</span>
+        <strong id="logAccepted" style="color:var(--ok);">-</strong>
+        <span class="sub" id="logAcceptedPct">-</span>
+      </div>
+      <div class="log-kpi">
+        <span>已过滤 / 跳过</span>
+        <strong id="logSkipped" style="color:var(--muted);">-</strong>
+        <span class="sub" id="logSkippedPct">-</span>
+      </div>
+      <div class="log-kpi" style="min-width:180px;">
+        <span>数据覆盖时间</span>
+        <strong id="logDateRange" style="font-size:14px;">-</strong>
+        <span class="sub" id="logDateDays">-</span>
+      </div>
+    </div>
+
+    <!-- 跳过原因分布 -->
+    <div style="font-size:13px;font-weight:700;color:#334155;margin-bottom:8px;">跳过原因分布</div>
+    <div class="table-wrap" style="margin-bottom:14px;">
+      <table class="reason-table">
+        <thead>
+          <tr>
+            <th>跳过原因</th>
+            <th class="num">消息数</th>
+            <th class="num">占已跳过</th>
+            <th>性质</th>
+          </tr>
+        </thead>
+        <tbody id="reasonBody"></tbody>
+      </table>
+    </div>
+
+    <!-- 可展开明细（renderLogPanel 按跳过原因顺序动态排列） -->
+    <div id="detailsContainer">
+
+      <details id="detailKeywordMiss" class="log-detail" style="margin-top:10px;" hidden>
+        <summary>
+          <span class="reason-tag tag-normal">正常过滤</span>
+          正文未包含下单关键词 — <span id="keywordMissCount">0</span> 条，<span id="keywordMissRooms">0</span> 个群
+        </summary>
+        <div class="log-detail-body">
+          <p class="log-detail-note">消息正文未触发下单关键词，AI 未处理。属正常过滤，数量多说明该群非业务消息较活跃。</p>
+          <div class="table-wrap" id="keywordMissTableWrap"></div>
+        </div>
+      </details>
+
+      <details id="detailFileType" class="log-detail" style="margin-top:10px;" hidden>
+        <summary>
+          <span class="reason-tag tag-warn">类型不支持</span>
+          消息类型不处理 — <span id="fileTypeCount">0</span> 条（含 <span id="fileTypeFileCount">0</span> 条文件）
+        </summary>
+        <div class="log-detail-body">
+          <p class="log-detail-note">当前系统不处理 file/video/link 等消息类型。其中 Excel/PDF 文件最可能是真实订单，有漏单风险。</p>
+          <div style="font-size:12px;font-weight:700;color:#334155;margin-bottom:6px;">文件格式汇总（file 类型）</div>
+          <div id="fileExtSummary" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;"></div>
+          <div style="font-size:12px;font-weight:700;color:#334155;margin-bottom:6px;">其他不处理的消息类型</div>
+          <div id="nonFileSummary" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;"></div>
+          <div style="font-size:12px;font-weight:700;color:#334155;margin-bottom:6px;">按群汇总（点击展开明细）</div>
+          <div class="table-wrap" id="fileTypeTableWrap"></div>
+        </div>
+      </details>
+
+      <details id="detailImageNotFound" class="log-detail" style="margin-top:10px;" hidden>
+        <summary>
+          <span class="reason-tag tag-normal">正常噪音</span>
+          图片未找到下单指令 — <span id="imageNotFoundCount">0</span> 条，<span id="imageNotFoundRooms">0</span> 个群
+        </summary>
+        <div class="log-detail-body">
+          <p class="log-detail-note">图片已被 AI 处理，但未识别到下单关键词，属正常噪音。数量多的群可关注是否存在漏单。点击群名行可展开该群的详细记录。</p>
+          <div class="table-wrap" id="imageByRoomTableWrap"></div>
+        </div>
+      </details>
+
+      <details id="detailPureOrder" class="log-detail" style="margin-top:10px;" hidden>
+        <summary>
+          <span class="reason-tag tag-normal">设计行为</span>
+          纯下单指令不单独处理 — <span id="pureOrderCount">0</span> 条，<span id="pureOrderRooms">0</span> 个群
+        </summary>
+        <div class="log-detail-body">
+          <p class="log-detail-note">消息只有下单关键词、没有携带或引用附件，AI 不单独处理。通常是用户先发"下单"文字再发附件，属正常使用方式。</p>
+          <div class="table-wrap" id="pureOrderTableWrap"></div>
+        </div>
+      </details>
+
+      <details id="detailNoConfig" class="log-detail" style="margin-top:10px;" hidden>
+        <summary>
+          <span class="reason-tag tag-error">配置缺失</span>
+          未找到企微项目点配置 — 受影响群明细（<span id="noConfigCount">0</span> 条，<span id="noConfigRooms">0</span> 个群）
+        </summary>
+        <div class="log-detail-body">
+          <p class="log-detail-note">这些群发来的图片 AI 已识别为下单，但配置表里没有对应项目点，导致转单失败。建议补录配置。</p>
+          <div class="table-wrap">
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead>
+                <tr>
+                  <th style="border:1px solid var(--line);padding:7px 10px;background:#f8fafc;text-align:left;white-space:nowrap;">时间</th>
+                  <th style="border:1px solid var(--line);padding:7px 10px;background:#f8fafc;text-align:left;">群名</th>
+                  <th style="border:1px solid var(--line);padding:7px 10px;background:#f8fafc;text-align:left;">消息类型</th>
+                  <th style="border:1px solid var(--line);padding:7px 10px;background:#f8fafc;text-align:left;">文件名</th>
+                </tr>
+              </thead>
+              <tbody id="noConfigBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+      <details id="detailNoAttach" class="log-detail" style="margin-top:10px;" hidden>
+        <summary>
+          <span class="reason-tag tag-warn">引用丢失</span>
+          未找到引用附件 — 消息明细（<span id="noAttachCount">0</span> 条）
+        </summary>
+        <div class="log-detail-body">
+          <p class="log-detail-note">用户发送了含"下单"关键词的消息，但引用的附件找不到。可能是图片/文件发送时机问题。</p>
+          <div class="table-wrap">
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead>
+                <tr>
+                  <th style="border:1px solid var(--line);padding:7px 10px;background:#f8fafc;text-align:left;white-space:nowrap;">时间</th>
+                  <th style="border:1px solid var(--line);padding:7px 10px;background:#f8fafc;text-align:left;">群名</th>
+                  <th style="border:1px solid var(--line);padding:7px 10px;background:#f8fafc;text-align:left;">消息内容</th>
+                </tr>
+              </thead>
+              <tbody id="noAttachBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- ====== 未加载数据时的空状态 ====== -->
+  <section id="emptyPanel" class="panel">
+    <div class="empty">
+      还没有数据。<br>
+      请点击「🔄 用上传的文件重新计算」上传三份 Excel，或先运行 <code>node scripts/export_page_data.js</code> 生成数据文件。
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="vendor/xlsx.full.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // ====== 登录认证 ======
+  function checkAuth() {
+    return fetch('/api/auth')
+      .then(function(r) { return r.json(); })
+      .then(function(d) { return d.authenticated; })
+      .catch(function() { return false; });
+  }
+
+  function showLogin() {
+    document.getElementById('loginOverlay').style.display = 'flex';
+    document.getElementById('appContent').style.display = 'none';
+  }
+
+  function showApp() {
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('appContent').style.display = 'block';
+  }
+
+  function performLogin() {
+    var pw = document.getElementById('passwordInput').value;
+    if (!pw) return;
+    var btn = document.getElementById('loginBtn');
+    document.getElementById('loginError').style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = '验证中…';
+    fetch('/api/auth', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({password: pw})
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.success) {
+        showApp();
+        loadFromJson();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+        document.getElementById('loginError').textContent = data.error || '密码错误';
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('passwordInput').focus();
+      }
+    })
+    .catch(function() {
+      document.getElementById('loginError').style.display = 'block';
+      document.getElementById('loginError').textContent = '网络错误，请稍后重试';
+    })
+    .finally(function() {
+      btn.disabled = false;
+      btn.textContent = '进入看板';
+    });
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', performLogin);
+  document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') performLogin();
+  });
+
+  // ====== 数据解析逻辑（与 scripts/lib/page_logic.js 一致） ======
+
+  function normalizeText(value) {
+    return String(value == null ? "" : value)
+      .replace(/　/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function normalizeCompanyName(value) {
+    return normalizeText(value).replace(/[（(]/g, "(").replace(/[）)]/g, ")");
+  }
+
+  function getFirst(row, names) {
+    for (var _i = 0; _i < names.length; _i++) {
+      var name = names[_i];
+      if (row[name] !== undefined && row[name] !== null && normalizeText(row[name]) !== "") {
+        return normalizeText(row[name]);
+      }
+    }
+    return "";
+  }
+
+  function findHeaderIndex(rows, candidates) {
+    var bestIndex = -1, bestScore = 0;
+    for (var i = 0; i < Math.min(rows.length, 30); i++) {
+      var cells = rows[i].map(normalizeText);
+      var score = candidates.filter(function (c) { return cells.includes(c); }).length;
+      if (score > bestScore) {
+        bestScore = score;
+        bestIndex = i;
+      }
+    }
+    return bestScore > 0 ? bestIndex : -1;
+  }
+
+  function rowsToObjects(rows, headerIndex, dataStartIndex) {
+    if (headerIndex < 0) return [];
+    var start = dataStartIndex === undefined ? headerIndex + 1 : dataStartIndex;
+    var headers = rows[headerIndex].map(function (cell, i) { return normalizeText(cell) || ("列" + (i + 1)); });
+    return rows.slice(start)
+      .filter(function (row) { return row.some(function (cell) { return normalizeText(cell) !== ""; }); })
+      .map(function (row) {
+        var item = {};
+        headers.forEach(function (h, i) { item[h] = row[i]; });
+        return item;
+      });
+  }
+
+  function sheetRows(workbook, preferredName) {
+    var sheetName = workbook.SheetNames.find(function (n) { return n.includes(preferredName); }) || workbook.SheetNames[0];
+    var sheet = workbook.Sheets[sheetName];
+    // 扫描实际单元格范围（!ref 可能不准，比如只标了 A1:CS3 但数据有几千行）
+    var keys = Object.keys(sheet).filter(function (k) { return k[0] !== "!"; });
+    var rs = 0, re = 0, cs = 0, ce = 0;
+    if (keys.length) {
+      rs = 1e9; cs = 1e9;
+      keys.forEach(function (ref) {
+        var d = XLSX.utils.decode_cell(ref);
+        if (d.r < rs) rs = d.r; if (d.r > re) re = d.r;
+        if (d.c < cs) cs = d.c; if (d.c > ce) ce = d.c;
+      });
+    }
+    return XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "", raw: false, range: { s: { r: rs, c: cs }, e: { r: re, c: ce } } });
+  }
+
+  var DEFAULT_CUTOFF_DATE = (function () { var y = new Date(); y.setDate(y.getDate() - 1); return String(y.getMonth() + 1).padStart(2, "0") + String(y.getDate()).padStart(2, "0"); })();
+
+  function isConfirmedByCutoff(status, cutoffMMDD) {
+    if (!status || !status.startsWith("OK")) return false;
+    var match = status.match(/^OK-(\d{4})$/);
+    if (!match) return true;
+    return match[1] <= cutoffMMDD;
+  }
+
+  var SALES_HEADER_CANDIDATES = ["项目点代码", "项目点名称", "运营公司", "客户订单号", "订单号", "客户名称"];
+
+  function parseSalesFull(workbook) {
+    var rows = sheetRows(workbook, "商品明细导出");
+    var headerIndex = findHeaderIndex(rows, SALES_HEADER_CANDIDATES);
+    return rowsToObjects(rows, headerIndex).map(function (row) {
+      var op = getFirst(row, ["运营公司"]);
+      return {
+        orderNo: getFirst(row, ["订单号"]),
+        customerOrderNo: getFirst(row, ["客户订单号"]),
+        operationCompany: op,
+        operationCompanyKey: normalizeCompanyName(op),
+        hotelCode: getFirst(row, ["项目点代码"]),
+        hotelName: getFirst(row, ["项目点名称"]),
+        customerName: getFirst(row, ["客户名称"]),
+      };
+    }).filter(function (row) { return row.operationCompany || row.hotelCode; });
+  }
+
+  var PENDING_HEADER_CANDIDATES = ["*商户名", "转单状态", "客户订单号", "运营公司"];
+
+  function parsePendingWecom(workbook) {
+    var rows = sheetRows(workbook, "待转单导出");
+    var headerIndex = findHeaderIndex(rows, PENDING_HEADER_CANDIDATES);
+    return rowsToObjects(rows, headerIndex).map(function (row) {
+      var ts = getFirst(row, ["转单状态"]);
+      return {
+        transferStatus: ts,
+        isTransferred: ts.includes("已转"),
+        hotelName: getFirst(row, ["*商户名"]),
+        customerOrderNo: getFirst(row, ["客户订单号"]),
+        salesOrderNo: getFirst(row, ["销售订单号"]),
+        createdBy: getFirst(row, ["创建人"]),
+      };
+    }).filter(function (row) { return row.hotelName || row.customerOrderNo || row.salesOrderNo; });
+  }
+
+  var PROGRESS_HEADER_CANDIDATES = ["企业微信群名称", "运营公司", "项目点代码", "项目点名称", "是否加群-张利拉", "IT是否配置完成-邓虎", "群ID"];
+
+  function parseWecomProgress(workbook, cutoffDate) {
+    var rows = sheetRows(workbook, "工作表1");
+    var headerIndex = findHeaderIndex(rows, PROGRESS_HEADER_CANDIDATES);
+    return rowsToObjects(rows, headerIndex).map(function (row) {
+      var op = getFirst(row, ["运营公司"]);
+      var joinStatus = getFirst(row, ["是否加群-张利拉", "是否加群"]);
+      var itStatus = getFirst(row, ["IT是否配置完成-邓虎", "IT是否配置完成"]);
+      return {
+        operationCompany: op,
+        operationCompanyKey: normalizeCompanyName(op),
+        hotelCode: getFirst(row, ["项目点代码"]),
+        joined: isConfirmedByCutoff(joinStatus, cutoffDate),
+        itConfigured: isConfirmedByCutoff(itStatus, cutoffDate),
+      };
+    }).filter(function (row) { return row.operationCompany || row.hotelCode; });
+  }
+
+  function calcPendingTotals(pendingRows) {
+    var transferred = 0, notTransferred = 0;
+    for (var i = 0; i < pendingRows.length; i++) {
+      if (pendingRows[i].isTransferred) transferred++; else notTransferred++;
+    }
+    return { total: pendingRows.length, transferred: transferred, notTransferred: notTransferred };
+  }
+
+  function buildCompanySummary(salesRows, pendingRows, progressRows) {
+    var byCompany = new Map();
+    var ensure = function (key, displayName) {
+      if (!byCompany.has(key)) {
+        byCompany.set(key, {
+          operationCompany: displayName,
+          registeredCodes: new Set(),
+          itOkCodes: new Set(),
+          orderTotal: 0,
+          orderAi: 0,
+        });
+      }
+      return byCompany.get(key);
+    };
+
+    for (var i = 0; i < progressRows.length; i++) {
+      var pr = progressRows[i];
+      if (!pr.operationCompanyKey || !pr.hotelCode) continue;
+      var pe = ensure(pr.operationCompanyKey, pr.operationCompany);
+      pe.registeredCodes.add(pr.hotelCode);
+      if (pr.itConfigured) pe.itOkCodes.add(pr.hotelCode);
+    }
+
+    // 全局 IT已配置 集合（项目点代码全局唯一）
+    var allItOkCodes = new Set();
+    byCompany.forEach(function (entry) {
+      entry.itOkCodes.forEach(function (code) { allItOkCodes.add(code); });
+    });
+
+    // 待转单 → 客户订单号（主匹配）+ 销售订单号（兜底匹配）
+    var pendingMap = new Map();
+    var pendingBySalesNo = new Map();
+    for (var k = 0; k < pendingRows.length; k++) {
+      // 只有创建人为"供应链管理员"的待转单才是AI转单
+      if (pendingRows[k].createdBy !== "供应链管理员") continue;
+      var custKey = normalizeText(pendingRows[k].customerOrderNo);
+      if (custKey && !pendingMap.has(custKey)) {
+        pendingMap.set(custKey, pendingRows[k].transferStatus);
+      }
+      var salesKey = normalizeText(pendingRows[k].salesOrderNo);
+      if (salesKey && !pendingBySalesNo.has(salesKey)) {
+        pendingBySalesNo.set(salesKey, pendingRows[k].transferStatus);
+      }
+    }
+
+    // 销售订单行：只有项目点代码在 IT已配置集合里的行才计入分母
+    for (var j = 0; j < salesRows.length; j++) {
+      var sr = salesRows[j];
+      if (!sr.operationCompanyKey) continue;
+      if (!sr.hotelCode || !allItOkCodes.has(sr.hotelCode)) continue;
+      var se = ensure(sr.operationCompanyKey, sr.operationCompany);
+      se.orderTotal += 1;
+      // 两层匹配：先客户订单号，再销售订单号兜底
+      var ck = normalizeText(sr.customerOrderNo);
+      var pendingStatus = pendingMap.get(ck);
+      if (!pendingStatus || pendingStatus.indexOf("已转") < 0) {
+        var sk = normalizeText(sr.orderNo);
+        var fb = pendingBySalesNo.get(sk);
+        if (fb) pendingStatus = fb;
+      }
+      if (pendingStatus && pendingStatus.indexOf("已转") >= 0) {
+        se.orderAi += 1;
+      }
+    }
+
+    var summary = Array.from(byCompany.values()).map(function (entry) {
+      var registered = entry.registeredCodes.size;
+      var itOk = entry.itOkCodes.size;
+      return {
+        operationCompany: entry.operationCompany,
+        registeredCount: registered,
+        itConfiguredCount: itOk,
+        configRate: registered > 0 ? itOk / registered : null,
+        orderTotal: entry.orderTotal,
+        orderAiCount: entry.orderAi,
+        aiRate: entry.orderTotal > 0 ? entry.orderAi / entry.orderTotal : null,
+      };
+    }).sort(function (a, b) { return b.orderTotal - a.orderTotal || b.registeredCount - a.registeredCount; });
+
+    var totals = summary.reduce(function (acc, row) {
+      acc.registeredCount += row.registeredCount;
+      acc.itConfiguredCount += row.itConfiguredCount;
+      acc.orderTotal += row.orderTotal;
+      acc.orderAiCount += row.orderAiCount;
+      return acc;
+    }, { registeredCount: 0, itConfiguredCount: 0, orderTotal: 0, orderAiCount: 0 });
+    totals.configRate = totals.registeredCount > 0 ? totals.itConfiguredCount / totals.registeredCount : null;
+    totals.aiRate = totals.orderTotal > 0 ? totals.orderAiCount / totals.orderTotal : null;
+
+    return { rows: summary, totals: totals };
+  }
+
+  function readWorkbookFromFile(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          resolve(XLSX.read(e.target.result, { type: "array" }));
+        } catch (err) {
+          reject(err);
+        }
+      };
+      reader.onerror = function () { reject(reader.error); };
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  // ====== 渲染 ======
+
+  function pct(value) {
+    return value == null ? "-" : Math.round(value * 100) + "%";
+  }
+
+  function rateClass(value) {
+    if (value == null) return "rate-none";
+    if (value >= 0.8) return "rate-high";
+    if (value >= 0.4) return "rate-mid";
+    if (value > 0) return "rate-low";
+    return "rate-none";
+  }
+
+  function renderKpiCards(totals) {
+    document.getElementById("kpiRegistered").textContent = totals.registeredCount;
+    document.getElementById("kpiItOk").textContent = totals.itConfiguredCount;
+
+    var crEl = document.getElementById("kpiConfigRate");
+    crEl.textContent = pct(totals.configRate);
+    crEl.className = rateClass(totals.configRate);
+
+    document.getElementById("kpiOrderTotal").textContent = totals.orderTotal;
+    document.getElementById("kpiOrderAi").textContent = totals.orderAiCount;
+
+    var aiEl = document.getElementById("kpiAiRate");
+    aiEl.textContent = pct(totals.aiRate);
+    aiEl.className = rateClass(totals.aiRate);
+  }
+
+  function renderSummaryTable(summary) {
+    var rowsHtml = summary.rows.map(function (row) {
+      var aiCls = row.orderAiCount === 0 ? " zero-cell" : "";
+      return "<tr>" +
+        "<td>" + row.operationCompany + "</td>" +
+        '<td class="number">' + row.registeredCount + "</td>" +
+        '<td class="number">' + row.itConfiguredCount + "</td>" +
+        '<td class="rate-cell ' + rateClass(row.configRate) + '">' + pct(row.configRate) + "</td>" +
+        '<td class="number">' + row.orderTotal + "</td>" +
+        '<td class="number' + aiCls + '">' + row.orderAiCount + "</td>" +
+        '<td class="rate-cell ' + rateClass(row.aiRate) + '">' + pct(row.aiRate) + "</td>" +
+        "</tr>";
+    }).join("");
+
+    var totals = summary.totals;
+    var totalHtml =
+      '<tr class="total-row">' +
+      "<td>总计</td>" +
+      '<td class="number">' + totals.registeredCount + "</td>" +
+      '<td class="number">' + totals.itConfiguredCount + "</td>" +
+      '<td class="rate-cell ' + rateClass(totals.configRate) + '">' + pct(totals.configRate) + "</td>" +
+      '<td class="number">' + totals.orderTotal + "</td>" +
+      '<td class="number">' + totals.orderAiCount + "</td>" +
+      '<td class="rate-cell ' + rateClass(totals.aiRate) + '">' + pct(totals.aiRate) + "</td>" +
+      "</tr>";
+    document.getElementById("summaryBody").innerHTML = rowsHtml + totalHtml;
+  }
+
+  function renderPendingStats(pendingTotals) {
+    document.getElementById("pendingStats").innerHTML =
+      '<div>待转单总量<br><b>' + pendingTotals.total + '</b></div>' +
+      '<div>已转单<br><b>' + pendingTotals.transferred + '</b></div>' +
+      '<div>未转单<br><b>' + pendingTotals.notTransferred + '</b></div>';
+  }
+
+  function renderAll(data) {
+    renderKpiCards(data.companySummary.totals);
+    renderSummaryTable(data.companySummary);
+    renderPendingStats(data.pendingTotals);
+    document.getElementById("cutoffInput").value = data.cutoffDate || DEFAULT_CUTOFF_DATE;
+    document.getElementById("metaLine").textContent =
+      "统计截止时间: " + data.cutoffDate + "　|　数据生成时间: " + (data.generatedAt ? data.generatedAt.slice(0, 19).replace("T", " ") : "-");
+
+    document.getElementById("summaryPanel").hidden = false;
+    document.getElementById("resultPanel").hidden = false;
+    document.getElementById("emptyPanel").hidden = true;
+    saveToHistory(data);
+    renderTrend();
+
+    if (data.logStats) {
+      renderLogPanel(data.logStats);
+    }
+  }
+
+  function setStatus(message, type) {
+    var el = document.getElementById("statusMsg");
+    el.textContent = message;
+    el.className = type || "";
+  }
+
+  // ====== 文件选择反馈 ======
+  document.getElementById("fileSales").addEventListener("change", function () {
+    document.getElementById("salesFileName").textContent = this.files[0] ? this.files[0].name : "未选择文件";
+  });
+  document.getElementById("filePending").addEventListener("change", function () {
+    document.getElementById("pendingFileName").textContent = this.files[0] ? this.files[0].name : "未选择文件";
+  });
+  document.getElementById("fileProgress").addEventListener("change", function () {
+    document.getElementById("progressFileName").textContent = this.files[0] ? this.files[0].name : "未选择文件";
+  });
+  document.getElementById("fileLog").addEventListener("change", function () {
+    document.getElementById("logFileName").textContent = this.files[0] ? this.files[0].name : "未选择文件（可选）";
+  });
+
+  // ====== 企业微信日志解析 ======
+
+  var FILE_EXT_LABEL = {
+    "xlsx": "Excel", "xls": "Excel", "xlsm": "Excel",
+    "pdf": "PDF",
+    "doc": "Word", "docx": "Word",
+    "jpg": "图片", "jpeg": "图片", "png": "图片", "gif": "图片", "jfif": "图片", "bmp": "图片", "webp": "图片",
+    "mp4": "视频", "avi": "视频", "mov": "视频",
+    "zip": "压缩包", "rar": "压缩包",
+    "csv": "CSV",
+    "txt": "文本",
+    "ppt": "PPT", "pptx": "PPT",
+  };
+
+  var MSGTYPE_LABEL = {
+    "revoke": "撤回消息",
+    "mixed": "混合消息（含附件）",
+    "link": "链接",
+    "video": "视频",
+    "voice": "语音",
+    "weapp": "小程序",
+    "chatrecord": "聊天记录",
+    "qydiskfile": "企业云文件",
+    "markdown": "Markdown",
+  };
+
+  function getFileCategory(filename) {
+    if (!filename || !filename.includes(".")) return "(无扩展名)";
+    var ext = filename.split(".").pop().toLowerCase();
+    return FILE_EXT_LABEL[ext] || ("." + ext.toUpperCase());
+  }
+
+  function fmtTime(ms) {
+    if (!ms || ms < 1e12) return "-";
+    var d = new Date(ms);
+    return d.getFullYear() + "/" +
+      String(d.getMonth() + 1).padStart(2, "0") + "/" +
+      String(d.getDate()).padStart(2, "0") + " " +
+      String(d.getHours()).padStart(2, "0") + ":" +
+      String(d.getMinutes()).padStart(2, "0") + ":" +
+      String(d.getSeconds()).padStart(2, "0");
+  }
+
+  function parseWecomLog(workbook) {
+    var sheetName = workbook.SheetNames[0];
+    var ws = workbook.Sheets[sheetName];
+    var raw = XLSX.utils.sheet_to_json(ws, { defval: "" });
+
+    var VALID_STATUS = { "ACCEPTED": true, "SKIPPED": true };
+    var rows = raw.filter(function (r) {
+      return VALID_STATUS[r["filter_status"]] && normalizeText(r["room_name"]) !== "";
+    });
+
+    var total = rows.length;
+    var accepted = 0;
+    var byReason = {};
+    // 各错误类别的个人记录列表（带时间）
+    var noConfigRecords = [];   // 未找到企微项目点配置
+    var noAttachRecords = [];   // 未找到引用附件
+    var skipTypeRecords = [];   // 消息类型不处理（所有）
+    var imageByRoom = {};           // room -> count（图片未找到）
+    var imageByRoomRecords = {};    // room -> [{time, content}]
+    var keywordMissByRoom = {};     // room -> count（正文未包含下单关键词）
+    var keywordMissByRoomRecords = {}; // room -> [{time, content}]
+    var pureOrderByRoom = {};       // room -> count（纯下单指令不单独处理）
+    var pureOrderByRoomRecords = {}; // room -> [{time, content}]
+    var nonFileByRoom = {};         // room -> {typeLabel -> count}
+    var allTimes = [];
+
+    rows.forEach(function (r) {
+      var status = r["filter_status"];
+      var reason = normalizeText(r["skip_reason"]);
+      var room = normalizeText(r["room_name"]);
+      var msgtype = normalizeText(r["msgtype"]);
+      var filename = normalizeText(r["filename"]);
+      var t = Number(r["msgtime"]);
+      var timeStr = fmtTime(t);
+
+      if (t > 1e12) allTimes.push(t);
+
+      if (status === "ACCEPTED") { accepted++; return; }
+
+      if (!reason) reason = "(无原因)";
+      byReason[reason] = (byReason[reason] || 0) + 1;
+
+      if (reason === "未找到企微项目点配置") {
+        noConfigRecords.push({
+          time: timeStr,
+          room: room,
+          msgtype: msgtype,
+          filename: filename || "-",
+        });
+      }
+
+      if (reason === "未找到引用附件") {
+        noAttachRecords.push({
+          time: timeStr,
+          room: room,
+          content: normalizeText(r["text_content"]).slice(0, 80) || "(无文字内容)",
+        });
+      }
+
+      if (reason === "图片未找到下单指令") {
+        imageByRoom[room] = (imageByRoom[room] || 0) + 1;
+        if (!imageByRoomRecords[room]) imageByRoomRecords[room] = [];
+        imageByRoomRecords[room].push({
+          time: timeStr,
+          content: normalizeText(r["text_content"]).slice(0, 60) || "(无文字)",
+        });
+      }
+
+      if (reason === "正文未包含下单关键词") {
+        keywordMissByRoom[room] = (keywordMissByRoom[room] || 0) + 1;
+        if (!keywordMissByRoomRecords[room]) keywordMissByRoomRecords[room] = [];
+        keywordMissByRoomRecords[room].push({ time: timeStr, content: normalizeText(r["text_content"]).slice(0, 60) || "(无文字)" });
+      }
+
+      if (reason === "纯下单指令不单独处理") {
+        pureOrderByRoom[room] = (pureOrderByRoom[room] || 0) + 1;
+        if (!pureOrderByRoomRecords[room]) pureOrderByRoomRecords[room] = [];
+        pureOrderByRoomRecords[room].push({ time: timeStr, content: normalizeText(r["text_content"]).slice(0, 60) || "(无文字)" });
+      }
+
+      if (reason === "消息类型不处理") {
+        var fileCategory = msgtype === "file" ? getFileCategory(filename) : null;
+        var typeLabel = msgtype === "file"
+          ? (fileCategory + (filename ? "" : ""))
+          : (MSGTYPE_LABEL[msgtype] || msgtype);
+        skipTypeRecords.push({
+          time: timeStr,
+          room: room,
+          msgtype: msgtype,
+          typeLabel: typeLabel,
+          filename: filename || "-",
+          isFile: msgtype === "file",
+        });
+        if (msgtype !== "file") {
+          if (!nonFileByRoom[room]) nonFileByRoom[room] = {};
+          nonFileByRoom[room][typeLabel] = (nonFileByRoom[room][typeLabel] || 0) + 1;
+        }
+      }
+    });
+
+    var skipped = total - accepted;
+
+    var reasonRows = Object.entries(byReason)
+      .sort(function (a, b) { return b[1] - a[1]; })
+      .map(function (entry) { return { reason: entry[0], count: entry[1] }; });
+
+    // 时间范围
+    allTimes.sort(function (a, b) { return a - b; });
+    var timeRange = null;
+    if (allTimes.length > 0) {
+      var fmtDate = function (t) {
+        var d = new Date(t);
+        return d.getFullYear() + "/" +
+          String(d.getMonth() + 1).padStart(2, "0") + "/" +
+          String(d.getDate()).padStart(2, "0");
+      };
+      timeRange = {
+        earliest: fmtDate(allTimes[0]),
+        latest: fmtDate(allTimes[allTimes.length - 1]),
+        days: Math.round((allTimes[allTimes.length - 1] - allTimes[0]) / 86400000) + 1,
+      };
+    }
+
+    // file 类型汇总（合并同类格式）
+    var fileExtSummary = {};
+    skipTypeRecords.filter(function(r){ return r.isFile; }).forEach(function(r){
+      fileExtSummary[r.typeLabel] = (fileExtSummary[r.typeLabel] || 0) + 1;
+    });
+    var fileExtRows = Object.entries(fileExtSummary)
+      .sort(function (a, b) { return b[1] - a[1]; })
+      .map(function (e) { return { label: e[0], count: e[1] }; });
+
+    // 非 file 类型汇总
+    var nonFileSummary = {};
+    skipTypeRecords.filter(function(r){ return !r.isFile; }).forEach(function(r){
+      nonFileSummary[r.typeLabel] = (nonFileSummary[r.typeLabel] || 0) + 1;
+    });
+    var nonFileRows = Object.entries(nonFileSummary)
+      .sort(function (a, b) { return b[1] - a[1]; })
+      .map(function (e) { return { label: e[0], count: e[1] }; });
+
+    // 按群汇总（file 类型，动态列）
+    var fileByRoom = {};
+    skipTypeRecords.filter(function(r){ return r.isFile; }).forEach(function(r){
+      if (!fileByRoom[r.room]) fileByRoom[r.room] = {};
+      fileByRoom[r.room][r.typeLabel] = (fileByRoom[r.room][r.typeLabel] || 0) + 1;
+    });
+    var fileByRoomRows = Object.entries(fileByRoom).map(function(e){
+      var total = Object.values(e[1]).reduce(function(s,n){return s+n;},0);
+      return { room: e[0], total: total, cats: e[1] };
+    }).sort(function(a,b){return b.total-a.total;});
+    // 所有出现过的文件类别，按总数降序
+    var allFileCats = Object.entries(fileExtSummary)
+      .sort(function(a,b){return b[1]-a[1];})
+      .map(function(e){return e[0];});
+
+    // 各原因按群汇总行
+    var makeRoomRows = function(obj) {
+      return Object.entries(obj)
+        .map(function(e){ return { room: e[0], count: e[1] }; })
+        .sort(function(a,b){ return b.count - a.count; });
+    };
+    var imageByRoomRows = makeRoomRows(imageByRoom);
+    var keywordMissByRoomRows = makeRoomRows(keywordMissByRoom);
+    var pureOrderByRoomRows = makeRoomRows(pureOrderByRoom);
+
+    // 消息类型不处理：按群汇总（全部类型合并）
+    var skipTypeByRoomMap = {};
+    var skipTypeByRoomRecords = {};
+    skipTypeRecords.forEach(function(r) {
+      skipTypeByRoomMap[r.room] = (skipTypeByRoomMap[r.room] || 0) + 1;
+      if (!skipTypeByRoomRecords[r.room]) skipTypeByRoomRecords[r.room] = [];
+      skipTypeByRoomRecords[r.room].push(r);
+    });
+    var skipTypeByRoomRows = makeRoomRows(skipTypeByRoomMap);
+
+    return {
+      total: total,
+      accepted: accepted,
+      skipped: skipped,
+      reasonRows: reasonRows,
+      noConfigRecords: noConfigRecords,
+      noAttachRecords: noAttachRecords,
+      skipTypeByRoomRows: skipTypeByRoomRows,
+      skipTypeByRoomRecords: skipTypeByRoomRecords,
+      imageByRoomRows: imageByRoomRows,
+      imageByRoomRecords: imageByRoomRecords,
+      keywordMissByRoomRows: keywordMissByRoomRows,
+      keywordMissByRoomRecords: keywordMissByRoomRecords,
+      pureOrderByRoomRows: pureOrderByRoomRows,
+      pureOrderByRoomRecords: pureOrderByRoomRecords,
+      fileExtRows: fileExtRows,
+      nonFileRows: nonFileRows,
+      timeRange: timeRange,
+    };
+  }
+
+  var REASON_META = {
+    "正文未包含下单关键词":   { tag: "tag-normal", label: "正常过滤" },
+    "图片未找到下单指令":     { tag: "tag-normal", label: "正常噪音" },
+    "纯下单指令不单独处理":   { tag: "tag-normal", label: "设计行为" },
+    "消息类型不处理":         { tag: "tag-warn",   label: "有漏单风险" },
+    "未找到引用附件":         { tag: "tag-warn",   label: "需处理" },
+    "未找到企微项目点配置":   { tag: "tag-error",  label: "真实失败" },
+  };
+
+  function renderLogPanel(log) {
+    if (!log) return;
+
+    var total = log.total;
+    var accepted = log.accepted;
+    var skipped = log.skipped;
+
+    document.getElementById("logTotal").textContent = total;
+    document.getElementById("logAccepted").textContent = accepted;
+    document.getElementById("logAcceptedPct").textContent = total > 0 ? Math.round(accepted / total * 100) + "%" : "-";
+    document.getElementById("logSkipped").textContent = skipped;
+    document.getElementById("logSkippedPct").textContent = total > 0 ? Math.round(skipped / total * 100) + "%" : "-";
+
+    // 时间范围
+    if (log.timeRange) {
+      var tr = log.timeRange;
+      document.getElementById("logDateRange").textContent = tr.earliest + " ~ " + tr.latest;
+      document.getElementById("logDateDays").textContent = "共 " + tr.days + " 天";
+    }
+
+    // 跳过原因分布表
+    var reasonHtml = log.reasonRows.map(function (row) {
+      var meta = REASON_META[row.reason] || { tag: "tag-normal", label: "" };
+      var pct = skipped > 0 ? Math.round(row.count / skipped * 100) + "%" : "-";
+      var tagHtml = meta.label
+        ? '<span class="reason-tag ' + meta.tag + '">' + meta.label + '</span>'
+        : "";
+      return "<tr>" +
+        "<td>" + row.reason + "</td>" +
+        '<td class="num">' + row.count + "</td>" +
+        '<td class="pct">' + pct + "</td>" +
+        "<td>" + tagHtml + "</td>" +
+        "</tr>";
+    }).join("");
+    document.getElementById("reasonBody").innerHTML = reasonHtml;
+
+    // ── 未找到企微项目点配置 明细 ──
+    var noConfigRooms = {};
+    log.noConfigRecords.forEach(function(r){ noConfigRooms[r.room] = (noConfigRooms[r.room]||0)+1; });
+    document.getElementById("noConfigCount").textContent = log.noConfigRecords.length;
+    document.getElementById("noConfigRooms").textContent = Object.keys(noConfigRooms).length;
+    if (log.noConfigRecords.length > 0) {
+      var TD = function(style){ return 'style="border:1px solid var(--line);padding:6px 10px;' + (style||"") + '"'; };
+      document.getElementById("noConfigBody").innerHTML = log.noConfigRecords.map(function (r) {
+        return "<tr>" +
+          "<td " + TD("white-space:nowrap;color:var(--muted);font-size:12px;") + ">" + r.time + "</td>" +
+          "<td " + TD() + ">" + r.room + "</td>" +
+          "<td " + TD("color:var(--muted);") + ">" + r.msgtype + "</td>" +
+          "<td " + TD("color:var(--muted);") + ">" + r.filename + "</td>" +
+          "</tr>";
+      }).join("");
+      document.getElementById("detailNoConfig").hidden = false;
+    }
+
+    // ── 未找到引用附件 明细 ──
+    document.getElementById("noAttachCount").textContent = log.noAttachRecords.length;
+    if (log.noAttachRecords.length > 0) {
+      var TD2 = function(style){ return 'style="border:1px solid var(--line);padding:6px 10px;' + (style||"") + '"'; };
+      document.getElementById("noAttachBody").innerHTML = log.noAttachRecords.map(function (r) {
+        return "<tr>" +
+          "<td " + TD2("white-space:nowrap;color:var(--muted);font-size:12px;") + ">" + r.time + "</td>" +
+          "<td " + TD2("white-space:nowrap;") + ">" + r.room + "</td>" +
+          "<td " + TD2("color:var(--muted);") + ">" + r.content + "</td>" +
+          "</tr>";
+      }).join("");
+      document.getElementById("detailNoAttach").hidden = false;
+    }
+
+    // ── 共用：按群可展开汇总表 ──
+    var TH0 = 'style="border:1px solid var(--line);padding:7px 10px;background:#f8fafc;';
+    var TDx = function(s){ return 'style="border:1px solid var(--line);padding:6px 10px;' + (s||"") + '"'; };
+    // subHdr: thead内部 <th>...</th> 字符串；renderRec: rec -> <td>...</td> 字符串（不含<tr>）
+    var buildExpandableTable = function(rows, recordsMap, idPfx, subHdr, renderRec) {
+      if (!rows || !rows.length) return '<span style="color:var(--muted);font-size:12px;">无数据</span>';
+      var tbodyRows = rows.map(function(r, i) {
+        var uid = idPfx + i;
+        var recs = recordsMap ? (recordsMap[r.room] || []) : [];
+        var sub = recs.length
+          ? '<tr id="' + uid + '" hidden><td colspan="3" style="padding:0;border:none;">' +
+            '<table style="width:100%;border-collapse:collapse;">' +
+            '<thead><tr>' + subHdr + '</tr></thead>' +
+            '<tbody>' + recs.map(function(rec){ return '<tr style="background:#f8fafc;">' + renderRec(rec) + '</tr>'; }).join("") + '</tbody>' +
+            '</table></td></tr>'
+          : "";
+        return '<tr style="cursor:pointer;" onclick="var e=document.getElementById(\'' + uid + '\');if(e){e.hidden=!e.hidden;this.querySelector(\'.exp-tog\').textContent=e.hidden?\'▸\':\'▾\'}">' +
+          '<td ' + TDx("") + '>' + r.room + '</td>' +
+          '<td ' + TDx("text-align:right;font-weight:600;") + '>' + r.count + '</td>' +
+          '<td ' + TDx("text-align:center;color:var(--muted);font-size:11px;width:28px;") + '><span class="exp-tog">▸</span></td>' +
+          '</tr>' + sub;
+      }).join("");
+      return '<table style="width:100%;border-collapse:collapse;font-size:13px;">' +
+        '<thead><tr>' +
+        '<th ' + TH0 + 'text-align:left;">群名</th>' +
+        '<th ' + TH0 + 'text-align:right;">次数</th>' +
+        '<th ' + TH0 + 'width:28px;"></th>' +
+        '</tr></thead><tbody>' + tbodyRows + '</tbody></table>';
+    };
+    // 子表头：时间 + 消息内容
+    var SH_TC = '<th style="border:1px solid var(--line);padding:5px 10px;background:#eef2f7;font-size:11px;font-weight:600;text-align:left;white-space:nowrap;color:#64748b;">时间</th>' +
+      '<th style="border:1px solid var(--line);padding:5px 10px;background:#eef2f7;font-size:11px;font-weight:600;text-align:left;color:#64748b;">消息内容</th>';
+    var renderTC = function(rec) {
+      return '<td style="border:1px solid var(--line);padding:4px 10px;white-space:nowrap;color:var(--muted);font-size:11px;">' + rec.time + '</td>' +
+        '<td style="border:1px solid var(--line);padding:4px 10px;color:#334155;font-size:12px;">' + rec.content + '</td>';
+    };
+    // 子表头：时间 + 类型 + 文件名
+    var SH_ST = '<th style="border:1px solid var(--line);padding:5px 10px;background:#eef2f7;font-size:11px;font-weight:600;text-align:left;white-space:nowrap;color:#64748b;">时间</th>' +
+      '<th style="border:1px solid var(--line);padding:5px 10px;background:#eef2f7;font-size:11px;font-weight:600;text-align:left;color:#64748b;">类型</th>' +
+      '<th style="border:1px solid var(--line);padding:5px 10px;background:#eef2f7;font-size:11px;font-weight:600;text-align:left;color:#64748b;">文件名</th>';
+    var renderST = function(rec) {
+      return '<td style="border:1px solid var(--line);padding:4px 10px;white-space:nowrap;color:var(--muted);font-size:11px;">' + rec.time + '</td>' +
+        '<td style="border:1px solid var(--line);padding:4px 10px;color:#334155;font-size:12px;">' + rec.typeLabel + '</td>' +
+        '<td style="border:1px solid var(--line);padding:4px 10px;color:var(--muted);font-size:11px;">' + (rec.filename !== "-" ? rec.filename : "—") + '</td>';
+    };
+
+    // ── 正文未包含下单关键词 ──
+    var kmRows = log.keywordMissByRoomRows || [];
+    document.getElementById("keywordMissCount").textContent = kmRows.reduce(function(s,r){return s+r.count;},0);
+    document.getElementById("keywordMissRooms").textContent = kmRows.length;
+    if (kmRows.length > 0) {
+      document.getElementById("keywordMissTableWrap").innerHTML = buildExpandableTable(kmRows, log.keywordMissByRoomRecords, "km", SH_TC, renderTC);
+      document.getElementById("detailKeywordMiss").hidden = false;
+    }
+
+    // ── 图片未找到下单指令 ──
+    var imgRows = log.imageByRoomRows || [];
+    document.getElementById("imageNotFoundCount").textContent = imgRows.reduce(function(s,r){return s+r.count;},0);
+    document.getElementById("imageNotFoundRooms").textContent = imgRows.length;
+    if (imgRows.length > 0) {
+      document.getElementById("imageByRoomTableWrap").innerHTML = buildExpandableTable(imgRows, log.imageByRoomRecords, "img", SH_TC, renderTC);
+      document.getElementById("detailImageNotFound").hidden = false;
+    }
+
+    // ── 纯下单指令不单独处理 ──
+    var poRows = log.pureOrderByRoomRows || [];
+    document.getElementById("pureOrderCount").textContent = poRows.reduce(function(s,r){return s+r.count;},0);
+    document.getElementById("pureOrderRooms").textContent = poRows.length;
+    if (poRows.length > 0) {
+      document.getElementById("pureOrderTableWrap").innerHTML = buildExpandableTable(poRows, log.pureOrderByRoomRecords, "po", SH_TC, renderTC);
+      document.getElementById("detailPureOrder").hidden = false;
+    }
+
+    // ── 消息类型不处理 明细 ──
+    var skipTypeEntry = log.reasonRows.find(function(r){ return r.reason === "消息类型不处理"; });
+    var stRows = log.skipTypeByRoomRows || [];
+    document.getElementById("fileTypeCount").textContent = skipTypeEntry ? skipTypeEntry.count : 0;
+    document.getElementById("fileTypeFileCount").textContent = (log.fileExtRows || []).reduce(function(s,r){return s+r.count;},0);
+
+    if (stRows.length > 0 || (log.fileExtRows && log.fileExtRows.length > 0)) {
+      var EXT_COLOR = { "Excel":"#16a34a","PDF":"#dc2626","Word":"#2563eb","图片":"#9333ea","CSV":"#0891b2","PPT":"#ea580c","视频":"#0891b2","压缩包":"#78716c","文本":"#78716c" };
+      document.getElementById("fileExtSummary").innerHTML = (log.fileExtRows || []).map(function (r) {
+        var color = EXT_COLOR[r.label] || "#64748b";
+        return '<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;background:#f8fafc;border:1px solid var(--line);font-size:12px;">' +
+          '<span style="width:8px;height:8px;border-radius:2px;background:' + color + ';flex-shrink:0;"></span>' +
+          '<b>' + r.label + '</b>&nbsp;' + r.count + ' 条</span>';
+      }).join("") || '<span style="color:var(--muted);font-size:12px;">无文件消息</span>';
+      document.getElementById("nonFileSummary").innerHTML = (log.nonFileRows || []).map(function (r) {
+        return '<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;background:#f8fafc;border:1px solid var(--line);font-size:12px;color:var(--muted);">' +
+          r.label + '&nbsp;' + r.count + ' 条</span>';
+      }).join("") || '<span style="color:var(--muted);font-size:12px;">无</span>';
+      document.getElementById("fileTypeTableWrap").innerHTML = buildExpandableTable(stRows, log.skipTypeByRoomRecords, "st", SH_ST, renderST);
+      document.getElementById("detailFileType").hidden = false;
+    }
+
+    // 按跳过原因顺序排列明细展开块
+    var DETAIL_ID = {
+      "正文未包含下单关键词": "detailKeywordMiss",
+      "消息类型不处理":       "detailFileType",
+      "图片未找到下单指令":   "detailImageNotFound",
+      "纯下单指令不单独处理": "detailPureOrder",
+      "未找到企微项目点配置": "detailNoConfig",
+      "未找到引用附件":       "detailNoAttach",
+    };
+    var container = document.getElementById("detailsContainer");
+    log.reasonRows.forEach(function(row) {
+      var id = DETAIL_ID[row.reason];
+      if (id) {
+        var el = document.getElementById(id);
+        if (el) container.appendChild(el);
+      }
+    });
+
+    document.getElementById("logPanel").hidden = false;
+  }
+
+  // ====== 数据加载 ======
+  function loadFromJson() {
+    setStatus("正在加载 data/page_data.json …", "loading");
+    fetch("/api/data?file=page_data.json&_=" + Date.now())
+      .then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        renderAll(data);
+        setStatus("已加载 page_data.json。如果 Excel 有更新，请在上方上传新文件后点击「用上传的文件重新计算」。", "ok");
+      })
+      .catch(function (err) {
+        setStatus("未找到 page_data.json（" + err.message + "），请在上方上传三份 Excel 后点击计算。", "warn");
+      });
+  }
+
+  function recalcFromUploads() {
+    var salesFile = document.getElementById("fileSales").files[0];
+    var pendingFile = document.getElementById("filePending").files[0];
+    var progressFile = document.getElementById("fileProgress").files[0];
+    var logFile = document.getElementById("fileLog").files[0];
+    var cutoffDate = normalizeText(document.getElementById("cutoffInput").value) || DEFAULT_CUTOFF_DATE;
+
+    if (!salesFile && !pendingFile && !progressFile && !logFile) {
+      setStatus("请至少选择一份 Excel 文件。", "warn");
+      return;
+    }
+
+    setStatus("正在解析 Excel …", "loading");
+    Promise.all([
+      salesFile ? readWorkbookFromFile(salesFile) : Promise.resolve(null),
+      pendingFile ? readWorkbookFromFile(pendingFile) : Promise.resolve(null),
+      progressFile ? readWorkbookFromFile(progressFile) : Promise.resolve(null),
+      logFile ? readWorkbookFromFile(logFile) : Promise.resolve(null),
+    ]).then(function (_a) {
+      var salesWb = _a[0], pendingWb = _a[1], progressWb = _a[2], logWb = _a[3];
+      var salesRows = salesWb ? parseSalesFull(salesWb) : [];
+      var pendingRows = pendingWb ? parsePendingWecom(pendingWb) : [];
+      var progressRows = progressWb ? parseWecomProgress(progressWb, cutoffDate) : [];
+      var companySummary = buildCompanySummary(salesRows, pendingRows, progressRows);
+      var logStats = logWb ? parseWecomLog(logWb) : null;
+      var data = {
+        generatedAt: new Date().toISOString(),
+        cutoffDate: cutoffDate,
+        sources: {
+          salesPath: salesFile ? salesFile.name : null,
+          pendingPath: pendingFile ? pendingFile.name : null,
+          progressPath: progressFile ? progressFile.name : null,
+          logPath: logFile ? logFile.name : null,
+        },
+        salesRows: salesRows,
+        pendingRows: pendingRows,
+        progressRows: progressRows,
+        pendingTotals: calcPendingTotals(pendingRows),
+        companySummary: companySummary,
+        logStats: logStats,
+      };
+      renderAll(data);
+      setStatus("已用上传的文件重新计算完成。（结果仅在当前页面生效，不会覆盖 data/page_data.json。如需长期保存，请运行 node scripts/export_page_data.js）", "ok");
+    }).catch(function (err) {
+      setStatus("解析失败：" + err.message, "err");
+      console.error(err);
+    });
+  }
+
+  document.getElementById("recalcBtn").addEventListener("click", recalcFromUploads);
+  document.getElementById("reloadBtn").addEventListener("click", loadFromJson);
+
+  // 启动：先检查登录状态，已登录则直接显示看板，否则显示登录框
+  checkAuth().then(function(authenticated) {
+    if (authenticated) {
+      showApp();
+      loadFromJson();
+    } else {
+      showLogin();
+    }
+  });
+
+  // ====== 本地存储 & 趋势图 ======
+  var HISTORY_KEY = "wecom_dash_history";
+  function loadHistory() { try { var r = localStorage.getItem(HISTORY_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
+  function saveToHistory(data) {
+    if (!data.cutoffDate) return;
+    var h = loadHistory();
+    var k = data.cutoffDate.slice(0,2) + "-" + data.cutoffDate.slice(2,4);
+    h[k] = { cutoff: data.cutoffDate, registered: data.companySummary.totals.registeredCount, itOk: data.companySummary.totals.itConfiguredCount, orderTotal: data.companySummary.totals.orderTotal, orderAi: data.companySummary.totals.orderAiCount, aiRate: data.companySummary.totals.aiRate, ts: data.generatedAt };
+    var keys = Object.keys(h).sort();
+    if (keys.length > 90) { var t = {}; keys.slice(-90).forEach(function(kk){t[kk]=h[kk]}); h = t; }
+    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch(e) {}
+  }
+  function clearHistory() { if (confirm("确定清除所有本地趋势数据？")) { localStorage.removeItem(HISTORY_KEY); renderTrend(); } }
+  window.clearHistory = clearHistory;
+  function renderTrend() {
+    var h = loadHistory();
+    var keys = Object.keys(h).sort();
+    if (keys.length < 2) {
+      document.getElementById("trendPanel").hidden = true;
+      var el = document.getElementById("historySummary");
+      el.textContent = keys.length === 0 ? "暂无历史数据。上传 Excel 并计算后将自动存入浏览器。" : "仅有一天数据，再积累一天即可看到趋势。";
+      return;
+    }
+    document.getElementById("trendPanel").hidden = false;
+    var labels = keys;
+    var orders = keys.map(function(k){return h[k].orderTotal});
+    var rates = keys.map(function(k){return h[k].aiRate != null ? (h[k].aiRate*100).toFixed(1) : 0});
+    if (window._tc) window._tc.destroy();
+    window._tc = new Chart(document.getElementById("trendChart").getContext("2d"), {
+      type: "bar",
+      data: { labels: labels, datasets: [
+        { label: "订单总行数", data: orders, backgroundColor: "rgba(21,128,61,0.2)", borderColor: "rgba(21,128,61,0.6)", borderWidth: 1, yAxisID: "y" },
+        { label: "AI转单占比 %", data: rates, type: "line", borderColor: "#b45309", backgroundColor: "rgba(180,83,9,0.05)", borderWidth: 2, pointRadius: 4, yAxisID: "y1" }
+      ]},
+      options: { responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
+        scales: { y: { type: "linear", position: "left", title: { display: true, text: "订单总行数" }, beginAtZero: true },
+                  y1: { type: "linear", position: "right", title: { display: true, text: "AI转单占比 %" }, min: 0, max: 100, grid: { drawOnChartArea: false } } } }
+    });
+    var latest = h[keys[keys.length-1]];
+    document.getElementById("historySummary").textContent = "共 " + keys.length + " 天 | 最新: " + keys[keys.length-1] + " | 订单: " + latest.orderTotal + " | AI占比: " + (latest.aiRate != null ? (latest.aiRate*100).toFixed(0) + "%" : "-");
+  }
+  renderTrend();
+  document.getElementById("cutoffInput").value = DEFAULT_CUTOFF_DATE;
+
+})();
+</script>
+</div><!-- #appContent -->
+</body>
+</html>

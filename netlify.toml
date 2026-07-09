@@ -1,0 +1,21 @@
+# Netlify 部署配置
+# 企业微信转单看板 — 带密码保护
+
+[build]
+  publish = "dist"
+  command = "rm -rf dist && mkdir -p dist && cp index.html dist/ && cp -r data dist/ && cp -r vendor dist/"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# API 路由 → Netlify Functions
+[[redirects]]
+  from = "/api/auth"
+  to = "/.netlify/functions/auth"
+  status = 200
+
+[[redirects]]
+  from = "/api/data"
+  to = "/.netlify/functions/data"
+  status = 200

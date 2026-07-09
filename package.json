@@ -1,0 +1,11 @@
+{
+  "name": "wecom-to-agent",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "export": "node scripts/export_page_data.js"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}

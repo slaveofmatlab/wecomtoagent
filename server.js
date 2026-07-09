@@ -120,4 +120,5 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`企业微信看板已启动: http://0.0.0.0:${PORT}/`);
+  console.log(`[debug] SITE_PASSWORD set=${!!SITE_PASSWORD} len=${SITE_PASSWORD.length}`);
 });

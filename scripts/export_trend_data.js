@@ -58,20 +58,23 @@ function loadExisting() {
 function processDate(dirName, cutoffDate, dateDir, loaded) {
   const salesFile = findFileInDir(dateDir, "销售订单");
   const pendingFile = findFileInDir(dateDir, "待转单");
+  const progressFile = findFileInDir(dateDir, "企业微信AI转单推进表");
 
   if (!salesFile) { console.log("  跳过: 未找到销售订单"); return null; }
   if (!pendingFile) { console.log("  跳过: 未找到待转单"); return null; }
 
   const salesWorkbook = readWorkbookFromPath(salesFile);
   const pendingWorkbook = readWorkbookFromPath(pendingFile);
+  const progressWorkbook = progressFile ? readWorkbookFromPath(progressFile) : loaded.progressWorkbook;
+  if (!progressFile) console.log("  提示: 该目录无推进表，使用 basicData 全局推进表");
 
   const data = buildPageData({
     salesWorkbook,
     pendingWorkbook,
-    progressWorkbook: loaded.progressWorkbook,
+    progressWorkbook,
     logWorkbook: loaded.logWorkbook,
     cutoffDate,
-    sources: { salesPath: salesFile, pendingPath: pendingFile },
+    sources: { salesPath: salesFile, pendingPath: pendingFile, progressPath: progressFile || null },
   });
 
   const t = data.companySummary.totals;

@@ -2207,22 +2207,35 @@
     ctx.drawImage(c, 0, headerH);
     downloadCanvas(tmp, "趋势图_" + new Date().toISOString().slice(0,10) + ".png");
   }
+  // 截取整个表格（含横向滚动区域），不依赖容器可视宽度
+  function captureFullTable() {
+    var tbl = document.getElementById("summaryTable");
+    var w = tbl.scrollWidth;
+    var h = tbl.scrollHeight;
+    return html2canvas(tbl, {
+      width: w,
+      height: h,
+      windowWidth: Math.max(document.documentElement.clientWidth, w + 40),
+      scale: 2,
+      backgroundColor: "#ffffff",
+    });
+  }
   function exportTable() {
-    html2canvas(document.getElementById("resultPanel")).then(function(c) {
+    captureFullTable().then(function(c) {
       downloadCanvas(c, "运营公司汇总_" + new Date().toISOString().slice(0,10) + ".png");
     });
   }
   function exportAll() {
-    html2canvas(document.getElementById("resultPanel")).then(function(tableC) {
+    captureFullTable().then(function(tableC) {
       if (window._tc) {
         var c = window._tc.canvas;
-        var h = Math.max(tableC.height + c.height + 20, 600);
+        var h = tableC.height + c.height + 40;
         var w = Math.max(tableC.width, c.width);
         var merged = document.createElement("canvas"); merged.width = w; merged.height = h;
         var mctx = merged.getContext("2d");
-        mctx.fillStyle = "#f6f8fb"; mctx.fillRect(0, 0, w, h);
+        mctx.fillStyle = "#ffffff"; mctx.fillRect(0, 0, w, h);
         mctx.drawImage(tableC, (w - tableC.width) / 2, 0);
-        mctx.drawImage(c, (w - c.width) / 2, tableC.height + 20);
+        mctx.drawImage(c, (w - c.width) / 2, tableC.height + 40);
         downloadCanvas(merged, "看板全景_" + new Date().toISOString().slice(0,10) + ".png");
       } else {
         downloadCanvas(tableC, "看板全景_" + new Date().toISOString().slice(0,10) + ".png");

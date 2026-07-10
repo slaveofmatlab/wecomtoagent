@@ -673,23 +673,33 @@
     </div>
   </section>
 
-  <!-- ====== 运营公司汇总表 ====== -->
+  <!-- ====== 运营公司汇总表（支持多日并列） ====== -->
   <section id="resultPanel" class="panel" hidden>
-    <div class="table-section-title" style="display:flex;align-items:center;gap:12px;">运营公司汇总<span style="display:flex;gap:6px;margin-left:auto;"><button class="secondary" onclick="exportTable()" style="font-size:11px;padding:3px 10px;">导出表格</button><button class="secondary" onclick="exportAll()" style="font-size:11px;padding:3px 10px;">导出全部</button></span></div>
+    <div class="table-section-title" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      运营公司汇总
+      <span style="display:flex;gap:8px;margin-left:auto;align-items:center;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--muted);">对比日期：</span>
+        <div id="dateSelectorWrap" style="position:relative;">
+          <button id="dateSelectorBtn" type="button" class="secondary" style="font-size:12px;padding:4px 12px;min-width:150px;text-align:left;">
+            <span id="dateSelectorLabel">选择日期</span>
+            <span style="float:right;">▾</span>
+          </button>
+          <div id="dateSelectorPanel" style="display:none;position:absolute;right:0;top:100%;margin-top:4px;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 20px rgba(15,23,42,.12);padding:8px;z-index:100;min-width:240px;max-height:340px;overflow-y:auto;">
+            <div style="display:flex;gap:6px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--line);">
+              <button type="button" class="secondary" onclick="dateSelectorAction('latest')" style="font-size:11px;padding:3px 8px;flex:1;">仅最新</button>
+              <button type="button" class="secondary" onclick="dateSelectorAction('last7')" style="font-size:11px;padding:3px 8px;flex:1;">最近7天</button>
+              <button type="button" class="secondary" onclick="dateSelectorAction('all')" style="font-size:11px;padding:3px 8px;flex:1;">全选</button>
+            </div>
+            <div id="dateSelectorList" style="display:flex;flex-direction:column;gap:2px;"></div>
+          </div>
+        </div>
+        <button class="secondary" onclick="exportTable()" style="font-size:11px;padding:3px 10px;">导出表格</button>
+        <button class="secondary" onclick="exportAll()" style="font-size:11px;padding:3px 10px;">导出全部</button>
+      </span>
+    </div>
     <div class="table-wrap">
-      <table class="summary-table">
-        <thead>
-          <tr>
-            <th>运营公司</th>
-            <th class="group">已登记企业微信群<br>项目点数</th>
-            <th class="group">IT 已配置</th>
-            <th class="group">配置率</th>
-            <th class="group">已配置项目点<br>订单总行数</th>
-            <th class="group">AI 识别<br>订单行数</th>
-            <th class="group">AI 转单占比</th>
-            <th class="group">备注</th>
-          </tr>
-        </thead>
+      <table class="summary-table" id="summaryTable">
+        <thead id="summaryHead"></thead>
         <tbody id="summaryBody"></tbody>
       </table>
     </div>
@@ -699,26 +709,6 @@
       <div>待转单总量<br><b>-</b></div>
       <div>已转单<br><b>-</b></div>
       <div>未转单<br><b>-</b></div>
-    </div>
-  </section>
-
-
-  <!-- ====== 多日 AI 转单并列表 ====== -->
-  <section id="multiDayPanel" class="panel" hidden>
-    <div class="table-section-title" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-      多日 AI 转单情况并列
-      <span style="font-size:12px;color:var(--muted);font-weight:normal;">配置数据保持最新一天不变</span>
-      <span style="display:flex;gap:6px;margin-left:auto;align-items:center;">
-        <span style="font-size:12px;color:var(--muted);">选择日期：</span>
-        <div id="multiDayCheckboxes" style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;"></div>
-        <button class="secondary" onclick="exportMultiDay()" style="font-size:11px;padding:3px 10px;">导出表格</button>
-      </span>
-    </div>
-    <div class="table-wrap">
-      <table class="summary-table" id="multiDayTable">
-        <thead id="multiDayHead"></thead>
-        <tbody id="multiDayBody"></tbody>
-      </table>
     </div>
   </section>
 
@@ -1238,38 +1228,196 @@
     aiEl.className = rateClass(totals.aiRate);
   }
 
+  // 汇总表状态：默认只显示最新一天；勾选日期后并列多天订单数据
+  var _selectedDates = null; // Set，null 表示尚未初始化
+  function getLatestKey() {
+    var t = window._trendsData;
+    if (!t) return null;
+    var keys = Object.keys(t).sort();
+    return keys.length ? keys[keys.length - 1] : null;
+  }
+
   function renderSummaryTable(summary) {
+    var trends = window._trendsData || {};
+    var latestKey = getLatestKey();
+    if (_selectedDates == null) {
+      _selectedDates = new Set(latestKey ? [latestKey] : []);
+    }
+    var selectedKeys = Array.from(_selectedDates).sort();
+    var hasTrends = latestKey != null;
+
+    // ===== 表头（配置固定 + 每选中日期 3 列 + 备注列，如果无选中日期则单列） =====
+    var head = "";
+    if (selectedKeys.length > 0) {
+      head += '<tr>';
+      head += '<th rowspan="2">运营公司</th>';
+      head += '<th class="group" rowspan="2">已登记<br>企业微信群<br>项目点</th>';
+      head += '<th class="group" rowspan="2">IT 已配置</th>';
+      head += '<th class="group" rowspan="2">项目点<br>配置率</th>';
+      selectedKeys.forEach(function(k){
+        head += '<th class="group" colspan="3" style="background:#e8f0d8;">' + k + ' 企微群订单</th>';
+      });
+      head += '<th class="group" rowspan="2">备注（最新）</th>';
+      head += '</tr><tr>';
+      selectedKeys.forEach(function(){
+        head += '<th class="group">已配置项目点<br>订单总行数</th>';
+        head += '<th class="group">AI 识别<br>订单行数</th>';
+        head += '<th class="group">AI 转单占比</th>';
+      });
+      head += '</tr>';
+    } else {
+      head += '<tr>';
+      head += '<th>运营公司</th>';
+      head += '<th class="group">已登记<br>企业微信群<br>项目点</th>';
+      head += '<th class="group">IT 已配置</th>';
+      head += '<th class="group">项目点配置率</th>';
+      head += '<th class="group">已配置项目点<br>订单总行数</th>';
+      head += '<th class="group">AI 识别<br>订单行数</th>';
+      head += '<th class="group">AI 转单占比</th>';
+      head += '<th class="group">备注</th>';
+      head += '</tr>';
+    }
+    document.getElementById("summaryHead").innerHTML = head;
+
+    // 建 trends 查找表：dayKey -> {company -> {orderTotal, orderAiCount, aiRate}}
+    function dayLookup(k) {
+      var idx = {};
+      var day = trends[k];
+      if (day && day.companies) {
+        day.companies.forEach(function(c){ idx[c.operationCompany] = c; });
+      }
+      return idx;
+    }
+    var dayLookups = {};
+    selectedKeys.forEach(function(k){ dayLookups[k] = dayLookup(k); });
+
+    // ===== 表体 =====
+    var totalsAcc = { registered: 0, itOk: 0 };
+    var totalsPerDay = {};
+    selectedKeys.forEach(function(k){ totalsPerDay[k] = { orderTotal: 0, orderAiCount: 0 }; });
+
     var rowsHtml = summary.rows.map(function (row) {
-      var aiCls = row.orderAiCount === 0 ? " zero-cell" : "";
       var methodCell = row.orderMethod
         ? '<td style="font-size:11px;color:#64748b;">' + row.orderMethod + "</td>"
         : '<td style="color:#ccc;">-</td>';
-      return "<tr>" +
-        "<td>" + row.operationCompany + "</td>" +
-        '<td class="number">' + row.registeredCount + "</td>" +
-        '<td class="number">' + row.itConfiguredCount + "</td>" +
-        '<td class="rate-cell ' + rateClass(row.configRate) + '">' + pct(row.configRate) + "</td>" +
-        '<td class="number">' + row.orderTotal + "</td>" +
-        '<td class="number' + aiCls + '">' + row.orderAiCount + "</td>" +
-        '<td class="rate-cell ' + rateClass(row.aiRate) + '">' + pct(row.aiRate) + "</td>" +
-        methodCell +
-        "</tr>";
+      var html = "<tr>";
+      html += "<td>" + row.operationCompany + "</td>";
+      html += '<td class="number">' + row.registeredCount + "</td>";
+      html += '<td class="number">' + row.itConfiguredCount + "</td>";
+      html += '<td class="rate-cell ' + rateClass(row.configRate) + '">' + pct(row.configRate) + "</td>";
+      totalsAcc.registered += row.registeredCount;
+      totalsAcc.itOk += row.itConfiguredCount;
+
+      if (selectedKeys.length > 0) {
+        selectedKeys.forEach(function(k){
+          var c = dayLookups[k][row.operationCompany];
+          if (c && c.orderTotal > 0) {
+            html += '<td class="number">' + c.orderTotal + "</td>";
+            html += '<td class="number' + (c.orderAiCount === 0 ? " zero-cell" : "") + '">' + c.orderAiCount + "</td>";
+            html += '<td class="rate-cell ' + rateClass(c.aiRate) + '">' + pct(c.aiRate) + "</td>";
+            totalsPerDay[k].orderTotal += c.orderTotal;
+            totalsPerDay[k].orderAiCount += c.orderAiCount;
+          } else {
+            html += '<td class="number" style="color:#ccc;">-</td>';
+            html += '<td class="number" style="color:#ccc;">-</td>';
+            html += '<td class="rate-cell rate-none">-</td>';
+          }
+        });
+      } else {
+        var aiCls = row.orderAiCount === 0 ? " zero-cell" : "";
+        html += '<td class="number">' + row.orderTotal + "</td>";
+        html += '<td class="number' + aiCls + '">' + row.orderAiCount + "</td>";
+        html += '<td class="rate-cell ' + rateClass(row.aiRate) + '">' + pct(row.aiRate) + "</td>";
+      }
+      html += methodCell;
+      html += "</tr>";
+      return html;
     }).join("");
 
+    // ===== 合计行 =====
     var totals = summary.totals;
-    var totalHtml =
-      '<tr class="total-row">' +
-      "<td>总计</td>" +
-      '<td class="number">' + totals.registeredCount + "</td>" +
-      '<td class="number">' + totals.itConfiguredCount + "</td>" +
-      '<td class="rate-cell ' + rateClass(totals.configRate) + '">' + pct(totals.configRate) + "</td>" +
-      '<td class="number">' + totals.orderTotal + "</td>" +
-      '<td class="number">' + totals.orderAiCount + "</td>" +
-      '<td class="rate-cell ' + rateClass(totals.aiRate) + '">' + pct(totals.aiRate) + "</td>" +
-      "<td></td>" +
-      "</tr>";
+    var totalHtml = '<tr class="total-row"><td>总计</td>';
+    totalHtml += '<td class="number">' + totals.registeredCount + "</td>";
+    totalHtml += '<td class="number">' + totals.itConfiguredCount + "</td>";
+    totalHtml += '<td class="rate-cell ' + rateClass(totals.configRate) + '">' + pct(totals.configRate) + "</td>";
+    if (selectedKeys.length > 0) {
+      selectedKeys.forEach(function(k){
+        var t = totalsPerDay[k];
+        var rate = t.orderTotal > 0 ? t.orderAiCount / t.orderTotal : null;
+        totalHtml += '<td class="number">' + t.orderTotal + "</td>";
+        totalHtml += '<td class="number">' + t.orderAiCount + "</td>";
+        totalHtml += '<td class="rate-cell ' + rateClass(rate) + '">' + pct(rate) + "</td>";
+      });
+    } else {
+      totalHtml += '<td class="number">' + totals.orderTotal + "</td>";
+      totalHtml += '<td class="number">' + totals.orderAiCount + "</td>";
+      totalHtml += '<td class="rate-cell ' + rateClass(totals.aiRate) + '">' + pct(totals.aiRate) + "</td>";
+    }
+    totalHtml += "<td></td></tr>";
     document.getElementById("summaryBody").innerHTML = rowsHtml + totalHtml;
+
+    // 更新日期选择器 UI
+    if (hasTrends) renderDateSelector();
   }
+
+  // ====== 日期选择器（下拉多选） ======
+  function renderDateSelector() {
+    var trends = window._trendsData || {};
+    var keys = Object.keys(trends).sort();
+    var wrap = document.getElementById("dateSelectorWrap");
+    if (!keys.length) { wrap.style.display = "none"; return; }
+    wrap.style.display = "";
+
+    // 按钮上的 label
+    var labelEl = document.getElementById("dateSelectorLabel");
+    var selCount = _selectedDates ? _selectedDates.size : 0;
+    if (selCount === 0) labelEl.textContent = "未选择日期";
+    else if (selCount === 1) labelEl.textContent = "仅 " + Array.from(_selectedDates)[0];
+    else labelEl.textContent = "已选 " + selCount + " 天";
+
+    // 下拉列表内容（按日期倒序，最新在上）
+    var listEl = document.getElementById("dateSelectorList");
+    listEl.innerHTML = keys.slice().reverse().map(function(k){
+      var checked = _selectedDates && _selectedDates.has(k) ? "checked" : "";
+      return '<label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;" onmouseover="this.style.background=\'#f4f9ed\'" onmouseout="this.style.background=\'\'">' +
+        '<input type="checkbox" data-date="' + k + '" ' + checked + '>' +
+        '<span>' + k + '</span>' +
+        '</label>';
+    }).join("");
+    listEl.querySelectorAll("input[type='checkbox']").forEach(function(cb){
+      cb.addEventListener("change", function(){
+        var d = this.getAttribute("data-date");
+        if (this.checked) _selectedDates.add(d); else _selectedDates.delete(d);
+        if (window._latestSummary) renderSummaryTable(window._latestSummary);
+      });
+    });
+  }
+
+  function dateSelectorAction(action) {
+    var trends = window._trendsData || {};
+    var keys = Object.keys(trends).sort();
+    if (action === "latest") {
+      _selectedDates = new Set(keys.length ? [keys[keys.length - 1]] : []);
+    } else if (action === "last7") {
+      _selectedDates = new Set(keys.slice(-7));
+    } else if (action === "all") {
+      _selectedDates = new Set(keys);
+    }
+    if (window._latestSummary) renderSummaryTable(window._latestSummary);
+  }
+  window.dateSelectorAction = dateSelectorAction;
+
+  // 点击按钮开关下拉，点击外部关闭
+  document.addEventListener("click", function(e){
+    var wrap = document.getElementById("dateSelectorWrap");
+    var panel = document.getElementById("dateSelectorPanel");
+    if (!wrap || !panel) return;
+    if (e.target.closest && e.target.closest("#dateSelectorBtn")) {
+      panel.style.display = panel.style.display === "none" ? "block" : "none";
+    } else if (!wrap.contains(e.target)) {
+      panel.style.display = "none";
+    }
+  });
 
   function renderPendingStats(pendingTotals) {
     document.getElementById("pendingStats").innerHTML =
@@ -1283,7 +1431,6 @@
     renderKpiCards(data.companySummary.totals);
     renderSummaryTable(data.companySummary);
     renderPendingStats(data.pendingTotals);
-    if (window._trendsData) renderMultiDayTable();
     document.getElementById("cutoffInput").value = data.cutoffDate || DEFAULT_CUTOFF_DATE;
     document.getElementById("metaLine").textContent =
       "统计截止时间: " + data.cutoffDate + "　|　数据生成时间: " + (data.generatedAt ? data.generatedAt.slice(0, 19).replace("T", " ") : "-");
@@ -2007,151 +2154,6 @@
     var latest = h[keys[keys.length-1]];
     document.getElementById("historySummary").textContent = "共 " + keys.length + " 天 | 最新: " + keys[keys.length-1] + " | 配置率: " + (latest.configRate != null ? (latest.configRate*100).toFixed(0) + "%" : "-") + " | AI占比: " + (latest.aiRate != null ? (latest.aiRate*100).toFixed(0) + "%" : "-");
   }
-  // ====== 多日并列表 ======
-  var _multiDaySelected = null; // Set of selected date keys ("07-06"), null = 首次加载后取全部
-  function renderMultiDayCheckboxes() {
-    var trends = window._trendsData;
-    if (!trends) return;
-    var keys = Object.keys(trends).sort();
-    if (!keys.length) return;
-    if (_multiDaySelected == null) {
-      _multiDaySelected = new Set(keys); // 默认全选
-    }
-    var box = document.getElementById("multiDayCheckboxes");
-    box.innerHTML = keys.map(function(k){
-      var checked = _multiDaySelected.has(k) ? "checked" : "";
-      return '<label style="cursor:pointer;user-select:none;"><input type="checkbox" data-date="' + k + '" ' + checked + ' style="vertical-align:middle;margin-right:2px;">' + k + '</label>';
-    }).join("");
-    box.querySelectorAll("input[type='checkbox']").forEach(function(cb){
-      cb.addEventListener("change", function(){
-        var d = this.getAttribute("data-date");
-        if (this.checked) _multiDaySelected.add(d); else _multiDaySelected.delete(d);
-        renderMultiDayTable();
-      });
-    });
-  }
-
-  function renderMultiDayTable() {
-    var trends = window._trendsData;
-    if (!trends) return;
-    renderMultiDayCheckboxes();
-    var selectedKeys = Array.from(_multiDaySelected).sort();
-    if (!selectedKeys.length) {
-      document.getElementById("multiDayPanel").hidden = true;
-      return;
-    }
-    document.getElementById("multiDayPanel").hidden = false;
-
-    // 用最新一天（trends 里最大 key）的公司列表 + 配置数据作为基线
-    var allKeys = Object.keys(trends).sort();
-    var latestKey = allKeys[allKeys.length - 1];
-    var latest = trends[latestKey];
-
-    // 收集所有日期出现过的公司（union），按最新一天的顺序
-    var companyOrder = [];
-    var seen = new Set();
-    if (latest.companies) {
-      latest.companies.forEach(function(c){ companyOrder.push(c.operationCompany); seen.add(c.operationCompany); });
-    }
-    allKeys.forEach(function(k){
-      var day = trends[k];
-      if (day.companies) {
-        day.companies.forEach(function(c){
-          if (!seen.has(c.operationCompany)) { companyOrder.push(c.operationCompany); seen.add(c.operationCompany); }
-        });
-      }
-    });
-
-    // Build header
-    var head = '<tr>';
-    head += '<th rowspan="2">运营公司</th>';
-    head += '<th class="group" rowspan="2">已登记<br>企业微信群<br>项目点</th>';
-    head += '<th class="group" rowspan="2">IT 已配置</th>';
-    head += '<th class="group" rowspan="2">项目点<br>配置率</th>';
-    selectedKeys.forEach(function(k){
-      head += '<th class="group" colspan="3" style="background:#e8f0d8;">' + k + ' 企微群订单</th>';
-    });
-    head += '</tr><tr>';
-    selectedKeys.forEach(function(){
-      head += '<th class="group">已配置的项目点<br>订单总行数</th>';
-      head += '<th class="group">AI 识别<br>订单行数</th>';
-      head += '<th class="group">AI 转单占比</th>';
-    });
-    head += '</tr>';
-    document.getElementById("multiDayHead").innerHTML = head;
-
-    // Build body — 用最新汇总里的每公司 registered/itOk/configRate（从 summaryRows 里取）
-    // 因为 trends 里没存这些，从当前 summaryBody 已渲染的 currentSummary 里取
-    var latestSummary = window._latestSummary; // 由 renderSummaryTable 存
-    var summaryByCompany = {};
-    if (latestSummary && latestSummary.rows) {
-      latestSummary.rows.forEach(function(r){ summaryByCompany[r.operationCompany] = r; });
-    }
-
-    var body = "";
-    var totalCfg = { registered: 0, itOk: 0 };
-    var totalDay = {}; // 每天的合计 { orderTotal, orderAiCount }
-    selectedKeys.forEach(function(k){ totalDay[k] = { orderTotal: 0, orderAiCount: 0 }; });
-
-    companyOrder.forEach(function(company){
-      var s = summaryByCompany[company] || { registeredCount: 0, itConfiguredCount: 0, configRate: 0 };
-      body += "<tr>";
-      body += "<td style='text-align:left;'>" + company + "</td>";
-      body += '<td class="number">' + s.registeredCount + "</td>";
-      body += '<td class="number">' + s.itConfiguredCount + "</td>";
-      body += '<td class="rate-cell ' + rateClass(s.configRate) + '">' + pct(s.configRate) + "</td>";
-      totalCfg.registered += s.registeredCount;
-      totalCfg.itOk += s.itConfiguredCount;
-
-      selectedKeys.forEach(function(k){
-        var day = trends[k];
-        var c = null;
-        if (day && day.companies) {
-          for (var i = 0; i < day.companies.length; i++) {
-            if (day.companies[i].operationCompany === company) { c = day.companies[i]; break; }
-          }
-        }
-        if (c && c.orderTotal > 0) {
-          body += '<td class="number">' + c.orderTotal + "</td>";
-          body += '<td class="number' + (c.orderAiCount === 0 ? " zero-cell" : "") + '">' + c.orderAiCount + "</td>";
-          body += '<td class="rate-cell ' + rateClass(c.aiRate) + '">' + pct(c.aiRate) + "</td>";
-          totalDay[k].orderTotal += c.orderTotal;
-          totalDay[k].orderAiCount += c.orderAiCount;
-        } else {
-          body += '<td class="number" style="color:#ccc;">-</td>';
-          body += '<td class="number" style="color:#ccc;">-</td>';
-          body += '<td class="rate-cell rate-none">-</td>';
-        }
-      });
-      body += "</tr>";
-    });
-
-    // 合计行
-    var totalCfgRate = totalCfg.registered > 0 ? totalCfg.itOk / totalCfg.registered : null;
-    body += '<tr class="total-row"><td>总计</td>';
-    body += '<td class="number">' + totalCfg.registered + "</td>";
-    body += '<td class="number">' + totalCfg.itOk + "</td>";
-    body += '<td class="rate-cell ' + rateClass(totalCfgRate) + '">' + pct(totalCfgRate) + "</td>";
-    selectedKeys.forEach(function(k){
-      var t = totalDay[k];
-      var rate = t.orderTotal > 0 ? t.orderAiCount / t.orderTotal : null;
-      body += '<td class="number">' + t.orderTotal + "</td>";
-      body += '<td class="number">' + t.orderAiCount + "</td>";
-      body += '<td class="rate-cell ' + rateClass(rate) + '">' + pct(rate) + "</td>";
-    });
-    body += "</tr>";
-    document.getElementById("multiDayBody").innerHTML = body;
-  }
-
-  function exportMultiDay() {
-    var panel = document.getElementById("multiDayPanel");
-    if (panel.hidden) return;
-    html2canvas(panel).then(function(c) {
-      downloadCanvas(c, "多日AI转单_" + new Date().toISOString().slice(0,10) + ".png");
-    });
-  }
-  window.exportMultiDay = exportMultiDay;
-
   // 加载预置趋势数据（服务端优先，覆盖 localStorage）
   fetch("/api/data?file=trends.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (preset) {
     if (preset) {
@@ -2159,7 +2161,8 @@
       var local = loadHistory();
       Object.keys(preset).forEach(function (k) { local[k] = preset[k]; });
       try { localStorage.setItem(HISTORY_KEY, JSON.stringify(local)); } catch(e) {}
-      renderMultiDayTable();
+      // trends 到手后重画汇总表（会显示日期选择器）
+      if (window._latestSummary) renderSummaryTable(window._latestSummary);
     }
   }).catch(function () {}).then(function () { renderTrend(); });
   document.getElementById("cutoffInput").value = DEFAULT_CUTOFF_DATE;

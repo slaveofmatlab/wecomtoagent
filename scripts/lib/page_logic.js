@@ -279,16 +279,13 @@ function parseWecomLogForSummary(workbook, progressRows) {
     var topEntries = entries.slice(0, 2);
     var parts = topEntries.map(function (e) {
       var pct = Math.round(e.count / total * 100);
-      var suffix = e.processed ? "" : "（系统暂不支持）";
-      return e.label + " " + pct + "%" + suffix;
+      return e.label + " " + pct + "%";
     });
 
     // 如果只有一个方法且占比 > 80%，简化显示
     var remark;
     if (entries.length === 1 || (entries[0].count / total > 0.8)) {
-      var e = entries[0];
-      var suffix = e.processed ? "" : "（系统暂不支持）";
-      remark = e.label + suffix;
+      remark = entries[0].label;
     } else {
       remark = parts.join("，");
     }

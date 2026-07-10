@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-10T14:36:22.261Z",
+  "generatedAt": "2026-07-10T15:14:42.087Z",
   "cutoffDate": "0709",
   "sources": {
     "salesPath": "/home/lucyai/tezan001/03-wecom-tracking/wecomToAgent/示例数据/7月9日/7月9日销售订单.xlsx",
@@ -98180,7 +98180,7 @@
         "orderAiTotal": 0,
         "aiRate": 0,
         "aiRateTotal": 0,
-        "orderMethod": "图片下单 51%，Excel下单 33%（系统暂不支持）"
+        "orderMethod": "图片下单 51%，Excel下单 33%"
       },
       {
         "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
@@ -98206,7 +98206,7 @@
         "orderAiTotal": 0,
         "aiRate": 0,
         "aiRateTotal": 0,
-        "orderMethod": "图片下单 37%，Excel下单 37%（系统暂不支持）"
+        "orderMethod": "图片下单 37%，Excel下单 37%"
       },
       {
         "operationCompany": "西安/丰厨(上海)供应链管理有限公司",
@@ -98245,7 +98245,7 @@
         "orderAiTotal": 48,
         "aiRate": 1,
         "aiRateTotal": 1,
-        "orderMethod": "图片下单 69%，Excel下单 18%（系统暂不支持）"
+        "orderMethod": "图片下单 69%，Excel下单 18%"
       },
       {
         "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
@@ -98297,7 +98297,7 @@
         "orderAiTotal": 4,
         "aiRate": 0.8,
         "aiRateTotal": 0.8,
-        "orderMethod": "PDF下单 53%（系统暂不支持），图片下单 42%"
+        "orderMethod": "PDF下单 53%，图片下单 42%"
       },
       {
         "operationCompany": "重庆/丰厨(成都)供应链管理有限公司",
@@ -98323,7 +98323,7 @@
         "orderAiTotal": 0,
         "aiRate": null,
         "aiRateTotal": null,
-        "orderMethod": "PDF下单 65%（系统暂不支持），图片下单 15%"
+        "orderMethod": "PDF下单 65%，图片下单 15%"
       },
       {
         "operationCompany": "益海嘉里食品营销有限公司上海分公司",
@@ -98336,7 +98336,7 @@
         "orderAiTotal": 0,
         "aiRate": null,
         "aiRateTotal": null,
-        "orderMethod": "图片下单 69%，Excel下单 31%（系统暂不支持）"
+        "orderMethod": "图片下单 69%，Excel下单 31%"
       },
       {
         "operationCompany": "益海津农德立安（天津）供应链管理有限公司",

@@ -673,17 +673,6 @@
     </div>
   </section>
 
-  <!-- ====== 多日趋势对比 ====== -->
-  <section id="trendPanel" class="panel" hidden>
-    <div class="table-section-title">多日趋势对比</div>
-    <div class="table-wrap" style="overflow-x:auto;">
-      <table class="summary-table" style="min-width:100%;">
-        <thead id="trendHead"></thead>
-        <tbody id="trendBody"></tbody>
-      </table>
-    </div>
-  </section>
-
   <!-- ====== 运营公司汇总表 ====== -->
   <section id="resultPanel" class="panel" hidden>
     <div class="table-section-title" style="display:flex;align-items:center;gap:12px;">运营公司汇总<span style="display:flex;gap:6px;margin-left:auto;"><button class="secondary" onclick="exportTable()" style="font-size:11px;padding:3px 10px;">导出表格</button><button class="secondary" onclick="exportAll()" style="font-size:11px;padding:3px 10px;">导出全部</button></span></div>
@@ -1288,19 +1277,6 @@
       renderLogPanel(data.logStats);
     }
   }
-
-  function renderTrendPanel(trendData) {
-    if (!trendData || !trendData.days || trendData.days.length === 0) return;
-
-    var days = trendData.days;
-    var companies = trendData.companies || [];
-
-    // Build header: 运营公司 | 日期1 AI占比 | 日期1 订单行 | ... | 备注
-    var headHtml = "<tr><th>运营公司</th>";
-    for (var di = 0; di < days.length; di++) {
-      headHtml += '<th class="group">' + days[di].label + '<br>AI转单占比</th>';
-      headHtml += '<th class="group">' + days[di].label + '<br>订单总行数</th>';
-    }
     headHtml += '<th class="group">备注（最新）</th></tr>';
     document.getElementById("trendHead").innerHTML = headHtml;
 
@@ -1914,56 +1890,18 @@
   // ====== 数据加载 ======
   function loadFromJson() {
     setStatus("正在加载 data/page_data.json …", "loading");
-    // 先尝试加载多日趋势数据
-    fetch("/api/data?file=trend_data.json&_=" + Date.now())
+    fetch("/api/data?file=page_data.json&_=" + Date.now())
       .then(function (res) {
         if (!res.ok) throw new Error("HTTP " + res.status);
         return res.json();
       })
-      .then(function (trendData) {
-        // 有趋势数据：渲染多日对比 + 加载最新一天的单日汇总
-        loadSingleDayForKpis();
-        renderTrendPanel(trendData);
-        setStatus("已加载多日趋势数据（" + trendData.days.length + " 天 × " + trendData.companies.length + " 家公司）。如果 Excel 有更新，请在上方上传新文件。", "ok");
-      })
-      .catch(function () {
-        // 无趋势数据：回退到单日 page_data.json
-        fetch("/api/data?file=page_data.json&_=" + Date.now())
-          .then(function (res) {
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            return res.json();
-          })
-          .then(function (data) {
-            renderAll(data);
-            setStatus("已加载 page_data.json。如果 Excel 有更新，请在上方上传新文件后点击「用上传的文件重新计算」。", "ok");
-          })
-          .catch(function (err) {
-            setStatus("未找到 page_data.json（" + err.message + "），请在上方上传三份 Excel 后点击计算。", "warn");
-          });
-      });
-  }
-
-  // 加载单日 page_data.json 用于 KPI 卡片
-  function loadSingleDayForKpis() {
-    fetch("/api/data?file=page_data.json&_=" + Date.now())
-      .then(function (res) {
-        if (!res.ok) return;
-        return res.json();
-      })
       .then(function (data) {
-        if (data) {
-          renderKpiCards(data.companySummary.totals);
-          renderPendingStats(data.pendingTotals);
-          document.getElementById("cutoffInput").value = data.cutoffDate || DEFAULT_CUTOFF_DATE;
-          document.getElementById("metaLine").textContent =
-            "多日趋势模式　|　数据生成时间: " + (data.generatedAt ? data.generatedAt.slice(0, 19).replace("T", " ") : "-");
-          document.getElementById("summaryPanel").hidden = false;
-          document.getElementById("resultPanel").hidden = false;
-          renderSummaryTable(data.companySummary);
-          if (data.logStats) renderLogPanel(data.logStats);
-        }
+        renderAll(data);
+        setStatus("已加载 page_data.json。如果 Excel 有更新，请在上方上传新文件后点击「用上传的文件重新计算」。", "ok");
       })
-      .catch(function () {});
+      .catch(function (err) {
+        setStatus("未找到 page_data.json（" + err.message + "），请在上方上传三份 Excel 后点击计算。", "warn");
+      });
   }
 
   function recalcFromUploads() {

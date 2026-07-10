@@ -1,6 +1,11 @@
 /**
- * 预计算所有示例数据日期的汇总，输出 data/trend_data.json
- * 用法: node scripts/export_trend_data.js
+ * 预计算所有示例数据日期的汇总，输出 data/trends.json
+ * 格式与折线图已有的 key-value 结构一致（日期 → 总量）。
+ * 如果已有 trends.json，只更新/新增日期，保留已有的其他日期。
+ *
+ * 用法:
+ *   node scripts/export_trend_data.js              # 全量扫描
+ *   node scripts/export_trend_data.js --cutoff 0709  # 只更新某一天
  */
 const fs = require("fs");
 const path = require("path");
@@ -8,11 +13,10 @@ const {
   loadDefaultData,
   readWorkbookFromPath,
   buildPageData,
-  DEFAULT_CUTOFF_DATE,
 } = require("./lib/page_logic");
 
 const ROOT = path.join(__dirname, "..");
-const OUT_PATH = path.join(ROOT, "data", "trend_data.json");
+const OUT_PATH = path.join(ROOT, "data", "trends.json");
 const SAMPLE_DIR = path.join(ROOT, "示例数据");
 
 // 从目录名提取 cutoff 日期: "7月2日" → "0702"
@@ -23,106 +27,9 @@ function extractCutoff(dirName) {
     String(parseInt(match[2], 10)).padStart(2, "0");
 }
 
-function main() {
-  if (!fs.existsSync(SAMPLE_DIR)) {
-    console.error("示例数据目录不存在:", SAMPLE_DIR);
-    process.exit(1);
-  }
-
-  // 扫描所有日期子目录
-  const dateDirs = fs.readdirSync(SAMPLE_DIR)
-    .filter(name => {
-      const fullPath = path.join(SAMPLE_DIR, name);
-      return fs.statSync(fullPath).isDirectory() && extractCutoff(name);
-    })
-    .sort((a, b) => extractCutoff(a).localeCompare(extractCutoff(b)));
-
-  if (dateDirs.length === 0) {
-    console.error("示例数据目录下未找到日期子文件夹（如 7月2日）");
-    process.exit(1);
-  }
-
-  console.log("扫描到 " + dateDirs.length + " 个日期: " + dateDirs.join(", "));
-
-  const days = [];
-
-  for (const dirName of dateDirs) {
-    const cutoffDate = extractCutoff(dirName);
-    const dateDir = path.join(SAMPLE_DIR, dirName);
-
-    console.log(`\n处理 ${dirName}（cutoff=${cutoffDate}）...`);
-
-    // 加载默认数据（sales/pending 从 dateDir 找，progress/log 从 basicData）
-    const loaded = loadDefaultData(ROOT, cutoffDate);
-    const sources = { ...loaded.sources };
-
-    // 覆盖销售订单和待转单路径为当前日期目录
-    let salesWorkbook = null;
-    let pendingWorkbook = null;
-
-    // 在当前日期目录找销售订单
-    const salesFile = findFileInDir(dateDir, "销售订单");
-    if (salesFile) {
-      salesWorkbook = readWorkbookFromPath(salesFile);
-      sources.salesPath = salesFile;
-    }
-
-    // 在当前日期目录找待转单
-    const pendingFile = findFileInDir(dateDir, "待转单");
-    if (pendingFile) {
-      pendingWorkbook = readWorkbookFromPath(pendingFile);
-      sources.pendingPath = pendingFile;
-    }
-
-    if (!salesWorkbook) {
-      console.log("  跳过: 未找到销售订单文件");
-      continue;
-    }
-    if (!pendingWorkbook) {
-      console.log("  跳过: 未找到待转单文件");
-      continue;
-    }
-
-    const data = buildPageData({
-      salesWorkbook,
-      pendingWorkbook,
-      progressWorkbook: loaded.progressWorkbook,
-      logWorkbook: loaded.logWorkbook,
-      cutoffDate,
-      sources,
-    });
-
-    console.log(`  销售订单 ${data.salesRows.length} 行`);
-    console.log(`  待转单 ${data.pendingRows.length} 行`);
-    console.log(`  运营公司 ${data.companySummary.rows.length} 家`);
-
-    days.push({
-      date: cutoffDate,
-      label: dirName,
-      companySummary: data.companySummary,
-      pendingTotals: data.pendingTotals,
-    });
-  }
-
-  // 合并所有公司名（不同日期可能有不同公司）
-  const allCompanies = new Set();
-  for (const day of days) {
-    for (const row of day.companySummary.rows) {
-      allCompanies.add(row.operationCompany);
-    }
-  }
-
-  const output = {
-    generatedAt: new Date().toISOString(),
-    companies: [...allCompanies].sort(),
-    days,
-  };
-
-  fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
-  fs.writeFileSync(OUT_PATH, JSON.stringify(output, null, 2), "utf8");
-
-  console.log(`\n已导出: ${OUT_PATH}`);
-  console.log(`  ${output.days.length} 天 × ${output.companies.length} 家公司`);
+// cutoff "0702" → key "07-02"
+function cutoffToKey(cutoff) {
+  return cutoff.slice(0, 2) + "-" + cutoff.slice(2, 4);
 }
 
 // 在指定目录找匹配文件（不递归）
@@ -135,6 +42,127 @@ function findFileInDir(dir, pattern) {
     if (name.includes(pattern)) return fullPath;
   }
   return null;
+}
+
+function loadExisting() {
+  if (fs.existsSync(OUT_PATH)) {
+    try {
+      return JSON.parse(fs.readFileSync(OUT_PATH, "utf8"));
+    } catch (e) {
+      console.log("现有 trends.json 解析失败，将重新生成。");
+    }
+  }
+  return {};
+}
+
+function processDate(dirName, cutoffDate, dateDir, loaded) {
+  const salesFile = findFileInDir(dateDir, "销售订单");
+  const pendingFile = findFileInDir(dateDir, "待转单");
+
+  if (!salesFile) { console.log("  跳过: 未找到销售订单"); return null; }
+  if (!pendingFile) { console.log("  跳过: 未找到待转单"); return null; }
+
+  const salesWorkbook = readWorkbookFromPath(salesFile);
+  const pendingWorkbook = readWorkbookFromPath(pendingFile);
+
+  const data = buildPageData({
+    salesWorkbook,
+    pendingWorkbook,
+    progressWorkbook: loaded.progressWorkbook,
+    logWorkbook: loaded.logWorkbook,
+    cutoffDate,
+    sources: { salesPath: salesFile, pendingPath: pendingFile },
+  });
+
+  const t = data.companySummary.totals;
+  const entry = {
+    cutoff: cutoffDate,
+    registered: t.registeredCount,
+    itOk: t.itConfiguredCount,
+    configRate: t.configRate,
+    orderTotal: t.orderTotal,
+    orderAi: t.orderAiCount,
+    aiRate: t.aiRate,
+    ts: new Date().toISOString(),
+  };
+
+  console.log(`  已登记 ${t.registeredCount} / IT已配置 ${t.itConfiguredCount} / 订单 ${t.orderTotal} 行 / AI ${t.orderAiCount} 单`);
+  return entry;
+}
+
+function parseArgs(argv) {
+  const opts = {};
+  for (let i = 2; i < argv.length; i++) {
+    if (argv[i] === "--cutoff") opts.cutoff = argv[++i];
+    else if (argv[i] === "--help" || argv[i] === "-h") opts.help = true;
+  }
+  return opts;
+}
+
+function main() {
+  const opts = parseArgs(process.argv);
+  if (opts.help) {
+    console.log("用法: node scripts/export_trend_data.js [--cutoff MMDD]");
+    console.log("  --cutoff MMDD  只更新指定日期（如 0709），不指定则扫描全部");
+    return;
+  }
+
+  const existing = loadExisting();
+  const loaded = loadDefaultData(ROOT, "0702"); // cutoff 不影响 progress/log 加载
+
+  if (opts.cutoff) {
+    // 单日模式：查找对应日期的子目录
+    const mm = String(parseInt(opts.cutoff.slice(0, 2), 10));
+    const dd = String(parseInt(opts.cutoff.slice(2, 4), 10));
+    const dirName = `${mm}月${dd}日`;
+    const dateDir = path.join(SAMPLE_DIR, dirName);
+
+    if (!fs.existsSync(dateDir)) {
+      console.error("日期目录不存在:", dateDir);
+      process.exit(1);
+    }
+
+    console.log(`更新 ${dirName}（cutoff=${opts.cutoff}）...`);
+    const entry = processDate(dirName, opts.cutoff, dateDir, loaded);
+    if (entry) {
+      existing[cutoffToKey(opts.cutoff)] = entry;
+    }
+  } else {
+    // 全量模式：扫描所有日期子目录
+    if (!fs.existsSync(SAMPLE_DIR)) {
+      console.error("示例数据目录不存在:", SAMPLE_DIR);
+      process.exit(1);
+    }
+
+    const dateDirs = fs.readdirSync(SAMPLE_DIR)
+      .filter(name => fs.statSync(path.join(SAMPLE_DIR, name)).isDirectory() && extractCutoff(name))
+      .sort((a, b) => extractCutoff(a).localeCompare(extractCutoff(b)));
+
+    if (dateDirs.length === 0) {
+      console.error("示例数据目录下未找到日期子文件夹（如 7月2日）");
+      process.exit(1);
+    }
+
+    console.log("扫描到 " + dateDirs.length + " 个日期: " + dateDirs.join(", "));
+    let updated = 0;
+    for (const dirName of dateDirs) {
+      const cutoffDate = extractCutoff(dirName);
+      const dateDir = path.join(SAMPLE_DIR, dirName);
+      console.log(`\n处理 ${dirName}（cutoff=${cutoffDate}）...`);
+      const entry = processDate(dirName, cutoffDate, dateDir, loaded);
+      if (entry) {
+        existing[cutoffToKey(cutoffDate)] = entry;
+        updated++;
+      }
+    }
+    console.log(`\n更新了 ${updated} 个日期`);
+  }
+
+  fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
+  fs.writeFileSync(OUT_PATH, JSON.stringify(existing, null, 2), "utf8");
+
+  const keys = Object.keys(existing).sort();
+  console.log(`已导出: ${OUT_PATH}（${keys.length} 天: ${keys.join(", ")}）`);
 }
 
 try {

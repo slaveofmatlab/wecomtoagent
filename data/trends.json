@@ -4,49 +4,59 @@
     "registered": 217,
     "itOk": 120,
     "configRate": 0.5529953917050692,
-    "orderTotal": 1225,
-    "orderAi": 49,
-    "aiRate": 0.04,
-    "ts": "2026-07-09T08:37:51.352Z"
+    "orderTotal": 28,
+    "orderAi": 9,
+    "aiRate": 0.32142857142857145,
+    "ts": "2026-07-10T12:21:58.218Z"
   },
   "07-03": {
     "cutoff": "0703",
-    "registered": 247,
+    "registered": 217,
     "itOk": 212,
-    "configRate": 0.8582995951417004,
+    "configRate": 0.9769585253456221,
     "orderTotal": 43,
     "orderAi": 24,
     "aiRate": 0.5581395348837209,
-    "ts": "2026-07-09T08:37:52.565Z"
+    "ts": "2026-07-10T12:21:59.261Z"
   },
   "07-06": {
     "cutoff": "0706",
-    "registered": 252,
-    "itOk": 247,
-    "configRate": 0.9801587301587301,
-    "orderTotal": 1489,
+    "registered": 217,
+    "itOk": 212,
+    "configRate": 0.9769585253456221,
+    "orderTotal": 1443,
     "orderAi": 44,
-    "aiRate": 0.029550033579583614,
-    "ts": "2026-07-09T08:37:55.374Z"
+    "aiRate": 0.030492030492030493,
+    "ts": "2026-07-10T12:22:02.149Z"
   },
   "07-07": {
     "cutoff": "0707",
-    "registered": 263,
-    "itOk": 252,
-    "configRate": 0.9581749049429658,
-    "orderTotal": 1105,
-    "orderAi": 74,
-    "aiRate": 0.0669683257918552,
-    "ts": "2026-07-09T08:37:57.982Z"
+    "registered": 217,
+    "itOk": 212,
+    "configRate": 0.9769585253456221,
+    "orderTotal": 1032,
+    "orderAi": 70,
+    "aiRate": 0.06782945736434108,
+    "ts": "2026-07-10T12:22:04.612Z"
   },
   "07-08": {
     "cutoff": "0708",
-    "registered": 263,
-    "itOk": 252,
-    "configRate": 0.9581749049429658,
-    "orderTotal": 952,
-    "orderAi": 137,
-    "aiRate": 0.14390756302521007,
-    "ts": "2026-07-09T08:38:00.665Z"
+    "registered": 217,
+    "itOk": 212,
+    "configRate": 0.9769585253456221,
+    "orderTotal": 917,
+    "orderAi": 111,
+    "aiRate": 0.12104689203925845,
+    "ts": "2026-07-10T12:22:07.234Z"
+  },
+  "07-09": {
+    "cutoff": "0709",
+    "registered": 217,
+    "itOk": 212,
+    "configRate": 0.9769585253456221,
+    "orderTotal": 628,
+    "orderAi": 24,
+    "aiRate": 0.03821656050955414,
+    "ts": "2026-07-10T12:22:08.206Z"
   }
 }

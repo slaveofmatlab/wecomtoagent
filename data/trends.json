@@ -1,0 +1,52 @@
+{
+  "07-02": {
+    "cutoff": "0702",
+    "registered": 217,
+    "itOk": 120,
+    "configRate": 0.5529953917050692,
+    "orderTotal": 1225,
+    "orderAi": 49,
+    "aiRate": 0.04,
+    "ts": "2026-07-09T08:37:51.352Z"
+  },
+  "07-03": {
+    "cutoff": "0703",
+    "registered": 247,
+    "itOk": 212,
+    "configRate": 0.8582995951417004,
+    "orderTotal": 43,
+    "orderAi": 24,
+    "aiRate": 0.5581395348837209,
+    "ts": "2026-07-09T08:37:52.565Z"
+  },
+  "07-06": {
+    "cutoff": "0706",
+    "registered": 252,
+    "itOk": 247,
+    "configRate": 0.9801587301587301,
+    "orderTotal": 1489,
+    "orderAi": 44,
+    "aiRate": 0.029550033579583614,
+    "ts": "2026-07-09T08:37:55.374Z"
+  },
+  "07-07": {
+    "cutoff": "0707",
+    "registered": 263,
+    "itOk": 252,
+    "configRate": 0.9581749049429658,
+    "orderTotal": 1105,
+    "orderAi": 74,
+    "aiRate": 0.0669683257918552,
+    "ts": "2026-07-09T08:37:57.982Z"
+  },
+  "07-08": {
+    "cutoff": "0708",
+    "registered": 263,
+    "itOk": 252,
+    "configRate": 0.9581749049429658,
+    "orderTotal": 952,
+    "orderAi": 137,
+    "aiRate": 0.14390756302521007,
+    "ts": "2026-07-09T08:38:00.665Z"
+  }
+}

@@ -686,7 +686,7 @@
 
   <!-- ====== 运营公司汇总表 ====== -->
   <section id="resultPanel" class="panel" hidden>
-    <div class="table-section-title">运营公司汇总</div>
+    <div class="table-section-title" style="display:flex;align-items:center;gap:12px;">运营公司汇总<span style="display:flex;gap:6px;margin-left:auto;"><button class="secondary" onclick="exportTable()" style="font-size:11px;padding:3px 10px;">导出表格</button><button class="secondary" onclick="exportAll()" style="font-size:11px;padding:3px 10px;">导出全部</button></span></div>
     <div class="table-wrap">
       <table class="summary-table">
         <thead>
@@ -718,11 +718,14 @@
   <section id="trendPanel" class="panel" hidden>
     <div class="table-section-title">📈 数据趋势</div>
     <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
-      <span style="font-size:12px;color:var(--muted);">每次上传计算后自动存入浏览器本地，关掉页面也不会丢。</span>
+      <button id="btnLabelToggle" class="secondary" onclick="toggleLabels()" style="font-size:11px;padding:3px 10px;">显示数据标签</button>
+      <button class="secondary" onclick="exportChart()" style="font-size:11px;padding:3px 10px;">导出趋势图</button>
       <button class="secondary" onclick="clearHistory()" style="font-size:11px;padding:3px 10px;">清除历史</button>
     </div>
-    <div style="height:300px;margin-bottom:8px;">
-      <canvas id="trendChart"></canvas>
+    <div style="overflow-x:auto;margin-bottom:8px;" id="trendChartWrap">
+      <div style="height:300px;min-width:100%;" id="trendChartInner">
+        <canvas id="trendChart"></canvas>
+      </div>
     </div>
     <div id="historySummary" style="font-size:12px;color:var(--muted);"></div>
   <!-- ====== 日志分析 ====== -->
@@ -879,7 +882,10 @@
 
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
 <script src="vendor/xlsx.full.min.js"></script>
 <script>
 (function () {
@@ -1339,15 +1345,30 @@
     el.className = type || "";
   }
 
-  // ====== 文件选择反馈 ======
+  // ====== 文件选择反馈 + 自动识别日期 ======
+  function tryAutoDetectDate() {
+    var names = [];
+    [document.getElementById("fileSales"), document.getElementById("filePending"), document.getElementById("fileProgress")].forEach(function (el) {
+      if (el.files[0]) names.push(el.files[0].name);
+    });
+    for (var i = 0; i < names.length; i++) {
+      var m = names[i].match(/(\d{2})(\d{2})/);
+      if (m) { var mm = parseInt(m[1], 10), dd = parseInt(m[2], 10); if (mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31) { document.getElementById("cutoffInput").value = m[1] + m[2]; return; } }
+      var m2 = names[i].match(/(\d+)月(\d+)日/);
+      if (m2) { document.getElementById("cutoffInput").value = String(parseInt(m2[1])).padStart(2, "0") + String(parseInt(m2[2])).padStart(2, "0"); return; }
+    }
+  }
   document.getElementById("fileSales").addEventListener("change", function () {
     document.getElementById("salesFileName").textContent = this.files[0] ? this.files[0].name : "未选择文件";
+    tryAutoDetectDate();
   });
   document.getElementById("filePending").addEventListener("change", function () {
     document.getElementById("pendingFileName").textContent = this.files[0] ? this.files[0].name : "未选择文件";
+    tryAutoDetectDate();
   });
   document.getElementById("fileProgress").addEventListener("change", function () {
     document.getElementById("progressFileName").textContent = this.files[0] ? this.files[0].name : "未选择文件";
+    tryAutoDetectDate();
   });
   document.getElementById("fileLog").addEventListener("change", function () {
     document.getElementById("logFileName").textContent = this.files[0] ? this.files[0].name : "未选择文件（可选）";
@@ -2015,42 +2036,101 @@
     if (!data.cutoffDate) return;
     var h = loadHistory();
     var k = data.cutoffDate.slice(0,2) + "-" + data.cutoffDate.slice(2,4);
-    h[k] = { cutoff: data.cutoffDate, registered: data.companySummary.totals.registeredCount, itOk: data.companySummary.totals.itConfiguredCount, orderTotal: data.companySummary.totals.orderTotal, orderAi: data.companySummary.totals.orderAiCount, aiRate: data.companySummary.totals.aiRate, ts: data.generatedAt };
+    h[k] = { cutoff: data.cutoffDate, registered: data.companySummary.totals.registeredCount, itOk: data.companySummary.totals.itConfiguredCount, configRate: data.companySummary.totals.configRate, orderTotal: data.companySummary.totals.orderTotal, orderAi: data.companySummary.totals.orderAiCount, aiRate: data.companySummary.totals.aiRate, ts: data.generatedAt };
     var keys = Object.keys(h).sort();
     if (keys.length > 90) { var t = {}; keys.slice(-90).forEach(function(kk){t[kk]=h[kk]}); h = t; }
     try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch(e) {}
   }
   function clearHistory() { if (confirm("确定清除所有本地趋势数据？")) { localStorage.removeItem(HISTORY_KEY); renderTrend(); } }
   window.clearHistory = clearHistory;
+  var _showLabels = false;
+  function toggleLabels() { _showLabels = !_showLabels; document.getElementById("btnLabelToggle").textContent = _showLabels ? "隐藏数据标签" : "显示数据标签"; renderTrend(); }
+  window.toggleLabels = toggleLabels;
   function renderTrend() {
     var h = loadHistory();
     var keys = Object.keys(h).sort();
     if (keys.length < 2) {
       document.getElementById("trendPanel").hidden = true;
-      var el = document.getElementById("historySummary");
-      el.textContent = keys.length === 0 ? "暂无历史数据。上传 Excel 并计算后将自动存入浏览器。" : "仅有一天数据，再积累一天即可看到趋势。";
+      var el2 = document.getElementById("historySummary");
+      el2.textContent = keys.length === 0 ? "暂无历史数据。上传 Excel 并计算后将自动存入浏览器。" : "仅有一天数据，再积累一天即可看到趋势。";
       return;
     }
     document.getElementById("trendPanel").hidden = false;
-    var labels = keys;
-    var orders = keys.map(function(k){return h[k].orderTotal});
-    var rates = keys.map(function(k){return h[k].aiRate != null ? (h[k].aiRate*100).toFixed(1) : 0});
+    // 生成整个月的横轴标签（07-01 ~ 07-31），数据点只落在有数据的日期上
+    var firstKey = keys[0], lastKey = keys[keys.length - 1];
+    var m0 = parseInt(firstKey.split("-")[0]), d0 = 1; // 月初
+    var m1 = parseInt(lastKey.split("-")[0]), d1 = new Date(2026, m1, 0).getDate(); // 月末
+    var labels = [];
+    for (var mm = m0; mm <= m1; mm++) {
+      var endD = (mm === m1) ? d1 : new Date(2026, mm, 0).getDate();
+      for (var dd = (mm === m0 ? d0 : 1); dd <= endD; dd++) {
+        labels.push(String(mm).padStart(2, "0") + "-" + String(dd).padStart(2, "0"));
+      }
+    }
+    var configData = labels.map(function(l){ var v = h[l]; return v && v.configRate != null ? (v.configRate*100).toFixed(1) : null; });
+    var aiData = labels.map(function(l){ var v = h[l]; return v && v.aiRate != null ? (v.aiRate*100).toFixed(1) : null; });
     if (window._tc) window._tc.destroy();
     window._tc = new Chart(document.getElementById("trendChart").getContext("2d"), {
-      type: "bar",
+      type: "line",
       data: { labels: labels, datasets: [
-        { label: "订单总行数", data: orders, backgroundColor: "rgba(21,128,61,0.2)", borderColor: "rgba(21,128,61,0.6)", borderWidth: 1, yAxisID: "y" },
-        { label: "AI转单占比 %", data: rates, type: "line", borderColor: "#b45309", backgroundColor: "rgba(180,83,9,0.05)", borderWidth: 2, pointRadius: 4, yAxisID: "y1" }
+        { label: "配置率 %", data: configData, borderColor: "#6d8f3c", backgroundColor: "rgba(109,143,60,0.08)", borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: "#6d8f3c", tension: 0.2, spanGaps: true },
+        { label: "AI转单占比 %", data: aiData, borderColor: "#b45309", backgroundColor: "rgba(180,83,9,0.05)", borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: "#b45309", tension: 0.2, spanGaps: true }
       ]},
-      options: { responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
-        scales: { y: { type: "linear", position: "left", title: { display: true, text: "订单总行数" }, beginAtZero: true },
-                  y1: { type: "linear", position: "right", title: { display: true, text: "AI转单占比 %" }, min: 0, max: 100, grid: { drawOnChartArea: false } } } }
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: { tooltip: { callbacks: { label: function(ctx){ return ctx.dataset.label + ": " + ctx.raw + "%"; } } }, legend: { position: "bottom" }, zoom: { zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: "x" }, pan: { enabled: true, mode: "x" } } },
+        scales: { y: { type: "linear", title: { display: true, text: "%" }, min: 0, max: 100, ticks: { callback: function(v){ return v + "%"; } } } }
+      },
+      plugins: _showLabels ? [{ id: "datalabels", afterDatasetsDraw: function(chart) { var ctx2 = chart.ctx; chart.data.datasets.forEach(function(ds, di) { var meta = chart.getDatasetMeta(di); meta.data.forEach(function(pt, i) { var v = ds.data[i]; if (v == null) return; ctx2.fillStyle = ds.borderColor; ctx2.font = "bold 11px -apple-system,Microsoft YaHei,sans-serif"; ctx2.textAlign = "center"; ctx2.fillText(v + "%", pt.x, pt.y - 10); }); }); } }] : []
     });
     var latest = h[keys[keys.length-1]];
-    document.getElementById("historySummary").textContent = "共 " + keys.length + " 天 | 最新: " + keys[keys.length-1] + " | 订单: " + latest.orderTotal + " | AI占比: " + (latest.aiRate != null ? (latest.aiRate*100).toFixed(0) + "%" : "-");
+    document.getElementById("historySummary").textContent = "共 " + keys.length + " 天 | 最新: " + keys[keys.length-1] + " | 配置率: " + (latest.configRate != null ? (latest.configRate*100).toFixed(0) + "%" : "-") + " | AI占比: " + (latest.aiRate != null ? (latest.aiRate*100).toFixed(0) + "%" : "-");
   }
-  renderTrend();
+  // 加载预置趋势数据
+  fetch("data/trends.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (preset) { if (preset) { var local = loadHistory(), merged = false; Object.keys(preset).forEach(function (k) { if (!local[k]) { local[k] = preset[k]; merged = true; } }); if (merged) try { localStorage.setItem(HISTORY_KEY, JSON.stringify(local)); } catch(e) {} } }).catch(function () {}).then(function () { renderTrend(); });
   document.getElementById("cutoffInput").value = DEFAULT_CUTOFF_DATE;
+
+  // ====== 导出图片 ======
+  function downloadCanvas(canvas, filename) {
+    var link = document.createElement("a");
+    link.download = filename;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }
+  function exportChart() {
+    if (!window._tc) return;
+    var c = window._tc.canvas;
+    var tmp = document.createElement("canvas"); tmp.width = c.width; tmp.height = c.height;
+    var ctx = tmp.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, tmp.width, tmp.height);
+    ctx.drawImage(c, 0, 0);
+    downloadCanvas(tmp, "趋势图_" + new Date().toISOString().slice(0,10) + ".png");
+  }
+  function exportTable() {
+    html2canvas(document.getElementById("resultPanel")).then(function(c) {
+      downloadCanvas(c, "运营公司汇总_" + new Date().toISOString().slice(0,10) + ".png");
+    });
+  }
+  function exportAll() {
+    html2canvas(document.getElementById("resultPanel")).then(function(tableC) {
+      if (window._tc) {
+        var c = window._tc.canvas;
+        var h = Math.max(tableC.height + c.height + 20, 600);
+        var w = Math.max(tableC.width, c.width);
+        var merged = document.createElement("canvas"); merged.width = w; merged.height = h;
+        var mctx = merged.getContext("2d");
+        mctx.fillStyle = "#f6f8fb"; mctx.fillRect(0, 0, w, h);
+        mctx.drawImage(tableC, (w - tableC.width) / 2, 0);
+        mctx.drawImage(c, (w - c.width) / 2, tableC.height + 20);
+        downloadCanvas(merged, "看板全景_" + new Date().toISOString().slice(0,10) + ".png");
+      } else {
+        downloadCanvas(tableC, "看板全景_" + new Date().toISOString().slice(0,10) + ".png");
+      }
+    });
+  }
+  window.exportChart = exportChart;
+  window.exportTable = exportTable;
+  window.exportAll = exportAll;
 
 })();
 </script>

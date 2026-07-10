@@ -1257,7 +1257,7 @@
       selectedKeys.forEach(function(k){
         head += '<th class="group" colspan="3" style="background:#e8f0d8;">' + k + ' 企微群订单</th>';
       });
-      head += '<th class="group" rowspan="2">备注（最新）</th>';
+      head += '<th class="group" rowspan="2">备注</th>';
       head += '</tr><tr>';
       selectedKeys.forEach(function(){
         head += '<th class="group">已配置项目点<br>订单总行数</th>';
@@ -2184,7 +2184,7 @@
     // 标题
     ctx.fillStyle = "#172033"; ctx.font = "bold 18px -apple-system,Microsoft YaHei,sans-serif";
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText("企业微信转单看板 — 数据趋势", tmp.width / 2, 22);
+    ctx.fillText("企业微信转单趋势图", tmp.width / 2, 22);
     // 副标题（日期范围）
     var h = loadHistory(); var keys = Object.keys(h).sort();
     var subtitle = keys.length ? ("时间范围: " + keys[0] + " ~ " + keys[keys.length - 1] + " | 共 " + keys.length + " 天") : "";

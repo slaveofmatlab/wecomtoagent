@@ -298,6 +298,20 @@
       table-layout: auto;
     }
 
+    /* 汇总表：多列时表格按内容宽度展开、容器横向滚动，不再压缩列 */
+    .summary-table {
+      width: max-content;
+      min-width: 100%;
+    }
+    /* 关键列的最小宽度，防止内容较多时被挤压 */
+    .summary-table th:first-child,
+    .summary-table td:first-child { min-width: 180px; }
+    .summary-table th.group,
+    .summary-table td { white-space: nowrap; }
+    /* 备注列（每行最后一个 td）留出足够宽度显示 */
+    .summary-table th:last-child,
+    .summary-table td:last-child { min-width: 120px; white-space: normal; }
+
     th, td {
       border: 1px solid var(--line);
       padding: 8px 10px;

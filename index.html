@@ -673,6 +673,17 @@
     </div>
   </section>
 
+  <!-- ====== 多日趋势对比 ====== -->
+  <section id="trendPanel" class="panel" hidden>
+    <div class="table-section-title">多日趋势对比</div>
+    <div class="table-wrap" style="overflow-x:auto;">
+      <table class="summary-table" style="min-width:100%;">
+        <thead id="trendHead"></thead>
+        <tbody id="trendBody"></tbody>
+      </table>
+    </div>
+  </section>
+
   <!-- ====== 运营公司汇总表 ====== -->
   <section id="resultPanel" class="panel" hidden>
     <div class="table-section-title">运营公司汇总</div>
@@ -687,6 +698,7 @@
             <th class="group">已配置项目点<br>订单总行数</th>
             <th class="group">AI 识别<br>订单行数</th>
             <th class="group">AI 转单占比</th>
+            <th class="group">备注</th>
           </tr>
         </thead>
         <tbody id="summaryBody"></tbody>
@@ -1069,12 +1081,13 @@
     return { total: pendingRows.length, transferred: transferred, notTransferred: notTransferred };
   }
 
-  function buildCompanySummary(salesRows, pendingRows, progressRows) {
+  function buildCompanySummary(salesRows, pendingRows, progressRows, logSummary) {
     var byCompany = new Map();
     var ensure = function (key, displayName) {
       if (!byCompany.has(key)) {
         byCompany.set(key, {
           operationCompany: displayName,
+          operationCompanyKey: key,
           registeredCodes: new Set(),
           itOkCodes: new Set(),
           orderTotal: 0,
@@ -1137,14 +1150,19 @@
     var summary = Array.from(byCompany.values()).map(function (entry) {
       var registered = entry.registeredCodes.size;
       var itOk = entry.itOkCodes.size;
+      var remark = logSummary && logSummary[entry.operationCompanyKey]
+        ? logSummary[entry.operationCompanyKey].remark
+        : "";
       return {
         operationCompany: entry.operationCompany,
+        operationCompanyKey: entry.operationCompanyKey,
         registeredCount: registered,
         itConfiguredCount: itOk,
         configRate: registered > 0 ? itOk / registered : null,
         orderTotal: entry.orderTotal,
         orderAiCount: entry.orderAi,
         aiRate: entry.orderTotal > 0 ? entry.orderAi / entry.orderTotal : null,
+        orderMethod: remark,
       };
     }).sort(function (a, b) { return b.orderTotal - a.orderTotal || b.registeredCount - a.registeredCount; });
 
@@ -1209,6 +1227,9 @@
   function renderSummaryTable(summary) {
     var rowsHtml = summary.rows.map(function (row) {
       var aiCls = row.orderAiCount === 0 ? " zero-cell" : "";
+      var methodCell = row.orderMethod
+        ? '<td style="font-size:11px;color:#64748b;">' + row.orderMethod + "</td>"
+        : '<td style="color:#ccc;">-</td>';
       return "<tr>" +
         "<td>" + row.operationCompany + "</td>" +
         '<td class="number">' + row.registeredCount + "</td>" +
@@ -1217,6 +1238,7 @@
         '<td class="number">' + row.orderTotal + "</td>" +
         '<td class="number' + aiCls + '">' + row.orderAiCount + "</td>" +
         '<td class="rate-cell ' + rateClass(row.aiRate) + '">' + pct(row.aiRate) + "</td>" +
+        methodCell +
         "</tr>";
     }).join("");
 
@@ -1230,6 +1252,7 @@
       '<td class="number">' + totals.orderTotal + "</td>" +
       '<td class="number">' + totals.orderAiCount + "</td>" +
       '<td class="rate-cell ' + rateClass(totals.aiRate) + '">' + pct(totals.aiRate) + "</td>" +
+      "<td></td>" +
       "</tr>";
     document.getElementById("summaryBody").innerHTML = rowsHtml + totalHtml;
   }
@@ -1258,6 +1281,56 @@
     if (data.logStats) {
       renderLogPanel(data.logStats);
     }
+  }
+
+  function renderTrendPanel(trendData) {
+    if (!trendData || !trendData.days || trendData.days.length === 0) return;
+
+    var days = trendData.days;
+    var companies = trendData.companies || [];
+
+    // Build header: 运营公司 | 日期1 AI占比 | 日期1 订单行 | ... | 备注
+    var headHtml = "<tr><th>运营公司</th>";
+    for (var di = 0; di < days.length; di++) {
+      headHtml += '<th class="group">' + days[di].label + '<br>AI转单占比</th>';
+      headHtml += '<th class="group">' + days[di].label + '<br>订单总行数</th>';
+    }
+    headHtml += '<th class="group">备注（最新）</th></tr>';
+    document.getElementById("trendHead").innerHTML = headHtml;
+
+    // Build body: one row per company
+    var bodyHtml = "";
+    for (var ci = 0; ci < companies.length; ci++) {
+      var companyName = companies[ci];
+      bodyHtml += "<tr><td>" + companyName + "</td>";
+
+      var latestRemark = "";
+      for (var di = 0; di < days.length; di++) {
+        var day = days[di];
+        var found = null;
+        for (var ri = 0; ri < day.companySummary.rows.length; ri++) {
+          if (day.companySummary.rows[ri].operationCompany === companyName) {
+            found = day.companySummary.rows[ri];
+            break;
+          }
+        }
+        if (found) {
+          bodyHtml += '<td class="rate-cell ' + rateClass(found.aiRate) + '">' + pct(found.aiRate) + "</td>";
+          bodyHtml += '<td class="number">' + found.orderTotal + "</td>";
+          if (di === days.length - 1) {
+            latestRemark = found.orderMethod || "";
+          }
+        } else {
+          bodyHtml += '<td class="rate-cell rate-none">-</td><td class="number zero-cell">0</td>';
+        }
+      }
+      bodyHtml += latestRemark
+        ? '<td style="font-size:11px;color:#64748b;">' + latestRemark + "</td>"
+        : '<td style="color:#ccc;">-</td>';
+      bodyHtml += "</tr>";
+    }
+    document.getElementById("trendBody").innerHTML = bodyHtml;
+    document.getElementById("trendPanel").hidden = false;
   }
 
   function setStatus(message, type) {
@@ -1321,6 +1394,110 @@
       String(d.getHours()).padStart(2, "0") + ":" +
       String(d.getMinutes()).padStart(2, "0") + ":" +
       String(d.getSeconds()).padStart(2, "0");
+  }
+
+  // ---- 下单方式判定（备注列） ----
+
+  function getFileExt(filename) {
+    if (!filename || filename.indexOf(".") < 0) return null;
+    return filename.split(".").pop().toLowerCase();
+  }
+
+  function determineOrderMethod(msgtype, filename) {
+    var mt = (msgtype || "").toLowerCase().trim();
+    if (mt === "image") return { label: "图片下单", processed: true };
+    if (mt === "mixed") return { label: "图文混发", processed: true };
+    if (mt === "text") return { label: "文本消息", processed: true };
+    if (mt === "file") {
+      var ext = getFileExt(filename);
+      if (ext === "pdf") return { label: "PDF下单", processed: false };
+      if (ext === "xlsx" || ext === "xls" || ext === "xlsm") return { label: "Excel下单", processed: false };
+      if (ext === "doc" || ext === "docx") return { label: "Word下单", processed: false };
+      if (ext === "jpg" || ext === "jpeg" || ext === "png" || ext === "gif" || ext === "jfif" || ext === "bmp" || ext === "webp") return { label: "图片文件", processed: false };
+      return { label: "文件下单(." + (ext || "未知") + ")", processed: false };
+    }
+    return null;
+  }
+
+  function buildRoomCompanyMap(progressRows) {
+    var map = {};
+    for (var i = 0; i < progressRows.length; i++) {
+      var row = progressRows[i];
+      var groupName = normalizeText(row.groupName);
+      if (groupName && row.operationCompanyKey) {
+        map[groupName] = row.operationCompanyKey;
+      }
+    }
+    return map;
+  }
+
+  function buildOrderMethodSummary(logWb, progressRows) {
+    if (!logWb) return null;
+    var rows = sheetRows(logWb, "");
+    var LOG_HEADERS = ["room_name", "msgtype", "filename", "filter_status"];
+    var headerIndex = findHeaderIndex(rows, LOG_HEADERS);
+    if (headerIndex < 0) return null;
+
+    var records = rowsToObjects(rows, headerIndex);
+    var roomCompanyMap = buildRoomCompanyMap(progressRows);
+    var byCompany = {};
+
+    for (var i = 0; i < records.length; i++) {
+      var r = records[i];
+      var status = normalizeText(r["filter_status"]);
+      if (status !== "ACCEPTED" && status !== "SKIPPED") continue;
+
+      var msgtype = normalizeText(r["msgtype"]);
+      var filename = normalizeText(r["filename"]);
+      var method = determineOrderMethod(msgtype, filename);
+      if (!method) continue;
+      if (status === "SKIPPED" && msgtype === "text") continue;
+
+      var room = normalizeText(r["room_name"]);
+      var companyKey = roomCompanyMap[room];
+      if (!companyKey) continue;
+
+      if (!byCompany[companyKey]) byCompany[companyKey] = {};
+      if (!byCompany[companyKey][method.label]) {
+        byCompany[companyKey][method.label] = { count: 0, processed: method.processed };
+      }
+      byCompany[companyKey][method.label].count += 1;
+    }
+
+    var result = {};
+    for (var ck in byCompany) {
+      var methods = byCompany[ck];
+      var total = 0;
+      var entries = [];
+      for (var label in methods) {
+        var m = methods[label];
+        total += m.count;
+        entries.push({ label: label, count: m.count, processed: m.processed });
+      }
+      entries.sort(function (a, b) { return b.count - a.count; });
+
+      if (entries.length === 0) {
+        result[ck] = { methodStats: [], remark: "" };
+        continue;
+      }
+
+      var topEntries = entries.slice(0, 2);
+      var parts = topEntries.map(function (e) {
+        var pct = Math.round(e.count / total * 100);
+        var suffix = e.processed ? "" : "（系统暂不支持）";
+        return e.label + " " + pct + "%" + suffix;
+      });
+
+      var remark;
+      if (entries.length === 1 || (entries[0].count / total > 0.8)) {
+        var suffix = entries[0].processed ? "" : "（系统暂不支持）";
+        remark = entries[0].label + suffix;
+      } else {
+        remark = parts.join("，");
+      }
+      result[ck] = { methodStats: entries, remark: remark };
+    }
+    return result;
   }
 
   function parseWecomLog(workbook) {
@@ -1716,18 +1893,56 @@
   // ====== 数据加载 ======
   function loadFromJson() {
     setStatus("正在加载 data/page_data.json …", "loading");
-    fetch("/api/data?file=page_data.json&_=" + Date.now())
+    // 先尝试加载多日趋势数据
+    fetch("/api/data?file=trend_data.json&_=" + Date.now())
       .then(function (res) {
         if (!res.ok) throw new Error("HTTP " + res.status);
         return res.json();
       })
-      .then(function (data) {
-        renderAll(data);
-        setStatus("已加载 page_data.json。如果 Excel 有更新，请在上方上传新文件后点击「用上传的文件重新计算」。", "ok");
+      .then(function (trendData) {
+        // 有趋势数据：渲染多日对比 + 加载最新一天的单日汇总
+        loadSingleDayForKpis();
+        renderTrendPanel(trendData);
+        setStatus("已加载多日趋势数据（" + trendData.days.length + " 天 × " + trendData.companies.length + " 家公司）。如果 Excel 有更新，请在上方上传新文件。", "ok");
       })
-      .catch(function (err) {
-        setStatus("未找到 page_data.json（" + err.message + "），请在上方上传三份 Excel 后点击计算。", "warn");
+      .catch(function () {
+        // 无趋势数据：回退到单日 page_data.json
+        fetch("/api/data?file=page_data.json&_=" + Date.now())
+          .then(function (res) {
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            return res.json();
+          })
+          .then(function (data) {
+            renderAll(data);
+            setStatus("已加载 page_data.json。如果 Excel 有更新，请在上方上传新文件后点击「用上传的文件重新计算」。", "ok");
+          })
+          .catch(function (err) {
+            setStatus("未找到 page_data.json（" + err.message + "），请在上方上传三份 Excel 后点击计算。", "warn");
+          });
       });
+  }
+
+  // 加载单日 page_data.json 用于 KPI 卡片
+  function loadSingleDayForKpis() {
+    fetch("/api/data?file=page_data.json&_=" + Date.now())
+      .then(function (res) {
+        if (!res.ok) return;
+        return res.json();
+      })
+      .then(function (data) {
+        if (data) {
+          renderKpiCards(data.companySummary.totals);
+          renderPendingStats(data.pendingTotals);
+          document.getElementById("cutoffInput").value = data.cutoffDate || DEFAULT_CUTOFF_DATE;
+          document.getElementById("metaLine").textContent =
+            "多日趋势模式　|　数据生成时间: " + (data.generatedAt ? data.generatedAt.slice(0, 19).replace("T", " ") : "-");
+          document.getElementById("summaryPanel").hidden = false;
+          document.getElementById("resultPanel").hidden = false;
+          renderSummaryTable(data.companySummary);
+          if (data.logStats) renderLogPanel(data.logStats);
+        }
+      })
+      .catch(function () {});
   }
 
   function recalcFromUploads() {
@@ -1753,7 +1968,8 @@
       var salesRows = salesWb ? parseSalesFull(salesWb) : [];
       var pendingRows = pendingWb ? parsePendingWecom(pendingWb) : [];
       var progressRows = progressWb ? parseWecomProgress(progressWb, cutoffDate) : [];
-      var companySummary = buildCompanySummary(salesRows, pendingRows, progressRows);
+      var logOrderSummary = logWb ? buildOrderMethodSummary(logWb, progressRows) : null;
+      var companySummary = buildCompanySummary(salesRows, pendingRows, progressRows, logOrderSummary);
       var logStats = logWb ? parseWecomLog(logWb) : null;
       var data = {
         generatedAt: new Date().toISOString(),

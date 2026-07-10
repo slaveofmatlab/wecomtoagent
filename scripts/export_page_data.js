@@ -24,6 +24,7 @@ function parseArgs(argv) {
     if (arg === "--sales") opts.sales = argv[++i];
     else if (arg === "--pending") opts.pending = argv[++i];
     else if (arg === "--progress") opts.progress = argv[++i];
+    else if (arg === "--log") opts.log = argv[++i];
     else if (arg === "--cutoff") opts.cutoff = argv[++i];
     else if (arg === "--out") opts.out = argv[++i];
     else if (arg === "--help" || arg === "-h") opts.help = true;
@@ -43,6 +44,8 @@ function printHelp() {
   --pending <path>   待转单 xlsx（默认 示例数据/*待转单*）
   --progress <path>  企业微信AI转单推进表 xlsx（默认 basicData/*企业微信AI转单推进表*）
   --cutoff <MMDD>    统计截止时间，推进表里晚于这天的"OK-MMDD"确认状态不计入（默认 ${DEFAULT_CUTOFF_DATE}，对应文件名"7.2日"）
+  --log <path>       微信消息日志 xlsx（默认 basicData/*微信日志* 或根目录）
+  --cutoff <MMDD>    快照截止日期，推进表里晚于这天的"OK-MMDD"确认状态不计入（默认 ${DEFAULT_CUTOFF_DATE}，对应文件名"7.2日"）
   --out <path>       输出 JSON（默认 data/page_data.json）
 `);
 }
@@ -61,6 +64,7 @@ function main() {
   let salesWorkbook = loaded.salesWorkbook;
   let pendingWorkbook = loaded.pendingWorkbook;
   let progressWorkbook = loaded.progressWorkbook;
+  let logWorkbook = loaded.logWorkbook;
 
   if (opts.sales) {
     const salesPath = resolvePath(opts.sales);
@@ -80,8 +84,14 @@ function main() {
     progressWorkbook = readWorkbookFromPath(progressPath);
     sources.progressPath = progressPath;
   }
+  if (opts.log) {
+    const logPath = resolvePath(opts.log);
+    if (!fs.existsSync(logPath)) throw new Error(`微信日志不存在: ${logPath}`);
+    logWorkbook = readWorkbookFromPath(logPath);
+    sources.logPath = logPath;
+  }
 
-  const data = buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, cutoffDate, sources });
+  const data = buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, logWorkbook, cutoffDate, sources });
 
   const outPath = opts.out ? resolvePath(opts.out) : OUT_PATH;
   fs.mkdirSync(path.dirname(outPath), { recursive: true });

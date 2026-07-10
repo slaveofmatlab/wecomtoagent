@@ -176,6 +176,129 @@ function parseWecomProgress(workbook, cutoffDate = DEFAULT_CUTOFF_DATE) {
   }).filter((row) => row.operationCompany || row.hotelCode);
 }
 
+// ---- 微信日志 → 下单方式（备注列） ----
+
+const LOG_HEADER_CANDIDATES = ["room_name", "msgtype", "filename", "filter_status", "skip_reason"];
+
+// 只有系统当前能处理的消息类型才标记为"已处理"
+const PROCESSABLE_MSGTYPES = new Set(["image", "text", "mixed"]);
+
+function getFileExt(filename) {
+  if (!filename || !filename.includes(".")) return null;
+  return filename.split(".").pop().toLowerCase();
+}
+
+function determineOrderMethod(msgtype, filename) {
+  var mt = (msgtype || "").toLowerCase().trim();
+  if (mt === "image") return { label: "图片下单", processed: true };
+  if (mt === "mixed") return { label: "图文混发", processed: true };
+  if (mt === "text") return { label: "文本消息", processed: true };
+  if (mt === "file") {
+    var ext = getFileExt(filename);
+    if (ext === "pdf") return { label: "PDF下单", processed: false };
+    if (ext === "xlsx" || ext === "xls" || ext === "xlsm") return { label: "Excel下单", processed: false };
+    if (ext === "doc" || ext === "docx") return { label: "Word下单", processed: false };
+    if (ext === "jpg" || ext === "jpeg" || ext === "png" || ext === "gif" || ext === "jfif" || ext === "bmp" || ext === "webp") return { label: "图片文件", processed: false };
+    return { label: "文件下单(." + (ext || "未知") + ")", processed: false };
+  }
+  return null; // 非下单相关消息类型（revoke/voice/video等）
+}
+
+// 推进表 → room_name → companyKey 映射
+function buildRoomCompanyMap(progressRows) {
+  var map = {};
+  for (var i = 0; i < progressRows.length; i++) {
+    var row = progressRows[i];
+    var groupName = normalizeText(row.groupName);
+    if (groupName && row.operationCompanyKey) {
+      // 同一个群名可能在不同项目点出现，取最后一个（一般唯一）
+      map[groupName] = row.operationCompanyKey;
+    }
+  }
+  return map;
+}
+
+function parseWecomLogForSummary(workbook, progressRows) {
+  if (!workbook) return null;
+  var rows = sheetRows(workbook, "");
+  var headerIndex = findHeaderIndex(rows, LOG_HEADER_CANDIDATES);
+  if (headerIndex < 0) return null;
+
+  var records = rowsToObjects(rows, headerIndex);
+  var roomCompanyMap = buildRoomCompanyMap(progressRows);
+
+  // 按 companyKey 聚合下单方式
+  // byCompany[companyKey] = { methodLabel: { count, processed } }
+  var byCompany = {};
+
+  for (var i = 0; i < records.length; i++) {
+    var r = records[i];
+    var status = normalizeText(r["filter_status"]);
+    // 只看 ACCEPTED + SKIPPED
+    if (status !== "ACCEPTED" && status !== "SKIPPED") continue;
+
+    var msgtype = normalizeText(r["msgtype"]);
+    var filename = normalizeText(r["filename"]);
+    var method = determineOrderMethod(msgtype, filename);
+    if (!method) continue; // 非下单相关类型跳过
+
+    // SKIPPED 中排除纯文本噪音（正文未包含下单关键词、图片未找到下单指令 等只对 text/image 生效）
+    // 对 file/mixed 类型的 SKIPPED，保留（因为这些是系统不支持的格式，用户确实发了）
+    if (status === "SKIPPED" && msgtype === "text") continue;
+
+    var room = normalizeText(r["room_name"]);
+    var companyKey = roomCompanyMap[room];
+    if (!companyKey) continue; // 找不到对应公司，跳过
+
+    if (!byCompany[companyKey]) byCompany[companyKey] = {};
+    if (!byCompany[companyKey][method.label]) {
+      byCompany[companyKey][method.label] = { count: 0, processed: method.processed };
+    }
+    byCompany[companyKey][method.label].count += 1;
+  }
+
+  // 格式化备注字符串
+  var result = {};
+  for (var ck in byCompany) {
+    var methods = byCompany[ck];
+    var total = 0;
+    var entries = [];
+    for (var label in methods) {
+      var m = methods[label];
+      total += m.count;
+      entries.push({ label: label, count: m.count, processed: m.processed });
+    }
+    entries.sort(function (a, b) { return b.count - a.count; });
+
+    if (entries.length === 0) {
+      result[ck] = { methodStats: [], remark: "" };
+      continue;
+    }
+
+    // top 1-2 方法
+    var topEntries = entries.slice(0, 2);
+    var parts = topEntries.map(function (e) {
+      var pct = Math.round(e.count / total * 100);
+      var suffix = e.processed ? "" : "（系统暂不支持）";
+      return e.label + " " + pct + "%" + suffix;
+    });
+
+    // 如果只有一个方法且占比 > 80%，简化显示
+    var remark;
+    if (entries.length === 1 || (entries[0].count / total > 0.8)) {
+      var e = entries[0];
+      var suffix = e.processed ? "" : "（系统暂不支持）";
+      remark = e.label + suffix;
+    } else {
+      remark = parts.join("，");
+    }
+
+    result[ck] = { methodStats: entries, remark: remark };
+  }
+
+  return result;
+}
+
 function calcPendingTotals(pendingRows) {
   let transferred = 0;
   let notTransferred = 0;
@@ -192,13 +315,14 @@ function calcPendingTotals(pendingRows) {
 // - 配置率：销售订单.项目点代码 ↔ 推进表.项目点代码 → 判断该项目点是否已登记/IT已配置
 // - AI转单率：销售订单.客户订单号 ↔ 待转单.客户订单号 → 判断是否有匹配且已转单
 // - 分母（已配置项目点订单总行数）：销售订单中，项目点代码在 IT已配置集合里的所有行
-function buildCompanySummary(salesRows, pendingRows, progressRows) {
+function buildCompanySummary(salesRows, pendingRows, progressRows, logSummary) {
   const byCompany = new Map();
 
   const ensure = (key, displayName) => {
     if (!byCompany.has(key)) {
       byCompany.set(key, {
         operationCompany: displayName,
+        operationCompanyKey: key,
         registeredCodes: new Set(),
         itOkCodes: new Set(),
         orderTotal: 0,
@@ -265,8 +389,12 @@ function buildCompanySummary(salesRows, pendingRows, progressRows) {
   const summary = [...byCompany.values()].map((entry) => {
     const registered = entry.registeredCodes.size;
     const itOk = entry.itOkCodes.size;
+    const remark = logSummary && logSummary[entry.operationCompanyKey]
+      ? logSummary[entry.operationCompanyKey].remark
+      : "";
     return {
       operationCompany: entry.operationCompany,
+      operationCompanyKey: entry.operationCompanyKey,
       registeredCount: registered,
       itConfiguredCount: itOk,
       configRate: registered > 0 ? itOk / registered : null,
@@ -275,6 +403,7 @@ function buildCompanySummary(salesRows, pendingRows, progressRows) {
       orderAiTotal: entry.orderAiTotal,
       aiRate: entry.orderTotal > 0 ? entry.orderAi / entry.orderTotal : null,
       aiRateTotal: entry.orderTotal > 0 ? entry.orderAiTotal / entry.orderTotal : null,
+      orderMethod: remark,
     };
   }).sort((a, b) => b.orderTotal - a.orderTotal || b.registeredCount - a.registeredCount);
 
@@ -331,27 +460,33 @@ function loadDefaultData(rootDir, cutoffDate) {
   const pendingPath = findFile(searchDir, "待转单") || findFile(sampleDir, "待转单");
   const progressPath = findFile(searchDir, "企业微信AI转单推进表") || findFile(basicDir, "企业微信AI转单推进表");
 
+  // 日志文件优先从 basicData 找，其次从根目录
+  const logPath = findFile(basicDir, "微信日志") || findFile(root, "微信日志");
+
   const result = {
     root,
-    sources: { salesPath, pendingPath, progressPath },
+    sources: { salesPath, pendingPath, progressPath, logPath },
     salesWorkbook: null,
     pendingWorkbook: null,
     progressWorkbook: null,
+    logWorkbook: null,
   };
 
   if (salesPath && fs.existsSync(salesPath)) result.salesWorkbook = readWorkbookFromPath(salesPath);
   if (pendingPath && fs.existsSync(pendingPath)) result.pendingWorkbook = readWorkbookFromPath(pendingPath);
   if (progressPath && fs.existsSync(progressPath)) result.progressWorkbook = readWorkbookFromPath(progressPath);
+  if (logPath && fs.existsSync(logPath)) result.logWorkbook = readWorkbookFromPath(logPath);
 
   return result;
 }
 
-function buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, cutoffDate = DEFAULT_CUTOFF_DATE, sources = {} }) {
+function buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, logWorkbook, cutoffDate = DEFAULT_CUTOFF_DATE, sources = {} }) {
   const salesRows = salesWorkbook ? parseSalesFull(salesWorkbook) : [];
   const pendingRows = pendingWorkbook ? parsePendingWecom(pendingWorkbook) : [];
   const progressRows = progressWorkbook ? parseWecomProgress(progressWorkbook, cutoffDate) : [];
 
-  const companySummary = buildCompanySummary(salesRows, pendingRows, progressRows);
+  const logSummary = parseWecomLogForSummary(logWorkbook || null, progressRows);
+  const companySummary = buildCompanySummary(salesRows, pendingRows, progressRows, logSummary);
 
   return {
     generatedAt: new Date().toISOString(),
@@ -380,6 +515,9 @@ module.exports = {
   parsePendingWecom,
   parseWecomProgress,
   calcPendingTotals,
+  determineOrderMethod,
+  buildRoomCompanyMap,
+  parseWecomLogForSummary,
   buildCompanySummary,
   findFile,
   loadDefaultData,

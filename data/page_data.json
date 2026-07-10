@@ -1,10 +1,11 @@
 {
-  "generatedAt": "2026-07-07T14:20:35.473Z",
-  "cutoffDate": "0707",
+  "generatedAt": "2026-07-10T11:33:03.387Z",
+  "cutoffDate": "0706",
   "sources": {
-    "salesPath": "/home/lucyai/tezan001/03-企业微信追踪/wecomToAgent/示例数据/7月6日/0706销售订单全链路.xlsx",
-    "pendingPath": "/home/lucyai/tezan001/03-企业微信追踪/wecomToAgent/示例数据/7月6日/0706待转单.xlsx",
-    "progressPath": "/home/lucyai/tezan001/03-企业微信追踪/wecomToAgent/basicData/企业微信AI转单推进表.xlsx"
+    "salesPath": "/home/luxinyi1/AI_lxy/tezan001/03-企业微信追踪/wecomToAgent/示例数据/7月6日/0706销售订单全链路.xlsx",
+    "pendingPath": "/home/luxinyi1/AI_lxy/tezan001/03-企业微信追踪/wecomToAgent/示例数据/7月6日/0706待转单.xlsx",
+    "progressPath": "/home/luxinyi1/AI_lxy/tezan001/03-企业微信追踪/wecomToAgent/basicData/企业微信AI转单推进表.xlsx",
+    "logPath": "/home/luxinyi1/AI_lxy/tezan001/03-企业微信追踪/wecomToAgent/basicData/微信日志.xlsx"
   },
   "salesRows": [
     {
@@ -101723,93 +101724,113 @@
     "rows": [
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+        "operationCompanyKey": "上海/丰厨(上海)供应链管理有限公司",
         "registeredCount": 161,
         "itConfiguredCount": 161,
         "configRate": 1,
         "orderTotal": 1109,
         "orderAiCount": 31,
-        "aiRate": 0.027953110910730387
+        "aiRate": 0.027953110910730387,
+        "orderMethod": "图片下单 55%，Excel下单 29%（系统暂不支持）"
       },
       {
         "operationCompany": "西安/丰厨(上海)供应链管理有限公司",
+        "operationCompanyKey": "西安/丰厨(上海)供应链管理有限公司",
         "registeredCount": 9,
         "itConfiguredCount": 9,
         "configRate": 1,
         "orderTotal": 129,
         "orderAiCount": 0,
-        "aiRate": 0
+        "aiRate": 0,
+        "orderMethod": "图片下单"
       },
       {
         "operationCompany": "浙江/丰厨(上海)供应链管理有限公司",
+        "operationCompanyKey": "浙江/丰厨(上海)供应链管理有限公司",
         "registeredCount": 8,
         "itConfiguredCount": 8,
         "configRate": 1,
         "orderTotal": 107,
         "orderAiCount": 0,
-        "aiRate": 0
+        "aiRate": 0,
+        "orderMethod": "图片下单 37%，Excel下单 37%（系统暂不支持）"
       },
       {
         "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
+        "operationCompanyKey": "郑州/丰厨(上海)供应链管理有限公司",
         "registeredCount": 3,
         "itConfiguredCount": 3,
         "configRate": 1,
         "orderTotal": 74,
         "orderAiCount": 0,
-        "aiRate": 0
+        "aiRate": 0,
+        "orderMethod": "图片下单"
       },
       {
         "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+        "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
         "registeredCount": 8,
         "itConfiguredCount": 8,
         "configRate": 1,
         "orderTotal": 11,
         "orderAiCount": 8,
-        "aiRate": 0.7272727272727273
+        "aiRate": 0.7272727272727273,
+        "orderMethod": "图片下单"
       },
       {
         "operationCompany": "成都/丰厨(成都)供应链管理有限公司",
+        "operationCompanyKey": "成都/丰厨(成都)供应链管理有限公司",
         "registeredCount": 14,
         "itConfiguredCount": 14,
         "configRate": 1,
         "orderTotal": 8,
         "orderAiCount": 0,
-        "aiRate": 0
+        "aiRate": 0,
+        "orderMethod": "图文混发 50%，图片下单 50%"
       },
       {
         "operationCompany": "深圳市德立安食品有限公司",
+        "operationCompanyKey": "深圳市德立安食品有限公司",
         "registeredCount": 6,
         "itConfiguredCount": 4,
         "configRate": 0.6666666666666666,
         "orderTotal": 5,
         "orderAiCount": 5,
-        "aiRate": 1
+        "aiRate": 1,
+        "orderMethod": "PDF下单 53%（系统暂不支持），图片下单 42%"
       },
       {
         "operationCompany": "北京/丰厨(上海)供应链管理有限公司",
+        "operationCompanyKey": "北京/丰厨(上海)供应链管理有限公司",
         "registeredCount": 5,
         "itConfiguredCount": 2,
         "configRate": 0.4,
         "orderTotal": 0,
         "orderAiCount": 0,
-        "aiRate": null
+        "aiRate": null,
+        "orderMethod": "图片下单 69%，Excel下单 18%（系统暂不支持）"
       },
       {
         "operationCompany": "益彩（上海）供应链管理有限公司",
+        "operationCompanyKey": "益彩(上海)供应链管理有限公司",
         "registeredCount": 2,
         "itConfiguredCount": 2,
         "configRate": 1,
         "orderTotal": 0,
         "orderAiCount": 0,
-        "aiRate": null
+        "aiRate": null,
+        "orderMethod": "PDF下单 65%（系统暂不支持），图片下单 15%"
       },
       {
         "operationCompany": "益海嘉里食品营销有限公司上海分公司",
+        "operationCompanyKey": "益海嘉里食品营销有限公司上海分公司",
         "registeredCount": 1,
         "itConfiguredCount": 1,
         "configRate": 1,
         "orderTotal": 0,
         "orderAiCount": 0,
-        "aiRate": null
+        "aiRate": null,
+        "orderMethod": "图片下单 69%，Excel下单 31%（系统暂不支持）"
       }
     ],
     "totals": {

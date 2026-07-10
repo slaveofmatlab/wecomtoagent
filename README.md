@@ -42,10 +42,12 @@
 终端里跑：
 
 ```bash
-node scripts/export_page_data.js
+# 生成单日数据 + 多日趋势
+node scripts/export_page_data.js --cutoff MMDD
+node scripts/export_trend_data.js
 ```
 
-跑完会打印一行类似这样的结果，确认一下数字：
+`export_page_data.js` 跑完会打印一行类似这样的结果，确认一下数字：
 
 ```
 已导出: .../data/page_data.json
@@ -54,13 +56,23 @@ node scripts/export_page_data.js
 ...
 ```
 
-**注意"快照截止日期"这一行**——它决定了推进表里哪些"OK-日期"状态算数。默认是 `0702`，如果今天换成了 7.3 的数据，要加上 `--cutoff` 手动指定：
+**关键参数说明：**
 
-```bash
-node scripts/export_page_data.js --cutoff 0703
-```
+| 参数 | 说明 |
+|------|------|
+| `--cutoff MMDD` | **必填**。快照截止日期，如 7月3日 → `--cutoff 0703`。晚了这天的 OK-MMDD 确认状态不计入 |
+| `--log <path>` | 可选。微信消息日志路径，用于生成备注列（下单方式）。默认自动搜索 `basicData/微信日志.xlsx` |
+| `--sales / --pending / --progress <path>` | 可选。手动指定三份 Excel 路径 |
 
-（这一步是必须的，不指定的话默认还是按 7.2 那天算，会漏掉 7.3 当天新确认的配置进度。规则是：填当天的日期，格式是月份+日期共4位数字，比如 7 月 3 日就是 `0703`。）
+`export_trend_data.js` 会扫描 `示例数据/` 下所有日期子目录（如 `7月2日/`、`7月3日/`），每个日期生成一份汇总，合并输出到 `data/trend_data.json`。**页面优先加载趋势数据**，展示多日对比表；如果趋势数据不存在，回退到单日 `page_data.json`。
+
+### 新增功能：备注列（下单方式）
+
+运营公司汇总表新增一列 **备注**，显示该公司的主流下单方式（图片下单 / PDF下单 / Excel下单 等），从微信消息日志分析得出。
+
+- 日志文件放在 `basicData/微信日志.xlsx` 即会自动识别
+- 如果某公司主要发 PDF 但系统目前只支持图片，备注会标注「PDF下单（系统暂不支持）」
+- 无日志文件时备注列为空
 
 ### 第三步：打开看板
 
@@ -145,11 +157,14 @@ wecomToAgent/
 ├── package.json
 ├── scripts/
 │   ├── export_page_data.js   # 把 Excel 转成网页能读的 JSON，每天换数据后要跑这个
-│   └── lib/page_logic.js     # 核心计算逻辑（配置率、AI转单占比怎么算的都在这）
-├── basicData/                 # 放"企业微信AI转单推进表.xlsx"
-├── 示例数据/                  # 放"销售订单全链路.xlsx"和"待转单-全量.xlsx"
+│   ├── export_trend_data.js  # 扫描所有日期子目录，生成多日趋势数据
+│   └── lib/page_logic.js     # 核心计算逻辑（配置率、AI转单占比、下单方式等都在这里）
+├── basicData/                 # 放"企业微信AI转单推进表.xlsx"和"微信日志.xlsx"
+├── 示例数据/                  # 放"销售订单全链路.xlsx"和"待转单-全量.xlsx"，按日期建子目录
 ├── vendor/xlsx.full.min.js    # 网页里手动上传 Excel 用到的解析库，不用管
-├── data/page_data.json        # 脚本算出来的结果，网页默认读这个文件
+├── data/
+│   ├── page_data.json        # 单日汇总（脚本算出来的）
+│   └── trend_data.json       # 多日趋势汇总（脚本算出来的，页面优先加载）
 ├── netlify.toml               # Netlify 部署配置
 ├── netlify/functions/         # Netlify 云函数（密码保护 + 数据代理）
 │   ├── auth.js                # 登录认证（校验密码、签发 Cookie）

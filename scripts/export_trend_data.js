@@ -78,6 +78,12 @@ function processDate(dirName, cutoffDate, dateDir, loaded) {
   });
 
   const t = data.companySummary.totals;
+  const companies = data.companySummary.rows.map((r) => ({
+    operationCompany: r.operationCompany,
+    orderTotal: r.orderTotal,
+    orderAiCount: r.orderAiCount,
+    aiRate: r.aiRate,
+  }));
   const entry = {
     cutoff: cutoffDate,
     registered: t.registeredCount,
@@ -86,6 +92,7 @@ function processDate(dirName, cutoffDate, dateDir, loaded) {
     orderTotal: t.orderTotal,
     orderAi: t.orderAiCount,
     aiRate: t.aiRate,
+    companies,
     ts: new Date().toISOString(),
   };
 

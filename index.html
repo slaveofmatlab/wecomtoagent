@@ -703,6 +703,25 @@
   </section>
 
 
+  <!-- ====== 多日 AI 转单并列表 ====== -->
+  <section id="multiDayPanel" class="panel" hidden>
+    <div class="table-section-title" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      多日 AI 转单情况并列
+      <span style="font-size:12px;color:var(--muted);font-weight:normal;">配置数据保持最新一天不变</span>
+      <span style="display:flex;gap:6px;margin-left:auto;align-items:center;">
+        <span style="font-size:12px;color:var(--muted);">选择日期：</span>
+        <div id="multiDayCheckboxes" style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;"></div>
+        <button class="secondary" onclick="exportMultiDay()" style="font-size:11px;padding:3px 10px;">导出表格</button>
+      </span>
+    </div>
+    <div class="table-wrap">
+      <table class="summary-table" id="multiDayTable">
+        <thead id="multiDayHead"></thead>
+        <tbody id="multiDayBody"></tbody>
+      </table>
+    </div>
+  </section>
+
   <!-- ====== 数据趋势 ====== -->
   <section id="trendPanel" class="panel" hidden>
     <div class="table-section-title">📈 数据趋势</div>
@@ -1260,9 +1279,11 @@
   }
 
   function renderAll(data) {
+    window._latestSummary = data.companySummary;
     renderKpiCards(data.companySummary.totals);
     renderSummaryTable(data.companySummary);
     renderPendingStats(data.pendingTotals);
+    if (window._trendsData) renderMultiDayTable();
     document.getElementById("cutoffInput").value = data.cutoffDate || DEFAULT_CUTOFF_DATE;
     document.getElementById("metaLine").textContent =
       "统计截止时间: " + data.cutoffDate + "　|　数据生成时间: " + (data.generatedAt ? data.generatedAt.slice(0, 19).replace("T", " ") : "-");
@@ -1444,14 +1465,12 @@
       var topEntries = entries.slice(0, 2);
       var parts = topEntries.map(function (e) {
         var pct = Math.round(e.count / total * 100);
-        var suffix = e.processed ? "" : "（系统暂不支持）";
-        return e.label + " " + pct + "%" + suffix;
+        return e.label + " " + pct + "%";
       });
 
       var remark;
       if (entries.length === 1 || (entries[0].count / total > 0.8)) {
-        var suffix = entries[0].processed ? "" : "（系统暂不支持）";
-        remark = entries[0].label + suffix;
+        remark = entries[0].label;
       } else {
         remark = parts.join("，");
       }
@@ -1981,15 +2000,168 @@
         responsive: true, maintainAspectRatio: false,
         interaction: { mode: "index", intersect: false },
         plugins: { tooltip: { callbacks: { label: function(ctx){ return ctx.dataset.label + ": " + ctx.raw + "%"; } } }, legend: { position: "bottom" }, zoom: { zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: "x" }, pan: { enabled: true, mode: "x" } } },
-        scales: { y: { type: "linear", title: { display: true, text: "%" }, min: 0, max: 100, ticks: { callback: function(v){ return v + "%"; } } } }
+        scales: { y: { type: "linear", title: { display: true, text: "%" }, min: 0, max: 110, ticks: { stepSize: 20, callback: function(v){ return v > 100 ? "" : v + "%"; } } } }
       },
       plugins: _showLabels ? [{ id: "datalabels", afterDatasetsDraw: function(chart) { var ctx2 = chart.ctx; chart.data.datasets.forEach(function(ds, di) { var meta = chart.getDatasetMeta(di); meta.data.forEach(function(pt, i) { var v = ds.data[i]; if (v == null) return; ctx2.fillStyle = ds.borderColor; ctx2.font = "bold 11px -apple-system,Microsoft YaHei,sans-serif"; ctx2.textAlign = "center"; ctx2.fillText(v + "%", pt.x, pt.y - 10); }); }); } }] : []
     });
     var latest = h[keys[keys.length-1]];
     document.getElementById("historySummary").textContent = "共 " + keys.length + " 天 | 最新: " + keys[keys.length-1] + " | 配置率: " + (latest.configRate != null ? (latest.configRate*100).toFixed(0) + "%" : "-") + " | AI占比: " + (latest.aiRate != null ? (latest.aiRate*100).toFixed(0) + "%" : "-");
   }
-  // 加载预置趋势数据
-  fetch("data/trends.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (preset) { if (preset) { var local = loadHistory(), merged = false; Object.keys(preset).forEach(function (k) { if (!local[k]) { local[k] = preset[k]; merged = true; } }); if (merged) try { localStorage.setItem(HISTORY_KEY, JSON.stringify(local)); } catch(e) {} } }).catch(function () {}).then(function () { renderTrend(); });
+  // ====== 多日并列表 ======
+  var _multiDaySelected = null; // Set of selected date keys ("07-06"), null = 首次加载后取全部
+  function renderMultiDayCheckboxes() {
+    var trends = window._trendsData;
+    if (!trends) return;
+    var keys = Object.keys(trends).sort();
+    if (!keys.length) return;
+    if (_multiDaySelected == null) {
+      _multiDaySelected = new Set(keys); // 默认全选
+    }
+    var box = document.getElementById("multiDayCheckboxes");
+    box.innerHTML = keys.map(function(k){
+      var checked = _multiDaySelected.has(k) ? "checked" : "";
+      return '<label style="cursor:pointer;user-select:none;"><input type="checkbox" data-date="' + k + '" ' + checked + ' style="vertical-align:middle;margin-right:2px;">' + k + '</label>';
+    }).join("");
+    box.querySelectorAll("input[type='checkbox']").forEach(function(cb){
+      cb.addEventListener("change", function(){
+        var d = this.getAttribute("data-date");
+        if (this.checked) _multiDaySelected.add(d); else _multiDaySelected.delete(d);
+        renderMultiDayTable();
+      });
+    });
+  }
+
+  function renderMultiDayTable() {
+    var trends = window._trendsData;
+    if (!trends) return;
+    renderMultiDayCheckboxes();
+    var selectedKeys = Array.from(_multiDaySelected).sort();
+    if (!selectedKeys.length) {
+      document.getElementById("multiDayPanel").hidden = true;
+      return;
+    }
+    document.getElementById("multiDayPanel").hidden = false;
+
+    // 用最新一天（trends 里最大 key）的公司列表 + 配置数据作为基线
+    var allKeys = Object.keys(trends).sort();
+    var latestKey = allKeys[allKeys.length - 1];
+    var latest = trends[latestKey];
+
+    // 收集所有日期出现过的公司（union），按最新一天的顺序
+    var companyOrder = [];
+    var seen = new Set();
+    if (latest.companies) {
+      latest.companies.forEach(function(c){ companyOrder.push(c.operationCompany); seen.add(c.operationCompany); });
+    }
+    allKeys.forEach(function(k){
+      var day = trends[k];
+      if (day.companies) {
+        day.companies.forEach(function(c){
+          if (!seen.has(c.operationCompany)) { companyOrder.push(c.operationCompany); seen.add(c.operationCompany); }
+        });
+      }
+    });
+
+    // Build header
+    var head = '<tr>';
+    head += '<th rowspan="2">运营公司</th>';
+    head += '<th class="group" rowspan="2">已登记<br>企业微信群<br>项目点</th>';
+    head += '<th class="group" rowspan="2">IT 已配置</th>';
+    head += '<th class="group" rowspan="2">项目点<br>配置率</th>';
+    selectedKeys.forEach(function(k){
+      head += '<th class="group" colspan="3" style="background:#e8f0d8;">' + k + ' 企微群订单</th>';
+    });
+    head += '</tr><tr>';
+    selectedKeys.forEach(function(){
+      head += '<th class="group">已配置的项目点<br>订单总行数</th>';
+      head += '<th class="group">AI 识别<br>订单行数</th>';
+      head += '<th class="group">AI 转单占比</th>';
+    });
+    head += '</tr>';
+    document.getElementById("multiDayHead").innerHTML = head;
+
+    // Build body — 用最新汇总里的每公司 registered/itOk/configRate（从 summaryRows 里取）
+    // 因为 trends 里没存这些，从当前 summaryBody 已渲染的 currentSummary 里取
+    var latestSummary = window._latestSummary; // 由 renderSummaryTable 存
+    var summaryByCompany = {};
+    if (latestSummary && latestSummary.rows) {
+      latestSummary.rows.forEach(function(r){ summaryByCompany[r.operationCompany] = r; });
+    }
+
+    var body = "";
+    var totalCfg = { registered: 0, itOk: 0 };
+    var totalDay = {}; // 每天的合计 { orderTotal, orderAiCount }
+    selectedKeys.forEach(function(k){ totalDay[k] = { orderTotal: 0, orderAiCount: 0 }; });
+
+    companyOrder.forEach(function(company){
+      var s = summaryByCompany[company] || { registeredCount: 0, itConfiguredCount: 0, configRate: 0 };
+      body += "<tr>";
+      body += "<td style='text-align:left;'>" + company + "</td>";
+      body += '<td class="number">' + s.registeredCount + "</td>";
+      body += '<td class="number">' + s.itConfiguredCount + "</td>";
+      body += '<td class="rate-cell ' + rateClass(s.configRate) + '">' + pct(s.configRate) + "</td>";
+      totalCfg.registered += s.registeredCount;
+      totalCfg.itOk += s.itConfiguredCount;
+
+      selectedKeys.forEach(function(k){
+        var day = trends[k];
+        var c = null;
+        if (day && day.companies) {
+          for (var i = 0; i < day.companies.length; i++) {
+            if (day.companies[i].operationCompany === company) { c = day.companies[i]; break; }
+          }
+        }
+        if (c && c.orderTotal > 0) {
+          body += '<td class="number">' + c.orderTotal + "</td>";
+          body += '<td class="number' + (c.orderAiCount === 0 ? " zero-cell" : "") + '">' + c.orderAiCount + "</td>";
+          body += '<td class="rate-cell ' + rateClass(c.aiRate) + '">' + pct(c.aiRate) + "</td>";
+          totalDay[k].orderTotal += c.orderTotal;
+          totalDay[k].orderAiCount += c.orderAiCount;
+        } else {
+          body += '<td class="number" style="color:#ccc;">-</td>';
+          body += '<td class="number" style="color:#ccc;">-</td>';
+          body += '<td class="rate-cell rate-none">-</td>';
+        }
+      });
+      body += "</tr>";
+    });
+
+    // 合计行
+    var totalCfgRate = totalCfg.registered > 0 ? totalCfg.itOk / totalCfg.registered : null;
+    body += '<tr class="total-row"><td>总计</td>';
+    body += '<td class="number">' + totalCfg.registered + "</td>";
+    body += '<td class="number">' + totalCfg.itOk + "</td>";
+    body += '<td class="rate-cell ' + rateClass(totalCfgRate) + '">' + pct(totalCfgRate) + "</td>";
+    selectedKeys.forEach(function(k){
+      var t = totalDay[k];
+      var rate = t.orderTotal > 0 ? t.orderAiCount / t.orderTotal : null;
+      body += '<td class="number">' + t.orderTotal + "</td>";
+      body += '<td class="number">' + t.orderAiCount + "</td>";
+      body += '<td class="rate-cell ' + rateClass(rate) + '">' + pct(rate) + "</td>";
+    });
+    body += "</tr>";
+    document.getElementById("multiDayBody").innerHTML = body;
+  }
+
+  function exportMultiDay() {
+    var panel = document.getElementById("multiDayPanel");
+    if (panel.hidden) return;
+    html2canvas(panel).then(function(c) {
+      downloadCanvas(c, "多日AI转单_" + new Date().toISOString().slice(0,10) + ".png");
+    });
+  }
+  window.exportMultiDay = exportMultiDay;
+
+  // 加载预置趋势数据（服务端优先，覆盖 localStorage）
+  fetch("/api/data?file=trends.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (preset) {
+    if (preset) {
+      window._trendsData = preset;
+      var local = loadHistory();
+      Object.keys(preset).forEach(function (k) { local[k] = preset[k]; });
+      try { localStorage.setItem(HISTORY_KEY, JSON.stringify(local)); } catch(e) {}
+      renderMultiDayTable();
+    }
+  }).catch(function () {}).then(function () { renderTrend(); });
   document.getElementById("cutoffInput").value = DEFAULT_CUTOFF_DATE;
 
   // ====== 导出图片 ======
@@ -2002,9 +2174,20 @@
   function exportChart() {
     if (!window._tc) return;
     var c = window._tc.canvas;
-    var tmp = document.createElement("canvas"); tmp.width = c.width; tmp.height = c.height;
-    var ctx = tmp.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, tmp.width, tmp.height);
-    ctx.drawImage(c, 0, 0);
+    var headerH = 60;
+    var tmp = document.createElement("canvas"); tmp.width = c.width; tmp.height = c.height + headerH;
+    var ctx = tmp.getContext("2d");
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, tmp.width, tmp.height);
+    // 标题
+    ctx.fillStyle = "#172033"; ctx.font = "bold 18px -apple-system,Microsoft YaHei,sans-serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("企业微信转单看板 — 数据趋势", tmp.width / 2, 22);
+    // 副标题（日期范围）
+    var h = loadHistory(); var keys = Object.keys(h).sort();
+    var subtitle = keys.length ? ("时间范围: " + keys[0] + " ~ " + keys[keys.length - 1] + " | 共 " + keys.length + " 天") : "";
+    ctx.fillStyle = "#64748b"; ctx.font = "12px -apple-system,Microsoft YaHei,sans-serif";
+    ctx.fillText(subtitle, tmp.width / 2, 44);
+    ctx.drawImage(c, 0, headerH);
     downloadCanvas(tmp, "趋势图_" + new Date().toISOString().slice(0,10) + ".png");
   }
   function exportTable() {

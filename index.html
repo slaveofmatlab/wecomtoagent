@@ -1277,43 +1277,6 @@
       renderLogPanel(data.logStats);
     }
   }
-    headHtml += '<th class="group">备注（最新）</th></tr>';
-    document.getElementById("trendHead").innerHTML = headHtml;
-
-    // Build body: one row per company
-    var bodyHtml = "";
-    for (var ci = 0; ci < companies.length; ci++) {
-      var companyName = companies[ci];
-      bodyHtml += "<tr><td>" + companyName + "</td>";
-
-      var latestRemark = "";
-      for (var di = 0; di < days.length; di++) {
-        var day = days[di];
-        var found = null;
-        for (var ri = 0; ri < day.companySummary.rows.length; ri++) {
-          if (day.companySummary.rows[ri].operationCompany === companyName) {
-            found = day.companySummary.rows[ri];
-            break;
-          }
-        }
-        if (found) {
-          bodyHtml += '<td class="rate-cell ' + rateClass(found.aiRate) + '">' + pct(found.aiRate) + "</td>";
-          bodyHtml += '<td class="number">' + found.orderTotal + "</td>";
-          if (di === days.length - 1) {
-            latestRemark = found.orderMethod || "";
-          }
-        } else {
-          bodyHtml += '<td class="rate-cell rate-none">-</td><td class="number zero-cell">0</td>';
-        }
-      }
-      bodyHtml += latestRemark
-        ? '<td style="font-size:11px;color:#64748b;">' + latestRemark + "</td>"
-        : '<td style="color:#ccc;">-</td>';
-      bodyHtml += "</tr>";
-    }
-    document.getElementById("trendBody").innerHTML = bodyHtml;
-    document.getElementById("trendPanel").hidden = false;
-  }
 
   function setStatus(message, type) {
     var el = document.getElementById("statusMsg");

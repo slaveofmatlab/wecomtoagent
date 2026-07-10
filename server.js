@@ -108,6 +108,25 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // GET /api/data — 数据文件代理（需要认证）
+  if (urlPath === "/api/data" && req.method === "GET") {
+    if (SITE_PASSWORD && getCookie(req.headers.cookie, "wecom_auth") !== "1") {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Unauthorized" }));
+      return;
+    }
+    const urlParams = new URLSearchParams(req.url.split("?")[1] || "");
+    const fileName = urlParams.get("file");
+    if (!fileName || fileName.includes("..") || fileName.includes("/")) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Invalid file" }));
+      return;
+    }
+    const filePath = path.join(ROOT, "data", fileName);
+    serveStatic(res, filePath);
+    return;
+  }
+
   // index.html 始终放行（认证由客户端处理）
   if (urlPath === "/" || urlPath === "/index.html") {
     serveStatic(res, path.join(ROOT, "index.html"));

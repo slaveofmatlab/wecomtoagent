@@ -698,13 +698,18 @@
             <span id="dateSelectorLabel">选择日期</span>
             <span style="float:right;">▾</span>
           </button>
-          <div id="dateSelectorPanel" style="display:none;position:absolute;right:0;top:100%;margin-top:4px;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 20px rgba(15,23,42,.12);padding:8px;z-index:100;min-width:240px;max-height:340px;overflow-y:auto;">
-            <div style="display:flex;gap:6px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--line);">
-              <button type="button" class="secondary" onclick="dateSelectorAction('latest')" style="font-size:11px;padding:3px 8px;flex:1;">仅最新</button>
-              <button type="button" class="secondary" onclick="dateSelectorAction('last7')" style="font-size:11px;padding:3px 8px;flex:1;">最近7天</button>
-              <button type="button" class="secondary" onclick="dateSelectorAction('all')" style="font-size:11px;padding:3px 8px;flex:1;">全选</button>
+          <div id="dateSelectorPanel" style="display:none;position:absolute;right:0;top:100%;margin-top:4px;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 20px rgba(15,23,42,.12);padding:10px;z-index:100;width:260px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+              <button type="button" class="secondary" onclick="calNav(-1)" style="font-size:18px;padding:0 10px;line-height:22px;">‹</button>
+              <span id="calMonthLabel" style="font-weight:600;font-size:13px;"></span>
+              <button type="button" class="secondary" onclick="calNav(1)" style="font-size:18px;padding:0 10px;line-height:22px;">›</button>
             </div>
-            <div id="dateSelectorList" style="display:flex;flex-direction:column;gap:2px;"></div>
+            <div id="calGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:12px;"></div>
+            <div style="display:flex;gap:6px;margin-top:8px;padding-top:6px;border-top:1px solid var(--line);">
+              <button type="button" class="secondary" onclick="dateSelectorAction('latest')" style="font-size:11px;padding:3px 6px;flex:1;">仅最新</button>
+              <button type="button" class="secondary" onclick="dateSelectorAction('last7')" style="font-size:11px;padding:3px 6px;flex:1;">近7天</button>
+              <button type="button" class="secondary" onclick="dateSelectorAction('all')" style="font-size:11px;padding:3px 6px;flex:1;">全选</button>
+            </div>
           </div>
         </div>
         <button class="secondary" onclick="exportTable()" style="font-size:11px;padding:3px 10px;">导出表格</button>
@@ -1244,6 +1249,7 @@
 
   // 汇总表状态：默认只显示最新一天；勾选日期后并列多天订单数据
   var _selectedDates = null; // Set，null 表示尚未初始化
+  var _calYear = null, _calMonth = null; // 日历当前显示月份
   function getLatestKey() {
     var t = window._trendsData;
     if (!t) return null;
@@ -1370,42 +1376,78 @@
     totalHtml += "<td></td></tr>";
     document.getElementById("summaryBody").innerHTML = rowsHtml + totalHtml;
 
-    // 更新日期选择器 UI
-    if (hasTrends) renderDateSelector();
+    // 更新日历 UI
+    renderCalendar();
   }
 
-  // ====== 日期选择器（下拉多选） ======
-  function renderDateSelector() {
-    var trends = window._trendsData || {};
-    var keys = Object.keys(trends).sort();
+  // ====== 日历选择器 ======
+  function initCalendar() {
+    if (_calYear !== null) return;
+    var latestKey = getLatestKey();
+    var now = new Date();
+    _calYear = now.getFullYear();
+    _calMonth = latestKey ? parseInt(latestKey.slice(0, 2), 10) - 1 : now.getMonth();
+  }
+
+  function renderCalendar() {
+    initCalendar();
     var wrap = document.getElementById("dateSelectorWrap");
-    if (!keys.length) { wrap.style.display = "none"; return; }
+    var trends = window._trendsData || {};
+    if (!Object.keys(trends).length) { wrap.style.display = "none"; return; }
     wrap.style.display = "";
 
-    // 按钮上的 label
+    var year = _calYear, month = _calMonth;
+    var mNames = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+    document.getElementById("calMonthLabel").textContent = year + "年" + mNames[month];
+
+    var html = "";
+    ["一","二","三","四","五","六","日"].forEach(function(d){
+      html += '<div style="color:var(--muted);padding:2px 0;">' + d + '</div>';
+    });
+    var firstDay = (new Date(year, month, 1).getDay() + 6) % 7; // Mon=0
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    var today = new Date();
+    var todayCutoff = String(today.getMonth()+1).padStart(2,"0") + String(today.getDate()).padStart(2,"0");
+    for (var i = 0; i < firstDay; i++) html += "<div></div>";
+    for (var d = 1; d <= daysInMonth; d++) {
+      var mm = String(month + 1).padStart(2, "0");
+      var dd = String(d).padStart(2, "0");
+      var key = mm + "-" + dd;
+      var hasData = !!trends[key];
+      var isSel = _selectedDates && _selectedDates.has(key);
+      var isToday = (mm + dd) === todayCutoff;
+      var bg = isSel ? "#6d8f3c" : (hasData ? "#e8f0d8" : "transparent");
+      var clr = isSel ? "#fff" : (hasData ? "#2d4a1e" : "#c0ccd8");
+      var fw = (isSel || hasData) ? "600" : "400";
+      var extra = isToday ? ";outline:2px solid #6d8f3c;outline-offset:-2px" : "";
+      html += '<div style="padding:3px 0;border-radius:4px;cursor:pointer;background:' + bg + ';color:' + clr + ';font-weight:' + fw + extra + '" onclick="calSelectDate(\'' + key + '\')">' + d + '</div>';
+    }
+    document.getElementById("calGrid").innerHTML = html;
+
     var labelEl = document.getElementById("dateSelectorLabel");
     var selCount = _selectedDates ? _selectedDates.size : 0;
     if (selCount === 0) labelEl.textContent = "未选择日期";
     else if (selCount === 1) labelEl.textContent = "仅 " + Array.from(_selectedDates)[0];
     else labelEl.textContent = "已选 " + selCount + " 天";
-
-    // 下拉列表内容（按日期倒序，最新在上）
-    var listEl = document.getElementById("dateSelectorList");
-    listEl.innerHTML = keys.slice().reverse().map(function(k){
-      var checked = _selectedDates && _selectedDates.has(k) ? "checked" : "";
-      return '<label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;" onmouseover="this.style.background=\'#f4f9ed\'" onmouseout="this.style.background=\'\'">' +
-        '<input type="checkbox" data-date="' + k + '" ' + checked + '>' +
-        '<span>' + k + '</span>' +
-        '</label>';
-    }).join("");
-    listEl.querySelectorAll("input[type='checkbox']").forEach(function(cb){
-      cb.addEventListener("change", function(){
-        var d = this.getAttribute("data-date");
-        if (this.checked) _selectedDates.add(d); else _selectedDates.delete(d);
-        if (window._latestSummary) renderSummaryTable(window._latestSummary);
-      });
-    });
   }
+
+  function calNav(delta) {
+    initCalendar();
+    _calMonth += delta;
+    if (_calMonth < 0) { _calMonth = 11; _calYear--; }
+    if (_calMonth > 11) { _calMonth = 0; _calYear++; }
+    renderCalendar();
+  }
+  window.calNav = calNav;
+
+  function calSelectDate(key) {
+    if (!_selectedDates) _selectedDates = new Set();
+    if (_selectedDates.has(key)) _selectedDates.delete(key);
+    else _selectedDates.add(key);
+    renderCalendar();
+    if (window._latestSummary) renderSummaryTable(window._latestSummary);
+  }
+  window.calSelectDate = calSelectDate;
 
   function dateSelectorAction(action) {
     var trends = window._trendsData || {};
@@ -1442,6 +1484,30 @@
 
   function renderAll(data) {
     window._latestSummary = data.companySummary;
+
+    // 把当次数据注入趋势，确保日历能显示并选中该日
+    var cutoff = data.cutoffDate;
+    if (cutoff && cutoff.length === 4) {
+      var newKey = cutoff.slice(0, 2) + "-" + cutoff.slice(2, 4);
+      if (!window._trendsData) window._trendsData = {};
+      var t = data.companySummary.totals;
+      window._trendsData[newKey] = {
+        cutoff: cutoff,
+        registered: t.registeredCount,
+        itOk: t.itConfiguredCount,
+        configRate: t.configRate,
+        orderTotal: t.orderTotal,
+        orderAi: t.orderAiCount,
+        aiRate: t.aiRate,
+        companies: data.companySummary.rows.map(function(r) {
+          return { operationCompany: r.operationCompany, orderTotal: r.orderTotal, orderAiCount: r.orderAiCount, aiRate: r.aiRate };
+        })
+      };
+      _selectedDates = new Set([newKey]);
+      // 日历跳到该月
+      _calYear = null; // 强制 initCalendar 重新定位到最新日期所在月
+    }
+
     renderKpiCards(data.companySummary.totals);
     renderSummaryTable(data.companySummary);
     renderPendingStats(data.pendingTotals);
@@ -2071,6 +2137,16 @@
       var pendingRows = pendingWb ? parsePendingWecom(pendingWb) : [];
       var progressRows = progressWb ? parseWecomProgress(progressWb, cutoffDate) : [];
       var logOrderSummary = logWb ? buildOrderMethodSummary(logWb, progressRows) : null;
+      // 没有上传日志文件时，保留上次加载的备注（备注来自消息日志，不随订单数据每天更新）
+      if (!logWb && window._latestSummary && window._latestSummary.rows) {
+        var existingRemarks = {};
+        window._latestSummary.rows.forEach(function(r) {
+          if (r.orderMethod && r.operationCompanyKey) {
+            existingRemarks[r.operationCompanyKey] = { remark: r.orderMethod };
+          }
+        });
+        if (Object.keys(existingRemarks).length > 0) logOrderSummary = existingRemarks;
+      }
       var companySummary = buildCompanySummary(salesRows, pendingRows, progressRows, logOrderSummary);
       var logStats = logWb ? parseWecomLog(logWb) : null;
       var data = {

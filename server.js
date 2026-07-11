@@ -252,14 +252,17 @@ async function handleUpload(req, res) {
   fs.writeFileSync(path.join(dataDir, "page_data.json"), JSON.stringify(data, null, 2));
   fs.writeFileSync(path.join(dataDir, "trends.json"), JSON.stringify(currentTrends, null, 2));
 
-  // 异步推 GitHub（不阻塞响应）
+  // 同步推 GitHub（等待完成，确保 Render 重启后数据不丢失）
   if (GITHUB_TOKEN) {
-    githubPutFile("page_data.json", data, githubShas["page_data.json"])
-      .then((sha) => { githubShas["page_data.json"] = sha; })
-      .catch((e) => console.error("GitHub push page_data.json:", e.message));
-    githubPutFile("trends.json", currentTrends, githubShas["trends.json"])
-      .then((sha) => { githubShas["trends.json"] = sha; })
-      .catch((e) => console.error("GitHub push trends.json:", e.message));
+    const [pdSha, trSha] = await Promise.all([
+      githubPutFile("page_data.json", data, githubShas["page_data.json"])
+        .then((sha) => { githubShas["page_data.json"] = sha; return sha; })
+        .catch((e) => { console.error("GitHub push page_data.json:", e.message); return null; }),
+      githubPutFile("trends.json", currentTrends, githubShas["trends.json"])
+        .then((sha) => { githubShas["trends.json"] = sha; return sha; })
+        .catch((e) => { console.error("GitHub push trends.json:", e.message); return null; }),
+    ]);
+    if (!pdSha || !trSha) throw new Error("数据已处理，但 GitHub 持久化失败（网络问题？），请稍后重试上传");
   }
 
   return { success: true, data, trends: currentTrends };

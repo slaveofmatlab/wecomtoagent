@@ -2251,14 +2251,16 @@
     var latest = h[keys[keys.length-1]];
     document.getElementById("historySummary").textContent = "共 " + keys.length + " 天 | 最新: " + keys[keys.length-1] + " | 配置率: " + (latest.configRate != null ? (latest.configRate*100).toFixed(0) + "%" : "-") + " | AI占比: " + (latest.aiRate != null ? (latest.aiRate*100).toFixed(0) + "%" : "-");
   }
-  // 加载预置趋势数据（服务端优先，覆盖 localStorage）
+  // 加载预置趋势数据（服务端优先，合并而不是覆盖，保留 renderAll 已写入的新日期）
   fetch("/api/data?file=trends.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (preset) {
     if (preset) {
-      window._trendsData = preset;
+      // 合并：把 preset 作为基础，再把内存里已有的（可能更新）条目覆盖进去
+      var merged = Object.assign({}, preset, window._trendsData || {});
+      window._trendsData = merged;
       var local = loadHistory();
-      Object.keys(preset).forEach(function (k) { local[k] = preset[k]; });
+      Object.keys(merged).forEach(function (k) { local[k] = merged[k]; });
       try { localStorage.setItem(HISTORY_KEY, JSON.stringify(local)); } catch(e) {}
-      // trends 到手后重画汇总表（会显示日期选择器）
+      // trends 到手后重画汇总表
       if (window._latestSummary) renderSummaryTable(window._latestSummary);
     }
   }).catch(function () {}).then(function () { renderTrend(); });

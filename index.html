@@ -639,7 +639,7 @@
       </div>
     </div>
     <div class="actions">
-      <button id="recalcBtn">🔄 用上传的文件重新计算</button>
+      <button id="recalcBtn">☁️ 上传并更新数据（所有人可见）</button>
       <button class="secondary" id="reloadBtn">📂 重新加载 page_data.json</button>
     </div>
     <div id="statusMsg" class="loading">正在加载示例数据…</div>
@@ -2114,6 +2114,22 @@
       });
   }
 
+  function fileToBase64(file) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        // ArrayBuffer → base64
+        var ab = e.target.result;
+        var bytes = new Uint8Array(ab);
+        var binary = "";
+        for (var i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+        resolve(btoa(binary));
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
   function recalcFromUploads() {
     var salesFile = document.getElementById("fileSales").files[0];
     var pendingFile = document.getElementById("filePending").files[0];
@@ -2121,56 +2137,46 @@
     var logFile = document.getElementById("fileLog").files[0];
     var cutoffDate = normalizeText(document.getElementById("cutoffInput").value) || DEFAULT_CUTOFF_DATE;
 
-    if (!salesFile && !pendingFile && !progressFile && !logFile) {
-      setStatus("请至少选择一份 Excel 文件。", "warn");
+    if (!salesFile || !pendingFile) {
+      setStatus("请选择销售订单全链路和待转单文件。", "warn");
       return;
     }
 
-    setStatus("正在解析 Excel …", "loading");
+    setStatus("正在上传并处理 Excel …", "loading");
+    document.getElementById("recalcBtn").disabled = true;
+
     Promise.all([
-      salesFile ? readWorkbookFromFile(salesFile) : Promise.resolve(null),
-      pendingFile ? readWorkbookFromFile(pendingFile) : Promise.resolve(null),
-      progressFile ? readWorkbookFromFile(progressFile) : Promise.resolve(null),
-      logFile ? readWorkbookFromFile(logFile) : Promise.resolve(null),
-    ]).then(function (_a) {
-      var salesWb = _a[0], pendingWb = _a[1], progressWb = _a[2], logWb = _a[3];
-      var salesRows = salesWb ? parseSalesFull(salesWb) : [];
-      var pendingRows = pendingWb ? parsePendingWecom(pendingWb) : [];
-      var progressRows = progressWb ? parseWecomProgress(progressWb, cutoffDate) : [];
-      var logOrderSummary = logWb ? buildOrderMethodSummary(logWb, progressRows) : null;
-      // 没有上传日志文件时，保留上次加载的备注（备注来自消息日志，不随订单数据每天更新）
-      if (!logWb && window._latestSummary && window._latestSummary.rows) {
-        var existingRemarks = {};
-        window._latestSummary.rows.forEach(function(r) {
-          if (r.orderMethod && r.operationCompanyKey) {
-            existingRemarks[r.operationCompanyKey] = { remark: r.orderMethod };
-          }
-        });
-        if (Object.keys(existingRemarks).length > 0) logOrderSummary = existingRemarks;
-      }
-      var companySummary = buildCompanySummary(salesRows, pendingRows, progressRows, logOrderSummary);
-      var logStats = logWb ? parseWecomLog(logWb) : null;
-      var data = {
-        generatedAt: new Date().toISOString(),
-        cutoffDate: cutoffDate,
-        sources: {
-          salesPath: salesFile ? salesFile.name : null,
-          pendingPath: pendingFile ? pendingFile.name : null,
-          progressPath: progressFile ? progressFile.name : null,
-          logPath: logFile ? logFile.name : null,
-        },
-        salesRows: salesRows,
-        pendingRows: pendingRows,
-        progressRows: progressRows,
-        pendingTotals: calcPendingTotals(pendingRows),
-        companySummary: companySummary,
-        logStats: logStats,
-      };
-      renderAll(data);
-      setStatus("已用上传的文件重新计算完成。（结果仅在当前页面生效，不会覆盖 data/page_data.json。如需长期保存，请运行 node scripts/export_page_data.js）", "ok");
-    }).catch(function (err) {
-      setStatus("解析失败：" + err.message, "err");
+      fileToBase64(salesFile),
+      fileToBase64(pendingFile),
+      progressFile ? fileToBase64(progressFile) : Promise.resolve(null),
+      logFile ? fileToBase64(logFile) : Promise.resolve(null),
+    ]).then(function(b64s) {
+      return fetch("/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sales: b64s[0],
+          pending: b64s[1],
+          progress: b64s[2],
+          log: b64s[3],
+          cutoff: cutoffDate,
+        }),
+      });
+    }).then(function(resp) {
+      return resp.json().then(function(json) {
+        if (!resp.ok) throw new Error(json.error || "服务器错误");
+        return json;
+      });
+    }).then(function(result) {
+      // 服务端返回最新 trends，更新本地缓存
+      if (result.trends) window._trendsData = result.trends;
+      renderAll(result.data);
+      setStatus("上传成功，数据已更新，所有人刷新页面即可看到。", "ok");
+    }).catch(function(err) {
+      setStatus("上传失败：" + err.message, "err");
       console.error(err);
+    }).finally(function() {
+      document.getElementById("recalcBtn").disabled = false;
     });
   }
 

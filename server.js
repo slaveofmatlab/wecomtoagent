@@ -1,10 +1,16 @@
 const http = require("http");
+const https = require("https");
 const fs = require("fs");
 const path = require("path");
+const XLSX = require("xlsx");
+const { buildPageData, findFile } = require("./scripts/lib/page_logic");
 
 const ROOT = __dirname;
 const PORT = process.env.PORT || 3000;
 const SITE_PASSWORD = process.env.SITE_PASSWORD || "";
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || "";
+const GITHUB_REPO = "slaveofmatlab/wecomtoagent";
+const GITHUB_BRANCH = "master";
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -16,6 +22,91 @@ const MIME_TYPES = {
   ".svg": "image/svg+xml",
 };
 
+// ====== 内存状态 ======
+let currentPageData = null;  // 最新一次上传/加载的 page_data
+let currentTrends = null;    // trends.json 内容（日期 → 汇总）
+let githubShas = {};         // { filename: sha } 用于 GitHub PUT
+
+// ====== GitHub 工具 ======
+function githubRequest(method, apiPath, body) {
+  return new Promise((resolve, reject) => {
+    const payload = body ? JSON.stringify(body) : null;
+    const opts = {
+      hostname: "api.github.com",
+      path: apiPath,
+      method,
+      headers: {
+        Authorization: "Bearer " + GITHUB_TOKEN,
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+        "User-Agent": "wecomtoagent-server",
+        ...(payload ? { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(payload) } : {}),
+      },
+    };
+    const req = https.request(opts, (res) => {
+      let buf = "";
+      res.on("data", (c) => (buf += c));
+      res.on("end", () => {
+        try { resolve({ status: res.statusCode, data: JSON.parse(buf) }); }
+        catch (e) { resolve({ status: res.statusCode, data: buf }); }
+      });
+    });
+    req.on("error", reject);
+    if (payload) req.write(payload);
+    req.end();
+  });
+}
+
+async function githubGetFile(filename) {
+  const res = await githubRequest("GET", `/repos/${GITHUB_REPO}/contents/data/${filename}?ref=${GITHUB_BRANCH}`);
+  if (res.status === 404) return null;
+  if (res.status !== 200) throw new Error(`GitHub GET ${filename}: HTTP ${res.status}`);
+  return {
+    data: JSON.parse(Buffer.from(res.data.content, "base64").toString("utf8")),
+    sha: res.data.sha,
+  };
+}
+
+async function githubPutFile(filename, data, sha) {
+  const content = Buffer.from(JSON.stringify(data, null, 2)).toString("base64");
+  const body = {
+    message: `data: update ${filename} [skip render]`,
+    content,
+    branch: GITHUB_BRANCH,
+    ...(sha ? { sha } : {}),
+  };
+  const res = await githubRequest("PUT", `/repos/${GITHUB_REPO}/contents/data/${filename}`, body);
+  if (res.status !== 200 && res.status !== 201) {
+    throw new Error(`GitHub PUT ${filename}: HTTP ${res.status} — ${JSON.stringify(res.data)}`);
+  }
+  return res.data.content.sha;
+}
+
+// ====== 启动时初始化 ======
+async function init() {
+  if (GITHUB_TOKEN) {
+    console.log("从 GitHub 加载数据…");
+    try {
+      const pd = await githubGetFile("page_data.json");
+      if (pd) { currentPageData = pd.data; githubShas["page_data.json"] = pd.sha; console.log("  page_data.json 已加载"); }
+      const tr = await githubGetFile("trends.json");
+      if (tr) { currentTrends = tr.data; githubShas["trends.json"] = tr.sha; console.log("  trends.json 已加载"); }
+    } catch (e) {
+      console.error("GitHub 加载失败，回退到磁盘:", e.message);
+    }
+  }
+  // 磁盘兜底（本地开发 / GitHub 加载失败）
+  if (!currentPageData) {
+    const p = path.join(ROOT, "data", "page_data.json");
+    if (fs.existsSync(p)) { try { currentPageData = JSON.parse(fs.readFileSync(p, "utf8")); console.log("  page_data.json 从磁盘加载"); } catch (e) {} }
+  }
+  if (!currentTrends) {
+    const p = path.join(ROOT, "data", "trends.json");
+    if (fs.existsSync(p)) { try { currentTrends = JSON.parse(fs.readFileSync(p, "utf8")); console.log("  trends.json 从磁盘加载"); } catch (e) {} }
+  }
+}
+
+// ====== 静态文件 ======
 const LOGIN_HTML = `<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -75,18 +166,113 @@ function serveStatic(res, filePath) {
   });
 }
 
+function isAuthed(req) {
+  return !SITE_PASSWORD || getCookie(req.headers.cookie, "wecom_auth") === "1";
+}
+
+function unauthorized(res) {
+  res.writeHead(401, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ error: "Unauthorized" }));
+}
+
+// ====== 上传处理 ======
+async function handleUpload(req, res) {
+  let body = Buffer.alloc(0);
+  let size = 0;
+  const MAX = 25 * 1024 * 1024; // 25MB
+
+  await new Promise((resolve, reject) => {
+    req.on("data", (chunk) => {
+      size += chunk.length;
+      if (size > MAX) { req.destroy(); reject(new Error("文件过大（上限 25MB）")); return; }
+      body = Buffer.concat([body, chunk]);
+    });
+    req.on("end", resolve);
+    req.on("error", reject);
+  });
+
+  const { sales, pending, progress, log, cutoff } = JSON.parse(body.toString("utf8"));
+  if (!sales || !pending) throw new Error("缺少销售订单或待转单文件");
+  if (!cutoff || cutoff.length !== 4) throw new Error("截止日期格式错误，应为 4 位 MMDD");
+
+  const salesWb = XLSX.read(Buffer.from(sales, "base64"), { type: "buffer" });
+  const pendingWb = XLSX.read(Buffer.from(pending, "base64"), { type: "buffer" });
+  const progressWb = progress
+    ? XLSX.read(Buffer.from(progress, "base64"), { type: "buffer" })
+    : loadFallbackWorkbook("basicData", "企业微信AI转单推进表");
+  const logWb = log ? XLSX.read(Buffer.from(log, "base64"), { type: "buffer" }) : null;
+
+  if (!progressWb) throw new Error("缺少推进表文件");
+
+  const data = buildPageData({
+    salesWorkbook: salesWb,
+    pendingWorkbook: pendingWb,
+    progressWorkbook: progressWb,
+    logWorkbook: logWb,
+    cutoffDate: cutoff,
+    sources: { salesPath: null, pendingPath: null, progressPath: null },
+  });
+
+  // 更新内存
+  currentPageData = data;
+  if (!currentTrends) currentTrends = {};
+  const key = cutoff.slice(0, 2) + "-" + cutoff.slice(2, 4);
+  const t = data.companySummary.totals;
+  currentTrends[key] = {
+    cutoff,
+    registered: t.registeredCount,
+    itOk: t.itConfiguredCount,
+    configRate: t.configRate,
+    orderTotal: t.orderTotal,
+    orderAi: t.orderAiCount,
+    aiRate: t.aiRate,
+    companies: data.companySummary.rows.map((r) => ({
+      operationCompany: r.operationCompany,
+      orderTotal: r.orderTotal,
+      orderAiCount: r.orderAiCount,
+      aiRate: r.aiRate,
+    })),
+    ts: new Date().toISOString(),
+  };
+
+  // 写磁盘
+  const dataDir = path.join(ROOT, "data");
+  fs.mkdirSync(dataDir, { recursive: true });
+  fs.writeFileSync(path.join(dataDir, "page_data.json"), JSON.stringify(data, null, 2));
+  fs.writeFileSync(path.join(dataDir, "trends.json"), JSON.stringify(currentTrends, null, 2));
+
+  // 异步推 GitHub（不阻塞响应）
+  if (GITHUB_TOKEN) {
+    githubPutFile("page_data.json", data, githubShas["page_data.json"])
+      .then((sha) => { githubShas["page_data.json"] = sha; })
+      .catch((e) => console.error("GitHub push page_data.json:", e.message));
+    githubPutFile("trends.json", currentTrends, githubShas["trends.json"])
+      .then((sha) => { githubShas["trends.json"] = sha; })
+      .catch((e) => console.error("GitHub push trends.json:", e.message));
+  }
+
+  return { success: true, data, trends: currentTrends };
+}
+
+function loadFallbackWorkbook(dir, keyword) {
+  const dirPath = path.join(ROOT, dir);
+  if (!fs.existsSync(dirPath)) return null;
+  const file = findFile(dirPath, keyword);
+  return file ? XLSX.readFile(file) : null;
+}
+
+// ====== HTTP 服务器 ======
 const server = http.createServer((req, res) => {
   const urlPath = decodeURIComponent(req.url.split("?")[0]);
 
-  // GET /api/auth — 检查认证状态
+  // GET /api/auth
   if (urlPath === "/api/auth" && req.method === "GET") {
-    const authenticated = !SITE_PASSWORD || getCookie(req.headers.cookie, "wecom_auth") === "1";
     res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ authenticated }));
+    res.end(JSON.stringify({ authenticated: isAuthed(req) }));
     return;
   }
 
-  // POST /api/auth — 密码验证
+  // POST /api/auth
   if (urlPath === "/api/auth" && req.method === "POST") {
     let body = "";
     req.on("data", (chunk) => { body += chunk; });
@@ -108,59 +294,67 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // GET /api/data — 数据文件代理（需要认证）
+  // GET /api/data — 内存优先，磁盘兜底
   if (urlPath === "/api/data" && req.method === "GET") {
-    if (SITE_PASSWORD && getCookie(req.headers.cookie, "wecom_auth") !== "1") {
-      res.writeHead(401, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Unauthorized" }));
-      return;
-    }
+    if (!isAuthed(req)) { unauthorized(res); return; }
     const urlParams = new URLSearchParams(req.url.split("?")[1] || "");
-    const fileName = urlParams.get("file");
-    if (!fileName || fileName.includes("..") || fileName.includes("/")) {
+    const fileName = urlParams.get("file") || "page_data.json";
+    if (fileName.includes("..") || fileName.includes("/")) {
       res.writeHead(400, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ error: "Invalid file" }));
       return;
     }
-    const filePath = path.join(ROOT, "data", fileName);
-    serveStatic(res, filePath);
+    let memData = null;
+    if (fileName === "page_data.json") memData = currentPageData;
+    else if (fileName === "trends.json") memData = currentTrends;
+    if (memData) {
+      res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      res.end(JSON.stringify(memData));
+      return;
+    }
+    serveStatic(res, path.join(ROOT, "data", fileName));
     return;
   }
 
-  // vendor 静态库不含业务数据，无需认证（页面加载时 cookie 还未写入）
-  if (urlPath.startsWith("/vendor/")) {
-    const vRel = urlPath.replace(/^\/+/, "");
-    const vPath = path.normalize(path.join(ROOT, vRel));
-    if (vPath.startsWith(ROOT)) {
-      serveStatic(res, vPath);
-      return;
-    }
+  // POST /api/upload
+  if (urlPath === "/api/upload" && req.method === "POST") {
+    if (!isAuthed(req)) { unauthorized(res); return; }
+    handleUpload(req, res)
+      .then((result) => {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(result));
+      })
+      .catch((e) => {
+        console.error("Upload error:", e.message);
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: e.message }));
+      });
+    return;
   }
 
-  // index.html 始终放行（认证由客户端处理）
+  // index.html 不需要认证（认证由客户端处理）
   if (urlPath === "/" || urlPath === "/index.html") {
     serveStatic(res, path.join(ROOT, "index.html"));
     return;
   }
 
-  // 其他资源：检查 auth cookie
-  if (SITE_PASSWORD && getCookie(req.headers.cookie, "wecom_auth") !== "1") {
-    res.writeHead(401, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "Unauthorized" }));
-    return;
+  // vendor 静态库不含业务数据，无需认证
+  if (urlPath.startsWith("/vendor/")) {
+    const vPath = path.normalize(path.join(ROOT, urlPath.replace(/^\/+/, "")));
+    if (vPath.startsWith(ROOT)) { serveStatic(res, vPath); return; }
   }
 
-  // 已认证 — 提供静态文件
-  const relativePath = urlPath === "/" ? "index.html" : urlPath.replace(/^\/+/, "");
+  // 其他资源需要认证
+  if (!isAuthed(req)) { unauthorized(res); return; }
+
+  const relativePath = urlPath.replace(/^\/+/, "");
   const filePath = path.normalize(path.join(ROOT, relativePath));
-  if (!filePath.startsWith(ROOT)) {
-    res.writeHead(403);
-    res.end("Forbidden");
-    return;
-  }
+  if (!filePath.startsWith(ROOT)) { res.writeHead(403); res.end("Forbidden"); return; }
   serveStatic(res, filePath);
 });
 
-server.listen(PORT, () => {
-  console.log(`企业微信看板已启动: http://0.0.0.0:${PORT}/`);
+init().then(() => {
+  server.listen(PORT, () => {
+    console.log(`企业微信看板已启动: http://0.0.0.0:${PORT}/`);
+  });
 });

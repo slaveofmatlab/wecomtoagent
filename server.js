@@ -58,11 +58,15 @@ function githubRequest(method, apiPath, body) {
 }
 
 async function githubGetSha(filename) {
-  // 只取 SHA，不解析内容（大文件 content 为空也没关系）
   const res = await githubRequest("GET", `/repos/${GITHUB_REPO}/contents/data/${filename}?ref=${GITHUB_BRANCH}`);
-  if (res.status === 404) return null;
-  if (res.status !== 200) return null;
-  return (typeof res.data === "object" && res.data.sha) ? res.data.sha : null;
+  if (res.status === 404) return null; // 文件不存在，首次创建不需要 SHA
+  if (res.status !== 200) {
+    throw new Error(`GET SHA for ${filename} failed: HTTP ${res.status} — ${JSON.stringify(res.data).slice(0, 300)}`);
+  }
+  if (typeof res.data !== "object" || !res.data.sha) {
+    throw new Error(`GET SHA for ${filename}: unexpected response (keys: ${typeof res.data === "object" ? Object.keys(res.data).join(",") : typeof res.data})`);
+  }
+  return res.data.sha;
 }
 
 async function githubGetFile(filename) {

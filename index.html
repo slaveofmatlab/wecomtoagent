@@ -2171,7 +2171,8 @@
       // 服务端返回最新 trends，更新本地缓存
       if (result.trends) window._trendsData = result.trends;
       renderAll(result.data);
-      setStatus("上传成功，数据已更新，所有人刷新页面即可看到。", "ok");
+      if (result.warning) setStatus("上传成功，但注意：" + result.warning, "warn");
+      else setStatus("上传成功，数据已更新，所有人刷新页面即可看到。", "ok");
     }).catch(function(err) {
       setStatus("上传失败：" + err.message, "err");
       console.error(err);

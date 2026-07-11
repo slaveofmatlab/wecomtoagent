@@ -253,19 +253,31 @@ async function handleUpload(req, res) {
   fs.writeFileSync(path.join(dataDir, "trends.json"), JSON.stringify(currentTrends, null, 2));
 
   // 同步推 GitHub（等待完成，确保 Render 重启后数据不丢失）
+  // 只推渲染所需字段，去掉 salesRows/pendingRows/progressRows 大数组，避免超 GitHub 1MB 限制
+  let githubWarning = null;
   if (GITHUB_TOKEN) {
+    const slimData = {
+      generatedAt: data.generatedAt,
+      cutoffDate: data.cutoffDate,
+      sources: data.sources,
+      pendingTotals: data.pendingTotals,
+      companySummary: data.companySummary,
+      logStats: data.logStats,
+    };
     const [pdSha, trSha] = await Promise.all([
-      githubPutFile("page_data.json", data, githubShas["page_data.json"])
+      githubPutFile("page_data.json", slimData, githubShas["page_data.json"])
         .then((sha) => { githubShas["page_data.json"] = sha; return sha; })
         .catch((e) => { console.error("GitHub push page_data.json:", e.message); return null; }),
       githubPutFile("trends.json", currentTrends, githubShas["trends.json"])
         .then((sha) => { githubShas["trends.json"] = sha; return sha; })
         .catch((e) => { console.error("GitHub push trends.json:", e.message); return null; }),
     ]);
-    if (!pdSha || !trSha) throw new Error("数据已处理，但 GitHub 持久化失败（网络问题？），请稍后重试上传");
+    if (!pdSha || !trSha) {
+      githubWarning = "数据已更新（当前可见），但 GitHub 备份失败——若服务器重启数据可能丢失，建议稍后重新上传一次";
+    }
   }
 
-  return { success: true, data, trends: currentTrends };
+  return { success: true, data, trends: currentTrends, warning: githubWarning };
 }
 
 function loadFallbackWorkbook(dir, keyword) {

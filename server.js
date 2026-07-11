@@ -127,6 +127,16 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // vendor 静态库不含业务数据，无需认证（页面加载时 cookie 还未写入）
+  if (urlPath.startsWith("/vendor/")) {
+    const vRel = urlPath.replace(/^\/+/, "");
+    const vPath = path.normalize(path.join(ROOT, vRel));
+    if (vPath.startsWith(ROOT)) {
+      serveStatic(res, vPath);
+      return;
+    }
+  }
+
   // index.html 始终放行（认证由客户端处理）
   if (urlPath === "/" || urlPath === "/index.html") {
     serveStatic(res, path.join(ROOT, "index.html"));

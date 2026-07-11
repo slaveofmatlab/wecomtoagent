@@ -61,10 +61,16 @@ async function githubGetFile(filename) {
   const res = await githubRequest("GET", `/repos/${GITHUB_REPO}/contents/data/${filename}?ref=${GITHUB_BRANCH}`);
   if (res.status === 404) return null;
   if (res.status !== 200) throw new Error(`GitHub GET ${filename}: HTTP ${res.status}`);
-  return {
-    data: JSON.parse(Buffer.from(res.data.content, "base64").toString("utf8")),
-    sha: res.data.sha,
-  };
+  const sha = res.data.sha; // SHA 始终存在，不受文件大小影响
+  let data = null;
+  try {
+    const raw = Buffer.from(res.data.content || "", "base64").toString("utf8");
+    if (raw) data = JSON.parse(raw);
+  } catch (e) {
+    // 文件超过 GitHub Contents API 1MB 内联限制，content 为空，但 SHA 已拿到
+    console.log(`  ${filename}: 内容过大无法内联读取（${res.data.size} 字节），仅加载 SHA`);
+  }
+  return { data, sha };
 }
 
 async function githubPutFile(filename, data, sha) {
@@ -88,9 +94,17 @@ async function init() {
     console.log("从 GitHub 加载数据…");
     try {
       const pd = await githubGetFile("page_data.json");
-      if (pd) { currentPageData = pd.data; githubShas["page_data.json"] = pd.sha; console.log("  page_data.json 已加载"); }
+      if (pd) {
+        githubShas["page_data.json"] = pd.sha; // 始终保存 SHA，无论内容是否可读
+        if (pd.data) { currentPageData = pd.data; console.log("  page_data.json 已加载"); }
+        else console.log("  page_data.json SHA 已加载（内容过大，从磁盘读取）");
+      }
       const tr = await githubGetFile("trends.json");
-      if (tr) { currentTrends = tr.data; githubShas["trends.json"] = tr.sha; console.log("  trends.json 已加载"); }
+      if (tr) {
+        githubShas["trends.json"] = tr.sha;
+        if (tr.data) { currentTrends = tr.data; console.log("  trends.json 已加载"); }
+        else console.log("  trends.json SHA 已加载（内容过大，从磁盘读取）");
+      }
     } catch (e) {
       console.error("GitHub 加载失败，回退到磁盘:", e.message);
     }

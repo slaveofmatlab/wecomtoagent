@@ -84,16 +84,23 @@ async function githubGetFile(filename) {
 }
 
 async function githubPutFile(filename, data) {
-  // 每次 PUT 前现场拿最新 SHA，避免缓存失效导致 422
-  const sha = await githubGetSha(filename);
   const content = Buffer.from(JSON.stringify(data, null, 2)).toString("base64");
-  const body = {
-    message: `data: update ${filename} [skip render]`,
-    content,
-    branch: GITHUB_BRANCH,
-    ...(sha ? { sha } : {}),
-  };
-  const res = await githubRequest("PUT", `/repos/${GITHUB_REPO}/contents/data/${filename}`, body);
+  async function attempt() {
+    const sha = await githubGetSha(filename);
+    const body = {
+      message: `data: update ${filename} [skip render]`,
+      content,
+      branch: GITHUB_BRANCH,
+      ...(sha ? { sha } : {}),
+    };
+    return githubRequest("PUT", `/repos/${GITHUB_REPO}/contents/data/${filename}`, body);
+  }
+  let res = await attempt();
+  // 409 = SHA conflict（并发写或 git push 改了 blob SHA），重取 SHA 重试一次
+  if (res.status === 409) {
+    console.log(`  ${filename}: 409 SHA conflict，重取 SHA 重试…`);
+    res = await attempt();
+  }
   if (res.status !== 200 && res.status !== 201) {
     throw new Error(`GitHub PUT ${filename}: HTTP ${res.status} — ${JSON.stringify(res.data)}`);
   }
@@ -283,12 +290,11 @@ async function handleUpload(req, res) {
       logStats: data.logStats,
     };
     let ghErrors = [];
-    const [pdSha, trSha] = await Promise.all([
-      githubPutFile("page_data.json", slimData)
-        .catch((e) => { ghErrors.push("page_data: " + e.message); console.error("GitHub push page_data.json:", e.message); return null; }),
-      githubPutFile("trends.json", currentTrends)
-        .catch((e) => { ghErrors.push("trends: " + e.message); console.error("GitHub push trends.json:", e.message); return null; }),
-    ]);
+    // 顺序写入：先 page_data，再 trends，避免并发 PUT 造成 SHA 冲突（409）
+    const pdSha = await githubPutFile("page_data.json", slimData)
+      .catch((e) => { ghErrors.push("page_data: " + e.message); console.error("GitHub push page_data.json:", e.message); return null; });
+    const trSha = await githubPutFile("trends.json", currentTrends)
+      .catch((e) => { ghErrors.push("trends: " + e.message); console.error("GitHub push trends.json:", e.message); return null; });
     if (!pdSha || !trSha) {
       githubWarning = "GitHub 备份失败（" + ghErrors.join("；") + "）";
     }

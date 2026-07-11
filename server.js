@@ -213,6 +213,17 @@ async function handleUpload(req, res) {
     sources: { salesPath: null, pendingPath: null, progressPath: null },
   });
 
+  // 没有上传日志时，保留上一次的备注（备注来自消息日志，不随订单每天变）
+  if (!logWb && currentPageData && currentPageData.companySummary) {
+    const oldRemarks = {};
+    (currentPageData.companySummary.rows || []).forEach((r) => {
+      if (r.orderMethod && r.operationCompany) oldRemarks[r.operationCompany] = r.orderMethod;
+    });
+    data.companySummary.rows.forEach((r) => {
+      if (!r.orderMethod && oldRemarks[r.operationCompany]) r.orderMethod = oldRemarks[r.operationCompany];
+    });
+  }
+
   // 更新内存
   currentPageData = data;
   if (!currentTrends) currentTrends = {};

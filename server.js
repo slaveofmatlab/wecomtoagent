@@ -57,23 +57,31 @@ function githubRequest(method, apiPath, body) {
   });
 }
 
+async function githubGetSha(filename) {
+  // 只取 SHA，不解析内容（大文件 content 为空也没关系）
+  const res = await githubRequest("GET", `/repos/${GITHUB_REPO}/contents/data/${filename}?ref=${GITHUB_BRANCH}`);
+  if (res.status === 404) return null;
+  if (res.status !== 200) return null;
+  return (typeof res.data === "object" && res.data.sha) ? res.data.sha : null;
+}
+
 async function githubGetFile(filename) {
   const res = await githubRequest("GET", `/repos/${GITHUB_REPO}/contents/data/${filename}?ref=${GITHUB_BRANCH}`);
   if (res.status === 404) return null;
   if (res.status !== 200) throw new Error(`GitHub GET ${filename}: HTTP ${res.status}`);
-  const sha = res.data.sha; // SHA 始终存在，不受文件大小影响
   let data = null;
   try {
     const raw = Buffer.from(res.data.content || "", "base64").toString("utf8");
     if (raw) data = JSON.parse(raw);
   } catch (e) {
-    // 文件超过 GitHub Contents API 1MB 内联限制，content 为空，但 SHA 已拿到
-    console.log(`  ${filename}: 内容过大无法内联读取（${res.data.size} 字节），仅加载 SHA`);
+    console.log(`  ${filename}: 内容过大无法内联读取，仅启动时磁盘数据有效`);
   }
-  return { data, sha };
+  return { data, sha: res.data.sha };
 }
 
-async function githubPutFile(filename, data, sha) {
+async function githubPutFile(filename, data) {
+  // 每次 PUT 前现场拿最新 SHA，避免缓存失效导致 422
+  const sha = await githubGetSha(filename);
   const content = Buffer.from(JSON.stringify(data, null, 2)).toString("base64");
   const body = {
     message: `data: update ${filename} [skip render]`,
@@ -94,17 +102,9 @@ async function init() {
     console.log("从 GitHub 加载数据…");
     try {
       const pd = await githubGetFile("page_data.json");
-      if (pd) {
-        githubShas["page_data.json"] = pd.sha; // 始终保存 SHA，无论内容是否可读
-        if (pd.data) { currentPageData = pd.data; console.log("  page_data.json 已加载"); }
-        else console.log("  page_data.json SHA 已加载（内容过大，从磁盘读取）");
-      }
+      if (pd && pd.data) { currentPageData = pd.data; console.log("  page_data.json 已加载"); }
       const tr = await githubGetFile("trends.json");
-      if (tr) {
-        githubShas["trends.json"] = tr.sha;
-        if (tr.data) { currentTrends = tr.data; console.log("  trends.json 已加载"); }
-        else console.log("  trends.json SHA 已加载（内容过大，从磁盘读取）");
-      }
+      if (tr && tr.data) { currentTrends = tr.data; console.log("  trends.json 已加载"); }
     } catch (e) {
       console.error("GitHub 加载失败，回退到磁盘:", e.message);
     }
@@ -280,11 +280,9 @@ async function handleUpload(req, res) {
     };
     let ghErrors = [];
     const [pdSha, trSha] = await Promise.all([
-      githubPutFile("page_data.json", slimData, githubShas["page_data.json"])
-        .then((sha) => { githubShas["page_data.json"] = sha; return sha; })
+      githubPutFile("page_data.json", slimData)
         .catch((e) => { ghErrors.push("page_data: " + e.message); console.error("GitHub push page_data.json:", e.message); return null; }),
-      githubPutFile("trends.json", currentTrends, githubShas["trends.json"])
-        .then((sha) => { githubShas["trends.json"] = sha; return sha; })
+      githubPutFile("trends.json", currentTrends)
         .catch((e) => { ghErrors.push("trends: " + e.message); console.error("GitHub push trends.json:", e.message); return null; }),
     ]);
     if (!pdSha || !trSha) {

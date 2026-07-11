@@ -1420,7 +1420,7 @@
       var clr = isSel ? "#fff" : (hasData ? "#2d4a1e" : "#c0ccd8");
       var fw = (isSel || hasData) ? "600" : "400";
       var extra = isToday ? ";outline:2px solid #6d8f3c;outline-offset:-2px" : "";
-      html += '<div style="padding:3px 0;border-radius:4px;cursor:pointer;background:' + bg + ';color:' + clr + ';font-weight:' + fw + extra + '" onclick="calSelectDate(\'' + key + '\')">' + d + '</div>';
+      html += '<div style="padding:3px 0;border-radius:4px;cursor:pointer;background:' + bg + ';color:' + clr + ';font-weight:' + fw + extra + '" onclick="calSelectDate(event,\'' + key + '\')">' + d + '</div>';
     }
     document.getElementById("calGrid").innerHTML = html;
 
@@ -1440,7 +1440,8 @@
   }
   window.calNav = calNav;
 
-  function calSelectDate(key) {
+  function calSelectDate(event, key) {
+    event.stopPropagation(); // 阻止冒泡，避免外部点击监听误关日历
     if (!_selectedDates) _selectedDates = new Set();
     if (_selectedDates.has(key)) _selectedDates.delete(key);
     else _selectedDates.add(key);

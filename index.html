@@ -2294,10 +2294,15 @@
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (preset) {
         if (preset) {
-          var merged = Object.assign({}, preset, window._trendsData || {});
-          window._trendsData = merged;
+          // 服务端是权威数据源，直接替换（不用 Object.assign 合并，否则已删除的日期会被本地残留复活）
+          window._trendsData = preset;
           var local = loadHistory();
-          Object.keys(merged).forEach(function (k) { local[k] = merged[k]; });
+          // 清理 localStorage 中服务端已不存在的日期
+          var serverKeys = {};
+          Object.keys(preset).forEach(function (k) { serverKeys[k] = true; });
+          for (var lk in local) { if (!serverKeys[lk]) delete local[lk]; }
+          // 同步服务端数据
+          Object.keys(preset).forEach(function (k) { local[k] = preset[k]; });
           try { localStorage.setItem(HISTORY_KEY, JSON.stringify(local)); } catch(e) {}
           if (window._latestSummary) renderSummaryTable(window._latestSummary);
         }

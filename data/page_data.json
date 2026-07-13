@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-07-13T03:02:02.006Z",
-  "cutoffDate": "0710",
+  "generatedAt": "2026-07-13T03:15:03.503Z",
+  "cutoffDate": "0711",
   "sources": {
     "salesPath": null,
     "pendingPath": null,
     "progressPath": null
   },
   "pendingTotals": {
-    "total": 3375,
-    "transferred": 3063,
-    "notTransferred": 312
+    "total": 1468,
+    "transferred": 1425,
+    "notTransferred": 43
   },
   "companySummary": {
     "rows": [
@@ -19,11 +19,11 @@
         "registeredCount": 160,
         "itConfiguredCount": 160,
         "configRate": 1,
-        "orderTotal": 433,
-        "orderAiCount": 38,
-        "orderAiTotal": 38,
-        "aiRate": 0.08775981524249422,
-        "aiRateTotal": 0.08775981524249422,
+        "orderTotal": 393,
+        "orderAiCount": 0,
+        "orderAiTotal": 0,
+        "aiRate": 0,
+        "aiRateTotal": 0,
         "orderMethod": "图片下单 51%，Excel下单 33%"
       },
       {
@@ -32,24 +32,11 @@
         "registeredCount": 10,
         "itConfiguredCount": 10,
         "configRate": 1,
-        "orderTotal": 89,
+        "orderTotal": 98,
         "orderAiCount": 0,
         "orderAiTotal": 0,
         "aiRate": 0,
         "aiRateTotal": 0,
-        "orderMethod": "图片下单"
-      },
-      {
-        "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
-        "operationCompanyKey": "郑州/丰厨(上海)供应链管理有限公司",
-        "registeredCount": 3,
-        "itConfiguredCount": 3,
-        "configRate": 1,
-        "orderTotal": 62,
-        "orderAiCount": 21,
-        "orderAiTotal": 21,
-        "aiRate": 0.3387096774193548,
-        "aiRateTotal": 0.3387096774193548,
         "orderMethod": "图片下单"
       },
       {
@@ -58,7 +45,46 @@
         "registeredCount": 8,
         "itConfiguredCount": 8,
         "configRate": 1,
-        "orderTotal": 60,
+        "orderTotal": 51,
+        "orderAiCount": 0,
+        "orderAiTotal": 0,
+        "aiRate": 0,
+        "aiRateTotal": 0,
+        "orderMethod": ""
+      },
+      {
+        "operationCompany": "北京/丰厨(上海)供应链管理有限公司",
+        "operationCompanyKey": "北京/丰厨(上海)供应链管理有限公司",
+        "registeredCount": 6,
+        "itConfiguredCount": 6,
+        "configRate": 1,
+        "orderTotal": 44,
+        "orderAiCount": 9,
+        "orderAiTotal": 9,
+        "aiRate": 0.20454545454545456,
+        "aiRateTotal": 0.20454545454545456,
+        "orderMethod": "图片下单 69%，Excel下单 18%"
+      },
+      {
+        "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
+        "operationCompanyKey": "郑州/丰厨(上海)供应链管理有限公司",
+        "registeredCount": 3,
+        "itConfiguredCount": 3,
+        "configRate": 1,
+        "orderTotal": 39,
+        "orderAiCount": 0,
+        "orderAiTotal": 0,
+        "aiRate": 0,
+        "aiRateTotal": 0,
+        "orderMethod": "图片下单"
+      },
+      {
+        "operationCompany": "重庆/丰厨(成都)供应链管理有限公司",
+        "operationCompanyKey": "重庆/丰厨(成都)供应链管理有限公司",
+        "registeredCount": 3,
+        "itConfiguredCount": 3,
+        "configRate": 1,
+        "orderTotal": 29,
         "orderAiCount": 0,
         "orderAiTotal": 0,
         "aiRate": 0,
@@ -71,90 +97,12 @@
         "registeredCount": 10,
         "itConfiguredCount": 10,
         "configRate": 1,
-        "orderTotal": 44,
-        "orderAiCount": 7,
-        "orderAiTotal": 7,
-        "aiRate": 0.1590909090909091,
-        "aiRateTotal": 0.1590909090909091,
+        "orderTotal": 5,
+        "orderAiCount": 0,
+        "orderAiTotal": 0,
+        "aiRate": 0,
+        "aiRateTotal": 0,
         "orderMethod": "图片下单 37%，Excel下单 37%"
-      },
-      {
-        "operationCompany": "广州益嘉德立安食品有限公司",
-        "operationCompanyKey": "广州益嘉德立安食品有限公司",
-        "registeredCount": 1,
-        "itConfiguredCount": 1,
-        "configRate": 1,
-        "orderTotal": 44,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": ""
-      },
-      {
-        "operationCompany": "益海嘉里食品营销有限公司上海分公司",
-        "operationCompanyKey": "益海嘉里食品营销有限公司上海分公司",
-        "registeredCount": 1,
-        "itConfiguredCount": 1,
-        "configRate": 1,
-        "orderTotal": 40,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "图片下单 69%，Excel下单 31%"
-      },
-      {
-        "operationCompany": "重庆/丰厨(成都)供应链管理有限公司",
-        "operationCompanyKey": "重庆/丰厨(成都)供应链管理有限公司",
-        "registeredCount": 3,
-        "itConfiguredCount": 3,
-        "configRate": 1,
-        "orderTotal": 20,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": ""
-      },
-      {
-        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
-        "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
-        "registeredCount": 10,
-        "itConfiguredCount": 10,
-        "configRate": 1,
-        "orderTotal": 17,
-        "orderAiCount": 15,
-        "orderAiTotal": 15,
-        "aiRate": 0.8823529411764706,
-        "aiRateTotal": 0.8823529411764706,
-        "orderMethod": "图片下单"
-      },
-      {
-        "operationCompany": "北京/丰厨(上海)供应链管理有限公司",
-        "operationCompanyKey": "北京/丰厨(上海)供应链管理有限公司",
-        "registeredCount": 6,
-        "itConfiguredCount": 6,
-        "configRate": 1,
-        "orderTotal": 15,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "图片下单 69%，Excel下单 18%"
-      },
-      {
-        "operationCompany": "益海嘉里德立安（杭州）食品有限公司",
-        "operationCompanyKey": "益海嘉里德立安(杭州)食品有限公司",
-        "registeredCount": 30,
-        "itConfiguredCount": 30,
-        "configRate": 1,
-        "orderTotal": 13,
-        "orderAiCount": 3,
-        "orderAiTotal": 3,
-        "aiRate": 0.23076923076923078,
-        "aiRateTotal": 0.23076923076923078,
-        "orderMethod": "图片下单"
       },
       {
         "operationCompany": "成都/丰厨(成都)供应链管理有限公司",
@@ -162,12 +110,38 @@
         "registeredCount": 14,
         "itConfiguredCount": 14,
         "configRate": 1,
-        "orderTotal": 6,
-        "orderAiCount": 6,
-        "orderAiTotal": 6,
+        "orderTotal": 4,
+        "orderAiCount": 4,
+        "orderAiTotal": 4,
         "aiRate": 1,
         "aiRateTotal": 1,
         "orderMethod": "图文混发 50%，图片下单 50%"
+      },
+      {
+        "operationCompany": "益海嘉里德立安（杭州）食品有限公司",
+        "operationCompanyKey": "益海嘉里德立安(杭州)食品有限公司",
+        "registeredCount": 30,
+        "itConfiguredCount": 30,
+        "configRate": 1,
+        "orderTotal": 0,
+        "orderAiCount": 0,
+        "orderAiTotal": 0,
+        "aiRate": null,
+        "aiRateTotal": null,
+        "orderMethod": "图片下单"
+      },
+      {
+        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+        "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
+        "registeredCount": 10,
+        "itConfiguredCount": 10,
+        "configRate": 1,
+        "orderTotal": 0,
+        "orderAiCount": 0,
+        "orderAiTotal": 0,
+        "aiRate": null,
+        "aiRateTotal": null,
+        "orderMethod": "图片下单"
       },
       {
         "operationCompany": "深圳市德立安食品有限公司",
@@ -175,11 +149,11 @@
         "registeredCount": 7,
         "itConfiguredCount": 7,
         "configRate": 1,
-        "orderTotal": 6,
+        "orderTotal": 0,
         "orderAiCount": 0,
         "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
+        "aiRate": null,
+        "aiRateTotal": null,
         "orderMethod": "PDF下单 53%，图片下单 42%"
       },
       {
@@ -196,8 +170,34 @@
         "orderMethod": "PDF下单 65%，图片下单 15%"
       },
       {
+        "operationCompany": "益海嘉里食品营销有限公司上海分公司",
+        "operationCompanyKey": "益海嘉里食品营销有限公司上海分公司",
+        "registeredCount": 1,
+        "itConfiguredCount": 1,
+        "configRate": 1,
+        "orderTotal": 0,
+        "orderAiCount": 0,
+        "orderAiTotal": 0,
+        "aiRate": null,
+        "aiRateTotal": null,
+        "orderMethod": "图片下单 69%，Excel下单 31%"
+      },
+      {
         "operationCompany": "益海津农德立安（天津）供应链管理有限公司",
         "operationCompanyKey": "益海津农德立安(天津)供应链管理有限公司",
+        "registeredCount": 1,
+        "itConfiguredCount": 1,
+        "configRate": 1,
+        "orderTotal": 0,
+        "orderAiCount": 0,
+        "orderAiTotal": 0,
+        "aiRate": null,
+        "aiRateTotal": null,
+        "orderMethod": ""
+      },
+      {
+        "operationCompany": "广州益嘉德立安食品有限公司",
+        "operationCompanyKey": "广州益嘉德立安食品有限公司",
         "registeredCount": 1,
         "itConfiguredCount": 1,
         "configRate": 1,
@@ -212,12 +212,12 @@
     "totals": {
       "registeredCount": 266,
       "itConfiguredCount": 266,
-      "orderTotal": 849,
-      "orderAiCount": 90,
-      "orderAiTotal": 90,
+      "orderTotal": 663,
+      "orderAiCount": 13,
+      "orderAiTotal": 13,
       "configRate": 1,
-      "aiRate": 0.10600706713780919,
-      "aiRateTotal": 0.10600706713780919
+      "aiRate": 0.0196078431372549,
+      "aiRateTotal": 0.0196078431372549
     }
   }
 }

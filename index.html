@@ -1482,6 +1482,19 @@
       .then(function (result) {
         // 从内存移除
         if (window._trendsData) delete window._trendsData[dateKey];
+        // KPI 卡片同步更新为最新日期
+        var remainingKeys = Object.keys(window._trendsData || {}).sort();
+        if (remainingKeys.length) {
+          var latestTrend = window._trendsData[remainingKeys[remainingKeys.length - 1]];
+          renderKpiCards({
+            registeredCount: latestTrend.registered,
+            itConfiguredCount: latestTrend.itOk,
+            configRate: latestTrend.configRate,
+            orderTotal: latestTrend.orderTotal,
+            orderAiCount: latestTrend.orderAi,
+            aiRate: latestTrend.aiRate,
+          });
+        }
         // 从 localStorage 移除
         var h = loadHistory();
         delete h[dateKey];
@@ -2296,6 +2309,19 @@
         if (preset) {
           // 服务端是权威数据源，直接替换（不用 Object.assign 合并，否则已删除的日期会被本地残留复活）
           window._trendsData = preset;
+          // KPI 卡片同步更新为 trends 中最新日期的数据
+          var allKeys = Object.keys(preset).sort();
+          if (allKeys.length) {
+            var latestTrend = preset[allKeys[allKeys.length - 1]];
+            renderKpiCards({
+              registeredCount: latestTrend.registered,
+              itConfiguredCount: latestTrend.itOk,
+              configRate: latestTrend.configRate,
+              orderTotal: latestTrend.orderTotal,
+              orderAiCount: latestTrend.orderAi,
+              aiRate: latestTrend.aiRate,
+            });
+          }
           var local = loadHistory();
           // 清理 localStorage 中服务端已不存在的日期
           var serverKeys = {};

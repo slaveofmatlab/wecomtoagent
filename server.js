@@ -310,6 +310,36 @@ function loadFallbackWorkbook(dir, keyword) {
   return file ? XLSX.readFile(file) : null;
 }
 
+// ====== 趋势数据删除 ======
+async function handleDeleteTrend(dateKey, res) {
+  if (!currentTrends || !currentTrends[dateKey]) {
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "日期 " + dateKey + " 不存在" }));
+    return;
+  }
+  delete currentTrends[dateKey];
+
+  // 写磁盘
+  const trendsPath = path.join(ROOT, "data", "trends.json");
+  fs.writeFileSync(trendsPath, JSON.stringify(currentTrends, null, 2));
+  console.log("已删除趋势数据: " + dateKey);
+
+  // 同步 GitHub
+  let githubWarning = null;
+  if (GITHUB_TOKEN) {
+    try {
+      await githubPutFile("trends.json", currentTrends);
+      console.log("  GitHub 已同步");
+    } catch (e) {
+      githubWarning = "GitHub 备份失败: " + e.message;
+      console.error("  GitHub push trends.json:", e.message);
+    }
+  }
+
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ success: true, date: dateKey, trends: currentTrends, warning: githubWarning }));
+}
+
 // ====== HTTP 服务器 ======
 const server = http.createServer((req, res) => {
   const urlPath = decodeURIComponent(req.url.split("?")[0]);
@@ -378,6 +408,20 @@ const server = http.createServer((req, res) => {
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: e.message }));
       });
+    return;
+  }
+
+  // DELETE /api/trends?date=MM-DD
+  if (urlPath === "/api/trends" && req.method === "DELETE") {
+    if (!isAuthed(req)) { unauthorized(res); return; }
+    const tParams = new URLSearchParams(req.url.split("?")[1] || "");
+    const dateKey = tParams.get("date");
+    if (!dateKey || !/^\d{2}-\d{2}$/.test(dateKey)) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "date 格式错误，应为 MM-DD（如 07-09）" }));
+      return;
+    }
+    handleDeleteTrend(dateKey, res);
     return;
   }
 

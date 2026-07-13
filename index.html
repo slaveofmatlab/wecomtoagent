@@ -709,6 +709,7 @@
               <button type="button" class="secondary" onclick="dateSelectorAction('latest')" style="font-size:11px;padding:3px 6px;flex:1;">仅最新</button>
               <button type="button" class="secondary" onclick="dateSelectorAction('last7')" style="font-size:11px;padding:3px 6px;flex:1;">近7天</button>
               <button type="button" class="secondary" onclick="dateSelectorAction('all')" style="font-size:11px;padding:3px 6px;flex:1;">全选</button>
+              <button type="button" class="secondary" id="deleteDateBtn" onclick="deleteSelectedDate()" style="font-size:11px;padding:3px 6px;flex:1;color:#b91c1c;background:#fee2e2;border-color:#fca5a5;display:none;">🗑 删除</button>
             </div>
           </div>
         </div>
@@ -1429,6 +1430,10 @@
     if (selCount === 0) labelEl.textContent = "未选择日期";
     else if (selCount === 1) labelEl.textContent = "仅 " + Array.from(_selectedDates)[0];
     else labelEl.textContent = "已选 " + selCount + " 天";
+
+    // 仅选中单天时显示删除按钮
+    var delBtn = document.getElementById("deleteDateBtn");
+    if (delBtn) delBtn.style.display = selCount === 1 ? "" : "none";
   }
 
   function calNav(delta) {
@@ -1463,6 +1468,36 @@
     if (window._latestSummary) renderSummaryTable(window._latestSummary);
   }
   window.dateSelectorAction = dateSelectorAction;
+
+  function deleteSelectedDate() {
+    if (!_selectedDates || _selectedDates.size !== 1) return;
+    var dateKey = Array.from(_selectedDates)[0];
+    if (!confirm("确定删除 " + dateKey + " 的数据？\n\n将从服务端、折线图和表格中移除该日期的所有数据。")) return;
+
+    var delBtn = document.getElementById("deleteDateBtn");
+    if (delBtn) { delBtn.disabled = true; delBtn.textContent = "删除中…"; }
+
+    fetch("/api/trends?date=" + encodeURIComponent(dateKey), { method: "DELETE" })
+      .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || "HTTP " + r.status); return d; }); })
+      .then(function (result) {
+        // 从内存移除
+        if (window._trendsData) delete window._trendsData[dateKey];
+        // 从 localStorage 移除
+        var h = loadHistory();
+        delete h[dateKey];
+        try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch (e) {}
+        // 重置选中日期到最新
+        _selectedDates = null;
+        if (window._latestSummary) renderSummaryTable(window._latestSummary);
+        renderTrend();
+        setStatus("已删除 " + dateKey + (result.warning ? "（注意：" + result.warning + "）" : ""), "ok");
+      })
+      .catch(function (err) {
+        setStatus("删除失败：" + err.message, "err");
+        if (delBtn) { delBtn.disabled = false; delBtn.textContent = "🗑 删除"; }
+      });
+  }
+  window.deleteSelectedDate = deleteSelectedDate;
 
   // 点击按钮开关下拉，点击外部关闭
   document.addEventListener("click", function(e){

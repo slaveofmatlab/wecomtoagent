@@ -1261,7 +1261,8 @@
     var trends = window._trendsData || {};
     var latestKey = getLatestKey();
     if (_selectedDates == null) {
-      _selectedDates = new Set(latestKey ? [latestKey] : []);
+      var allKeys = Object.keys(trends).sort();
+      _selectedDates = new Set(allKeys.length ? allKeys : (latestKey ? [latestKey] : []));
     }
     var selectedKeys = Array.from(_selectedDates).sort();
     var hasTrends = latestKey != null;
@@ -2262,7 +2263,10 @@
       Object.keys(merged).forEach(function (k) { local[k] = merged[k]; });
       try { localStorage.setItem(HISTORY_KEY, JSON.stringify(local)); } catch(e) {}
       // trends 到手后重画汇总表
-      if (window._latestSummary) renderSummaryTable(window._latestSummary);
+      if (window._latestSummary) {
+        _selectedDates = null;  // trends 加载后重新初始化，默认显示全部日期
+        renderSummaryTable(window._latestSummary);
+      }
     }
   }).catch(function () {}).then(function () { renderTrend(); });
   document.getElementById("cutoffInput").value = DEFAULT_CUTOFF_DATE;

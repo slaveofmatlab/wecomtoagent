@@ -234,35 +234,56 @@ function buildRoomCompanyMap(progressRows) {
 
 function parseWecomLogForSummary(workbook, progressRows) {
   if (!workbook) return null;
-  var rows = sheetRows(workbook, "");
-  var headerIndex = findHeaderIndex(rows, LOG_HEADER_CANDIDATES);
+
+  // 检测日志格式：新格式有"企微消息"sheet，用"配置清单"做 roomid→room_name 映射
+  var hasMsgSheet = workbook.SheetNames.some(function (s) { return s.includes("企微消息"); });
+  var idToName = {};
+  var preferredSheet = "";
+  if (hasMsgSheet) {
+    // 新格式：配置清单 sheet → roomid → room_name
+    try {
+      var cfgRows = sheetRows(workbook, "配置清单");
+      var cfgHdr = findHeaderIndex(cfgRows, ["roomid", "room_name"]);
+      if (cfgHdr >= 0) {
+        var cfgRecs = rowsToObjects(cfgRows, cfgHdr);
+        cfgRecs.forEach(function (r) { idToName[r["roomid"]] = r["room_name"]; });
+      }
+    } catch (e) {}
+    preferredSheet = "企微消息";
+  }
+
+  var rows = sheetRows(workbook, preferredSheet);
+  // 新格式用 roomid，旧格式用 room_name
+  var headerCandidates = hasMsgSheet
+    ? ["roomid", "msgtype", "filename", "filter_status"]
+    : LOG_HEADER_CANDIDATES;
+  var headerIndex = findHeaderIndex(rows, headerCandidates);
   if (headerIndex < 0) return null;
 
   var records = rowsToObjects(rows, headerIndex);
   var roomCompanyMap = buildRoomCompanyMap(progressRows);
 
   // 按 companyKey 聚合下单方式
-  // byCompany[companyKey] = { methodLabel: { count, processed } }
   var byCompany = {};
 
   for (var i = 0; i < records.length; i++) {
     var r = records[i];
     var status = normalizeText(r["filter_status"]);
-    // 只看 ACCEPTED + SKIPPED
     if (status !== "ACCEPTED" && status !== "SKIPPED") continue;
 
     var msgtype = normalizeText(r["msgtype"]);
     var filename = normalizeText(r["filename"]);
     var method = determineOrderMethod(msgtype, filename);
-    if (!method) continue; // 非下单相关类型跳过
+    if (!method) continue;
 
-    // SKIPPED 中排除纯文本噪音（正文未包含下单关键词、图片未找到下单指令 等只对 text/image 生效）
-    // 对 file/mixed 类型的 SKIPPED，保留（因为这些是系统不支持的格式，用户确实发了）
     if (status === "SKIPPED" && msgtype === "text") continue;
 
-    var room = normalizeText(r["room_name"]);
+    // 新格式：roomid → room_name 映射；旧格式：直接读 room_name
+    var room = hasMsgSheet
+      ? (idToName[normalizeText(r["roomid"])] || normalizeText(r["roomid"]))
+      : normalizeText(r["room_name"]);
     var companyKey = roomCompanyMap[room];
-    if (!companyKey) continue; // 找不到对应公司，跳过
+    if (!companyKey) continue;
 
     if (!byCompany[companyKey]) byCompany[companyKey] = {};
     if (!byCompany[companyKey][method.label]) {

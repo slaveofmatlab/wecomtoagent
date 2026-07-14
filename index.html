@@ -1791,10 +1791,37 @@
     return map;
   }
 
+  // 日志格式适配：新格式有"企微消息"sheet，用"配置清单"做 roomid→room_name 映射
+  function resolveLogFormat(workbook) {
+    var hasMsgSheet = workbook.SheetNames.some(function (s) { return s.includes("企微消息"); });
+    var idToName = {};
+    if (hasMsgSheet) {
+      try {
+        var cfgRows = sheetRows(workbook, "配置清单");
+        var cfgHdr = findHeaderIndex(cfgRows, ["roomid", "room_name"]);
+        if (cfgHdr >= 0) {
+          rowsToObjects(cfgRows, cfgHdr).forEach(function (r) { idToName[r["roomid"]] = r["room_name"]; });
+        }
+      } catch (e) {}
+    }
+    return { hasNewFormat: hasMsgSheet, idToName: idToName };
+  }
+
+  function getLogRoom(r, fmt) {
+    if (fmt.hasNewFormat) {
+      var rid = normalizeText(r["roomid"]);
+      return fmt.idToName[rid] || rid;
+    }
+    return getLogRoom(r, fmt);
+  }
+
   function buildOrderMethodSummary(logWb, progressRows) {
     if (!logWb) return null;
-    var rows = sheetRows(logWb, "");
-    var LOG_HEADERS = ["room_name", "msgtype", "filename", "filter_status"];
+    var fmt = resolveLogFormat(logWb);
+    var rows = sheetRows(logWb, fmt.hasNewFormat ? "企微消息" : "");
+    var LOG_HEADERS = fmt.hasNewFormat
+      ? ["roomid", "msgtype", "filename", "filter_status"]
+      : ["room_name", "msgtype", "filename", "filter_status"];
     var headerIndex = findHeaderIndex(rows, LOG_HEADERS);
     if (headerIndex < 0) return null;
 
@@ -1813,7 +1840,7 @@
       if (!method) continue;
       if (status === "SKIPPED" && msgtype === "text") continue;
 
-      var room = normalizeText(r["room_name"]);
+      var room = getLogRoom(r, fmt);
       var companyKey = roomCompanyMap[room];
       if (!companyKey) continue;
 
@@ -1859,13 +1886,14 @@
   }
 
   function parseWecomLog(workbook) {
-    var sheetName = workbook.SheetNames[0];
+    var fmt = resolveLogFormat(workbook);
+    var sheetName = fmt.hasNewFormat ? "企微消息" : workbook.SheetNames[0];
     var ws = workbook.Sheets[sheetName];
     var raw = XLSX.utils.sheet_to_json(ws, { defval: "" });
 
     var VALID_STATUS = { "ACCEPTED": true, "SKIPPED": true };
     var rows = raw.filter(function (r) {
-      return VALID_STATUS[r["filter_status"]] && normalizeText(r["room_name"]) !== "";
+      return VALID_STATUS[r["filter_status"]] && getLogRoom(r, fmt) !== "";
     });
 
     var total = rows.length;
@@ -1887,7 +1915,7 @@
     rows.forEach(function (r) {
       var status = r["filter_status"];
       var reason = normalizeText(r["skip_reason"]);
-      var room = normalizeText(r["room_name"]);
+      var room = getLogRoom(r, fmt);
       var msgtype = normalizeText(r["msgtype"]);
       var filename = normalizeText(r["filename"]);
       var t = Number(r["msgtime"]);

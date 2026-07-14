@@ -482,12 +482,15 @@ function buildGroupSummary(salesRows, pendingRows, progressRows, logSummary) {
     if (row.itConfigured && row.hotelCode) allItOkCodes.add(normalizeText(row.hotelCode));
   }
 
-  // 待转单匹配
+  // 待转单匹配：客户订单号（主）+ 销售订单号（兜底）
   const pendingMap = new Map();
+  const pendingBySalesNo = new Map();
   for (const row of pendingRows) {
     if (row.createdBy !== "供应链管理员") continue;
     const ck = normalizeText(row.customerOrderNo);
     if (ck && !pendingMap.has(ck)) pendingMap.set(ck, row.transferStatus);
+    const sk = normalizeText(row.salesOrderNo);
+    if (sk && !pendingBySalesNo.has(sk)) pendingBySalesNo.set(sk, row.transferStatus);
   }
 
   // 统计每个群的订单
@@ -497,15 +500,19 @@ function buildGroupSummary(salesRows, pendingRows, progressRows, logSummary) {
       for (const sr of salesRows) {
         const hc = normalizeText(sr.hotelCode);
         if (!hc || !g.hotelCodes.has(hc)) continue;
-        // 按公司过滤，避免其他公司同项目点订单混入
         if (g.operationCompany) {
           const srCompany = normalizeText(sr.operationCompany || "").replace(/[（(]/g, "(").replace(/[）)]/g, ")");
           const grCompany = normalizeText(g.operationCompany).replace(/[（(]/g, "(").replace(/[）)]/g, ")");
           if (srCompany !== grCompany) continue;
         }
         orderTotal += 1;
+        // 两层匹配：先客户订单号，再销售订单号兜底
         const custKey = normalizeText(sr.customerOrderNo);
-        const pendingStatus = pendingMap.get(custKey);
+        let pendingStatus = pendingMap.get(custKey);
+        if (!pendingStatus) {
+          const sk = normalizeText(sr.orderNo);
+          pendingStatus = pendingBySalesNo.get(sk);
+        }
         if (pendingStatus) {
           orderAiTotal += 1;
           if (pendingStatus.includes("已转")) orderAi += 1;

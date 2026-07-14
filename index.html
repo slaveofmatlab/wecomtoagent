@@ -1083,18 +1083,29 @@
   function parseWecomProgress(workbook, cutoffDate) {
     var rows = sheetRows(workbook, "工作表1");
     var headerIndex = findHeaderIndex(rows, PROGRESS_HEADER_CANDIDATES);
+    // "群ID"后面紧邻那一列（表头为空）是删除标记列：单元格含"删除"的项目点绑定已废弃，
+    // 整行剔除、不进任何统计。rowsToObjects 给空表头列命名为 列${位置+1}，据此定位。
+    var headerCells = headerIndex >= 0 ? rows[headerIndex].map(normalizeText) : [];
+    var groupIdPos = headerCells.indexOf("群ID");
+    var deleteMarkPos = groupIdPos >= 0 ? groupIdPos + 1 : -1;
+    var deleteMarkKey = deleteMarkPos >= 0
+      ? (headerCells[deleteMarkPos] || ("列" + (deleteMarkPos + 1)))
+      : null;
     return rowsToObjects(rows, headerIndex).map(function (row) {
       var op = getFirst(row, ["运营公司"]);
       var joinStatus = getFirst(row, ["是否加群-张利拉", "是否加群"]);
       var itStatus = getFirst(row, ["IT是否配置完成-邓虎", "IT是否配置完成"]);
+      var deleteMark = deleteMarkKey ? normalizeText(row[deleteMarkKey]) : "";
       return {
         operationCompany: op,
         operationCompanyKey: normalizeCompanyName(op),
         hotelCode: getFirst(row, ["项目点代码"]),
         joined: isConfirmedByCutoff(joinStatus, cutoffDate),
         itConfigured: isConfirmedByCutoff(itStatus, cutoffDate),
+        deleted: deleteMark.includes("删除"),
       };
-    }).filter(function (row) { return row.operationCompany || row.hotelCode; });
+    }).filter(function (row) { return !row.deleted; })
+      .filter(function (row) { return row.operationCompany || row.hotelCode; });
   }
 
   function calcPendingTotals(pendingRows) {

@@ -158,10 +158,21 @@ function isConfirmedByCutoff(status, cutoffMMDD) {
 function parseWecomProgress(workbook, cutoffDate = DEFAULT_CUTOFF_DATE) {
   const rows = sheetRows(workbook, "工作表1");
   const headerIndex = findHeaderIndex(rows, PROGRESS_HEADER_CANDIDATES);
+
+  // "群ID"后面紧邻的那一列（表头为空）是删除标记列：单元格含"删除"的项目点已被业务方废弃，
+  // 整行剔除、不进任何统计。rowsToObjects 给空表头列自动命名为 列${位置+1}，据此定位。
+  const headerCells = headerIndex >= 0 ? rows[headerIndex].map(normalizeText) : [];
+  const groupIdPos = headerCells.indexOf("群ID");
+  const deleteMarkPos = groupIdPos >= 0 ? groupIdPos + 1 : -1;
+  const deleteMarkKey = deleteMarkPos >= 0
+    ? (headerCells[deleteMarkPos] || `列${deleteMarkPos + 1}`)
+    : null;
+
   return rowsToObjects(rows, headerIndex).map((row, index) => {
     const operationCompany = getFirst(row, ["运营公司"]);
     const joinStatus = getFirst(row, ["是否加群-张利拉", "是否加群"]);
     const itStatus = getFirst(row, ["IT是否配置完成-邓虎", "IT是否配置完成"]);
+    const deleteMark = deleteMarkKey ? normalizeText(row[deleteMarkKey]) : "";
     return {
       rowIndex: index + 1,
       groupName: getFirst(row, ["企业微信群名称"]),
@@ -172,8 +183,11 @@ function parseWecomProgress(workbook, cutoffDate = DEFAULT_CUTOFF_DATE) {
       hotelName: getFirst(row, ["项目点名称"]),
       joined: isConfirmedByCutoff(joinStatus, cutoffDate),
       itConfigured: isConfirmedByCutoff(itStatus, cutoffDate),
+      deleted: deleteMark.includes("删除"),
     };
-  }).filter((row) => row.operationCompany || row.hotelCode);
+  })
+    .filter((row) => !row.deleted)
+    .filter((row) => row.operationCompany || row.hotelCode);
 }
 
 // ---- 微信日志 → 下单方式（备注列） ----

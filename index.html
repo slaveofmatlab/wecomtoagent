@@ -724,6 +724,28 @@
       </table>
     </div>
 
+    <!-- 重点群监控 -->
+    <div id="priorityPanel" class="table-section-title" hidden>
+      <span>🎯 重点群监控（图片下单）</span>
+      <span style="font-size:11px;color:var(--muted);margin-left:12px;font-weight:400;" id="priorityNote"></span>
+    </div>
+    <div id="priorityTableWrap" class="table-wrap" hidden>
+      <table class="summary-table" style="width:100%;">
+        <thead>
+          <tr>
+            <th>群名称</th>
+            <th>所属公司</th>
+            <th class="group">下单方式</th>
+            <th class="group">项目点数</th>
+            <th class="group">订单行数</th>
+            <th class="group">AI 已转</th>
+            <th class="group">AI 转单占比</th>
+          </tr>
+        </thead>
+        <tbody id="priorityBody"></tbody>
+      </table>
+    </div>
+
     <div class="table-section-title">待转单辅助统计（不参与上方汇总口径）</div>
     <div class="pending-stats" id="pendingStats">
       <div>待转单总量<br><b>-</b></div>
@@ -1480,6 +1502,69 @@
   }
   window.dateSelectorAction = dateSelectorAction;
 
+  // ====== 重点群监控 ======
+  var _priorityConfig = null;  // priority_groups.json 内容
+
+  function loadPriorityConfig() {
+    return fetch("/basicData/priority_groups.json?_=" + Date.now())
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (cfg) { _priorityConfig = cfg; renderPriorityGroups(); })
+      .catch(function () {});
+  }
+
+  function renderPriorityGroups() {
+    var cfg = _priorityConfig;
+    var groupRows = window._groupData ? window._groupData.rows : [];
+    if (!cfg || !groupRows.length) {
+      document.getElementById("priorityPanel").hidden = true;
+      document.getElementById("priorityTableWrap").hidden = true;
+      return;
+    }
+
+    // 过滤出标记为"印刷"的重点群
+    var focused = groupRows.filter(function (g) {
+      var c = cfg.groups[g.groupName];
+      return c && c.imageType === "印刷";
+    });
+
+    if (!focused.length) {
+      document.getElementById("priorityPanel").hidden = true;
+      document.getElementById("priorityTableWrap").hidden = true;
+      return;
+    }
+
+    document.getElementById("priorityPanel").hidden = false;
+    document.getElementById("priorityTableWrap").hidden = false;
+    document.getElementById("priorityNote").textContent =
+      "共 " + focused.length + " 个群（已排除手写图片群）";
+
+    var totalOrder = focused.reduce(function (s, g) { return s + g.orderTotal; }, 0);
+    var totalAi = focused.reduce(function (s, g) { return s + (g.orderAiCount || 0); }, 0);
+
+    var html = "";
+    focused.forEach(function (g, i) {
+      var method = g.orderMethod || (cfg.groups[g.groupName] ? cfg.groups[g.groupName].mainMethod || "-" : "-");
+      var aiPct = g.orderTotal > 0 ? Math.round((g.orderAiCount || 0) / g.orderTotal * 100) + "%" : "-";
+      html += "<tr>";
+      html += "<td>" + g.groupName + "</td>";
+      html += "<td>" + g.operationCompany + "</td>";
+      html += '<td style="font-size:11px;color:#64748b;">' + method + "</td>";
+      html += '<td class="number">' + g.hotelCodeCount + "</td>";
+      html += '<td class="number">' + g.orderTotal + "</td>";
+      html += '<td class="number' + ((g.orderAiCount || 0) === 0 ? " zero-cell" : "") + '">' + (g.orderAiCount || 0) + "</td>";
+      html += '<td class="rate-cell ' + rateClass(g.aiRate) + '">' + aiPct + "</td>";
+      html += "</tr>";
+    });
+    // 合计行
+    html += '<tr class="total-row">';
+    html += '<td colspan="4">重点群合计</td>';
+    html += '<td class="number">' + totalOrder + "</td>";
+    html += '<td class="number">' + totalAi + "</td>";
+    html += '<td class="rate-cell ' + rateClass(totalOrder > 0 ? totalAi / totalOrder : null) + '">' + (totalOrder > 0 ? Math.round(totalAi / totalOrder * 100) + "%" : "-") + "</td>";
+    html += "</tr>";
+    document.getElementById("priorityBody").innerHTML = html;
+  }
+
   function deleteSelectedDate() {
     if (!_selectedDates || _selectedDates.size !== 1) return;
     var dateKey = Array.from(_selectedDates)[0];
@@ -1544,6 +1629,7 @@
 
   function renderAll(data) {
     window._latestSummary = data.companySummary;
+    window._groupData = data.groupSummary;
 
     // 把当次数据注入趋势，确保日历能显示并选中该日
     var cutoff = data.cutoffDate;
@@ -1570,6 +1656,7 @@
 
     renderKpiCards(data.companySummary.totals);
     renderSummaryTable(data.companySummary);
+    renderPriorityGroups();
     renderPendingStats(data.pendingTotals);
     document.getElementById("cutoffInput").value = data.cutoffDate || DEFAULT_CUTOFF_DATE;
     document.getElementById("metaLine").textContent =
@@ -2167,6 +2254,7 @@
       .then(function (data) {
         renderAll(data);
         loadTrendsData();  // 认证通过后加载趋势数据，更新表格日历
+        loadPriorityConfig();  // 加载重点群配置
         setStatus("已加载 page_data.json。如果 Excel 有更新，请在上方上传新文件后点击「用上传的文件重新计算」。", "ok");
       })
       .catch(function (err) {

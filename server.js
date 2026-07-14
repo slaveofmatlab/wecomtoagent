@@ -287,6 +287,7 @@ async function handleUpload(req, res) {
       sources: data.sources,
       pendingTotals: data.pendingTotals,
       companySummary: data.companySummary,
+      groupSummary: data.groupSummary,
       logStats: data.logStats,
     };
     let ghErrors = [];

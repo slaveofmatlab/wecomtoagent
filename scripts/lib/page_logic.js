@@ -433,6 +433,83 @@ function buildCompanySummary(salesRows, pendingRows, progressRows, logSummary) {
   return { rows: summary, totals };
 }
 
+// 群维度汇总：按企业微信群名称聚合，用于看板「重点群监控」
+function buildGroupSummary(salesRows, pendingRows, progressRows, logSummary) {
+  const groups = new Map();
+
+  // 从推进表收集群信息
+  for (const row of progressRows) {
+    const name = row.groupName;
+    if (!name) continue;
+    if (!groups.has(name)) {
+      groups.set(name, {
+        groupName: name,
+        operationCompany: row.operationCompany || "",
+        hotelCodes: new Set(),
+        itConfigured: false,
+      });
+    }
+    const g = groups.get(name);
+    if (row.hotelCode) g.hotelCodes.add(normalizeText(row.hotelCode));
+    if (row.itConfigured) g.itConfigured = true;
+    if (row.operationCompany) g.operationCompany = row.operationCompany;
+  }
+
+  // 全局 IT已配置集合
+  const allItOkCodes = new Set();
+  for (const row of progressRows) {
+    if (row.itConfigured && row.hotelCode) allItOkCodes.add(normalizeText(row.hotelCode));
+  }
+
+  // 待转单匹配
+  const pendingMap = new Map();
+  for (const row of pendingRows) {
+    if (row.createdBy !== "供应链管理员") continue;
+    const ck = normalizeText(row.customerOrderNo);
+    if (ck && !pendingMap.has(ck)) pendingMap.set(ck, row.transferStatus);
+  }
+
+  // 统计每个群的订单
+  for (const [name, g] of groups) {
+    let orderTotal = 0, orderAi = 0, orderAiTotal = 0;
+    if (g.itConfigured) {
+      for (const sr of salesRows) {
+        const hc = normalizeText(sr.hotelCode);
+        if (!hc || !g.hotelCodes.has(hc)) continue;
+        // 按公司过滤，避免其他公司同项目点订单混入
+        if (g.operationCompany) {
+          const srCompany = normalizeText(sr.operationCompany || "").replace(/[（(]/g, "(").replace(/[）)]/g, ")");
+          const grCompany = normalizeText(g.operationCompany).replace(/[（(]/g, "(").replace(/[）)]/g, ")");
+          if (srCompany !== grCompany) continue;
+        }
+        orderTotal += 1;
+        const custKey = normalizeText(sr.customerOrderNo);
+        const pendingStatus = pendingMap.get(custKey);
+        if (pendingStatus) {
+          orderAiTotal += 1;
+          if (pendingStatus.includes("已转")) orderAi += 1;
+        }
+      }
+    }
+    g.orderTotal = orderTotal;
+    g.orderAiCount = orderAi;
+    g.orderAiTotal = orderAiTotal;
+    g.aiRate = orderTotal > 0 ? orderAi / orderTotal : null;
+    g.aiRateTotal = orderTotal > 0 ? orderAiTotal / orderTotal : null;
+    // 下单方式备注
+    const companyKey = normalizeText(g.operationCompany).replace(/[（(]/g, "(").replace(/[）)]/g, ")");
+    g.orderMethod = logSummary && logSummary[companyKey] ? logSummary[companyKey].remark : "";
+    // 清理 Set（不可序列化）
+    g.hotelCodeCount = g.hotelCodes.size;
+    delete g.hotelCodes;
+  }
+
+  const rows = Array.from(groups.values())
+    .sort((a, b) => b.orderTotal - a.orderTotal || b.hotelCodeCount - a.hotelCodeCount);
+
+  return { rows };
+}
+
 function findFile(dir, pattern) {
   if (!fs.existsSync(dir)) return null;
   // 先找根目录（跳过临时文件和 Zone.Identifier）
@@ -498,6 +575,7 @@ function buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, logWo
 
   const logSummary = parseWecomLogForSummary(logWorkbook || null, progressRows);
   const companySummary = buildCompanySummary(salesRows, pendingRows, progressRows, logSummary);
+  const groupSummary = buildGroupSummary(salesRows, pendingRows, progressRows, logSummary);
 
   return {
     generatedAt: new Date().toISOString(),
@@ -508,6 +586,7 @@ function buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, logWo
     progressRows,
     pendingTotals: calcPendingTotals(pendingRows),
     companySummary,
+    groupSummary,
   };
 }
 
@@ -530,6 +609,7 @@ module.exports = {
   buildRoomCompanyMap,
   parseWecomLogForSummary,
   buildCompanySummary,
+  buildGroupSummary,
   findFile,
   loadDefaultData,
   buildPageData,

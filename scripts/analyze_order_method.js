@@ -1,5 +1,5 @@
 /**
- * 按群统计下单方式（图片下单 / PDF下单 / Excel下单 等）
+ * 按群统计下单方式（图片下单 / PDF下单 / Excel下单 等），只看7月
  * 用法: node scripts/analyze_order_method.js
  * 输出: 群分析/企业微信群下单方式分析.md
  */
@@ -11,7 +11,6 @@ const { sheetRows, findHeaderIndex, rowsToObjects, normalizeText, findFile } = r
 const ROOT = path.join(__dirname, "..");
 const REPORT_DIR = path.join(ROOT, "..", "群分析");
 
-// 消息类型 → 下单方式
 function determineOrderMethod(msgtype, filename) {
   const mt = (msgtype || "").toLowerCase().trim();
   if (mt === "image")  return { label: "图片下单",   isAI: true };
@@ -19,9 +18,9 @@ function determineOrderMethod(msgtype, filename) {
   if (mt === "text")   return { label: "文本消息",   isAI: true };
   if (mt === "file") {
     const ext = (filename || "").includes(".") ? filename.split(".").pop().toLowerCase() : null;
-    if (ext === "pdf")                    return { label: "PDF下单",    isAI: false };
-    if (ext === "xlsx" || ext === "xls" || ext === "xlsm") return { label: "Excel下单",  isAI: false };
-    if (ext === "doc" || ext === "docx")  return { label: "Word下单",   isAI: false };
+    if (ext === "pdf") return { label: "PDF下单", isAI: false };
+    if (ext === "xlsx" || ext === "xls" || ext === "xlsm") return { label: "Excel下单", isAI: false };
+    if (ext === "doc" || ext === "docx") return { label: "Word下单", isAI: false };
     if (["jpg","jpeg","png","gif","jfif","bmp","webp"].includes(ext)) return { label: "图片文件", isAI: false };
     return { label: "文件(" + (ext || "未知") + ")", isAI: false };
   }
@@ -34,27 +33,44 @@ function main() {
   console.error("日志文件: " + path.basename(logPath));
 
   const logWb = XLSX.readFile(logPath);
-  const rows = sheetRows(logWb, "");
-  const LOG_HEADERS = ["room_name", "msgtype", "filename", "filter_status", "skip_reason"];
-  const headerIndex = findHeaderIndex(rows, LOG_HEADERS);
+
+  // 适配新日志格式
+  const hasMsgSheet = logWb.SheetNames.some(s => s.includes("企微消息"));
+  const idToName = {};
+  if (hasMsgSheet) {
+    try {
+      const cfgRows = sheetRows(logWb, "配置清单");
+      const cfgHdr = findHeaderIndex(cfgRows, ["roomid", "room_name"]);
+      if (cfgHdr >= 0) rowsToObjects(cfgRows, cfgHdr).forEach(r => { idToName[r["roomid"]] = r["room_name"]; });
+    } catch (e) {}
+  }
+  const rows = sheetRows(logWb, hasMsgSheet ? "企微消息" : "");
+  const headerCandidates = hasMsgSheet
+    ? ["roomid", "msgtype", "filename", "filter_status", "msgtime"]
+    : ["room_name", "msgtype", "filename", "filter_status"];
+  const headerIndex = findHeaderIndex(rows, headerCandidates);
   if (headerIndex < 0) { console.error("找不到日志表头"); process.exit(1); }
 
   const records = rowsToObjects(rows, headerIndex);
+  const JULY_1_MS = 1782835200000;
 
   // 按群统计
-  const byRoom = {};  // room → { methodLabel → { count, isAI } }
+  const byRoom = {};
 
   for (const r of records) {
+    // 只看 7 月
+    if (r["msgtime"] && Number(r["msgtime"]) < JULY_1_MS) continue;
+
     const status = normalizeText(r["filter_status"]);
     if (status !== "ACCEPTED" && status !== "SKIPPED") continue;
 
-    const room = normalizeText(r["room_name"]);
+    const room = hasMsgSheet
+      ? (idToName[normalizeText(r["roomid"])] || normalizeText(r["roomid"]))
+      : normalizeText(r["room_name"]);
     if (!room) continue;
 
     const method = determineOrderMethod(r["msgtype"], r["filename"]);
     if (!method) continue;
-
-    // 过滤纯文本噪音（SKIPPED + text）
     if (status === "SKIPPED" && normalizeText(r["msgtype"]) === "text") continue;
 
     if (!byRoom[room]) byRoom[room] = {};
@@ -64,21 +80,18 @@ function main() {
 
   // 格式化输出
   const lines = [];
-  lines.push("# 企业微信群下单方式分析");
+  lines.push("# 企业微信群下单方式分析（仅7月）");
   lines.push("");
-  lines.push("> 数据来源: 微信日志.xlsx（ACCEPTED + SKIPPED 消息，排除纯文本噪音）");
+  lines.push("> 数据来源: 微信日志.xlsx（ACCEPTED + SKIPPED，只看7月，排除纯文本噪音）");
   lines.push("> AI可处理: 图片下单 / 图文混发 / 文本消息 ｜ 系统不支持: PDF下单 / Excel下单 / Word下单 / 图片文件等");
   lines.push("");
 
-  // 总览
   let totalGroups = Object.keys(byRoom).length;
   let imageOnly = 0, hasImage = 0, hasNonAI = 0, nonAIOnly = 0;
   for (const [room, methods] of Object.entries(byRoom)) {
     const labels = Object.keys(methods);
-    const hasImg = labels.some(l => l === "图片下单" || l === "图文混发");
-    const hasNon = labels.some(l => !methods[l].isAI);
-    if (hasImg) hasImage++;
-    if (hasNon) hasNonAI++;
+    if (labels.some(l => l === "图片下单" || l === "图文混发")) hasImage++;
+    if (labels.some(l => !methods[l].isAI)) hasNonAI++;
     if (labels.length === 1 && labels[0] === "图片下单") imageOnly++;
     if (labels.every(l => !methods[l].isAI)) nonAIOnly++;
   }
@@ -94,67 +107,48 @@ function main() {
   lines.push(`| 完全不经过AI的群 | ${nonAIOnly} |`);
   lines.push("");
 
-  // 按群详细列表，按总消息数降序
   const roomList = Object.entries(byRoom).map(([room, methods]) => {
     let total = 0, aiTotal = 0, nonAiTotal = 0;
-    for (const [label, info] of Object.entries(methods)) {
-      total += info.count;
-      if (info.isAI) aiTotal += info.count; else nonAiTotal += info.count;
-    }
+    for (const [label, info] of Object.entries(methods)) { total += info.count; if (info.isAI) aiTotal += info.count; else nonAiTotal += info.count; }
     const sorted = Object.entries(methods).sort((a, b) => b[1].count - a[1].count);
     const top = sorted[0];
     const mainMethod = top[0] + (top[1].count / total > 0.8 ? "" : " " + Math.round(top[1].count / total * 100) + "%");
     return { room, methods: sorted, total, aiTotal, nonAiTotal, mainMethod };
   }).sort((a, b) => b.total - a.total);
 
-  lines.push("## 各群下单方式明细（按消息总数降序）");
+  lines.push("## 各群下单方式明细");
   lines.push("");
-  lines.push(`| # | 群名称 | 总消息数 | AI可处理 | 不支持 | 主要方式 |`);
+  lines.push(`| # | 群名称 | 总消息数 | 图片相关 | 不支持 | 主要方式 |`);
   lines.push(`|---|--------|---------|---------|--------|---------|`);
-
   roomList.forEach((g, i) => {
+    const imgCount = g.methods.filter(([l]) => l === "图片下单" || l === "图文混发").reduce((s, [, m]) => s + m.count, 0);
     const rate = Math.round(g.aiTotal / g.total * 100);
     const emoji = rate >= 80 ? "✅" : rate >= 50 ? "⚠️" : "🔴";
-    lines.push(`| ${i + 1} | ${g.room} | ${g.total} | ${g.aiTotal} (${rate}%) | ${g.nonAiTotal} | ${emoji} ${g.mainMethod} |`);
+    lines.push(`| ${i + 1} | ${g.room} | ${g.total} | ${imgCount} | ${g.nonAiTotal} | ${emoji} ${g.mainMethod} |`);
   });
   lines.push("");
 
-  // 含非AI格式的群（重点关注）
-  lines.push("## 🔴 有AI不支持格式的群（重点）");
-  lines.push("");
-  lines.push("| 群名称 | 总消息 | 不支持格式详情 |");
-  lines.push("|--------|------|--------------|");
-
-  for (const g of roomList) {
-    const nonAI = g.methods.filter(([l, m]) => !m.isAI);
-    if (nonAI.length === 0) continue;
-    const details = nonAI.map(([l, m]) => l + " " + m.count + "条").join("，");
-    lines.push(`| ${g.room} | ${g.total} | ${details} |`);
+  // 更新 priority_groups.json 中已有的 mainMethod
+  const pgPath = path.join(ROOT, "basicData", "priority_groups.json");
+  if (fs.existsSync(pgPath)) {
+    const pg = JSON.parse(fs.readFileSync(pgPath, "utf8"));
+    let updated = 0;
+    for (const g of roomList) {
+      if (pg.groups[g.room]) {
+        pg.groups[g.room].mainMethod = g.mainMethod;
+        updated++;
+      }
+    }
+    pg._日志来源 = "7月14日拉取日志（仅7月消息）";
+    pg.updatedAt = new Date().toISOString().slice(0, 10);
+    fs.writeFileSync(pgPath, JSON.stringify(pg, null, 2) + "\n");
+    lines.push(`> 已更新 priority_groups.json 中 ${updated} 个群的 mainMethod`);
   }
-  lines.push("");
 
-  // 纯图片下单群（AI覆盖率最高）
-  lines.push("## ✅ 纯图片下单群");
-  lines.push("");
-  const pureImage = roomList.filter(g => {
-    const labels = g.methods.map(([l]) => l);
-    return labels.every(l => l === "图片下单" || l === "图文混发" || l === "文本消息") &&
-           labels.some(l => l === "图片下单" || l === "图文混发");
-  });
-  lines.push(`共 ${pureImage.length} 个群：`);
-  pureImage.forEach(g => {
-    const imgs = g.methods.filter(([l]) => l === "图片下单" || l === "图文混发");
-    const imgTotal = imgs.reduce((s, [, m]) => s + m.count, 0);
-    lines.push(`- ${g.room}（${imgTotal} 条图片消息）`);
-  });
-  lines.push("");
-
-  // 写入文件
   const reportFile = path.join(REPORT_DIR, "企业微信群下单方式分析.md");
   fs.mkdirSync(REPORT_DIR, { recursive: true });
-  const content = lines.join("\n");
-  fs.writeFileSync(reportFile, content);
-  console.log(content);
+  fs.writeFileSync(reportFile, lines.join("\n"));
+  console.log(lines.join("\n"));
   console.error("\n已保存: " + reportFile);
 }
 

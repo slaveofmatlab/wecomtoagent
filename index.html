@@ -1521,10 +1521,15 @@
       return;
     }
 
-    // 过滤出标记为"印刷"的重点群
+    // 过滤：只排除标记为手写的群（imageType = "手写" 或 "1"），其余都展示
+    var handWritten = groupRows.filter(function (g) {
+      var c = cfg.groups[g.groupName];
+      return c && (c.imageType === "手写" || c.imageType === "1");
+    });
     var focused = groupRows.filter(function (g) {
       var c = cfg.groups[g.groupName];
-      return c && c.imageType === "印刷";
+      if (!c) return false;
+      return c.imageType !== "手写" && c.imageType !== "1";
     });
 
     if (!focused.length) {
@@ -1536,7 +1541,7 @@
     document.getElementById("priorityPanel").hidden = false;
     document.getElementById("priorityTableWrap").hidden = false;
     document.getElementById("priorityNote").textContent =
-      "共 " + focused.length + " 个群（已排除手写图片群）";
+      "共 " + focused.length + " 个群（已排除 " + handWritten.length + " 个手写群）";
 
     var totalOrder = focused.reduce(function (s, g) { return s + g.orderTotal; }, 0);
     var totalAi = focused.reduce(function (s, g) { return s + (g.orderAiCount || 0); }, 0);

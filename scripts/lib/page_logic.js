@@ -266,8 +266,14 @@ function parseWecomLogForSummary(workbook, progressRows) {
   // 按 companyKey 聚合下单方式
   var byCompany = {};
 
+  // 只看 7 月及之后的消息（7/1 00:00:00 UTC+8）
+  var JULY_1_MS = 1782835200000;
+
   for (var i = 0; i < records.length; i++) {
     var r = records[i];
+    // 有 msgtime 时只取 7 月及之后
+    if (r["msgtime"] && Number(r["msgtime"]) < JULY_1_MS) continue;
+
     var status = normalizeText(r["filter_status"]);
     if (status !== "ACCEPTED" && status !== "SKIPPED") continue;
 

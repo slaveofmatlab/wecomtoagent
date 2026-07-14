@@ -4,6 +4,7 @@
  * 输出: Markdown 格式到 stdout
  */
 const path = require("path");
+const fs = require("fs");
 const XLSX = require("xlsx");
 const {
   parseSalesFull,
@@ -14,6 +15,7 @@ const {
 } = require("./lib/page_logic");
 
 const ROOT = path.join(__dirname, "..");
+const REPORT_DIR = path.join(ROOT, "..", "群分析");
 
 function main() {
   const cutoffDate = process.argv[2];
@@ -21,6 +23,17 @@ function main() {
     console.error("用法: node scripts/analyze_groups.js MMDD");
     process.exit(1);
   }
+
+  // 输出到群分析/ 文件夹，同时打印到终端
+  const reportFile = path.join(REPORT_DIR, `企业微信群AI转单分析_${cutoffDate}.md`);
+  fs.mkdirSync(REPORT_DIR, { recursive: true });
+  const fileStream = fs.createWriteStream(reportFile);
+  const _log = console.log;
+  console.log = function () {
+    const line = Array.from(arguments).join(" ") + "\n";
+    fileStream.write(line);
+    _log.apply(console, arguments);
+  };
 
   const month = String(parseInt(cutoffDate.slice(0, 2), 10));
   const day = String(parseInt(cutoffDate.slice(2, 4), 10));
@@ -232,6 +245,9 @@ function main() {
       const rate = s.orderTotal > 0 ? (s.orderAi / s.orderTotal * 100).toFixed(1) + "%" : "-";
       console.log(`| ${name} | ${s.groupCount} | ${s.activeGroups} | ${s.orderTotal} | ${s.orderAi} | ${rate} |`);
     });
+
+  fileStream.end();
+  _log("\n已保存: " + reportFile);
 }
 
 main();

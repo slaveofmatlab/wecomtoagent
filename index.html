@@ -1540,14 +1540,14 @@
 
     document.getElementById("priorityPanel").hidden = false;
     document.getElementById("priorityNote").textContent =
-      "共 " + focused.length + " 个群（已排除 " + handWritten.length + " 个手写群）";
+      "共 " + focused.length + " 个群";
 
     var totalOrder = focused.reduce(function (s, g) { return s + g.orderTotal; }, 0);
     var totalAi = focused.reduce(function (s, g) { return s + (g.orderAiCount || 0); }, 0);
 
     var html = "";
     focused.forEach(function (g, i) {
-      var method = g.orderMethod || (cfg.groups[g.groupName] ? cfg.groups[g.groupName].mainMethod || "-" : "-");
+      var method = (cfg.groups[g.groupName] && cfg.groups[g.groupName].mainMethod) || g.orderMethod || "-";
       var aiPct = g.orderTotal > 0 ? Math.round((g.orderAiCount || 0) / g.orderTotal * 100) + "%" : "-";
       html += "<tr>";
       html += "<td>" + g.groupName + "</td>";
@@ -1827,9 +1827,12 @@
     var records = rowsToObjects(rows, headerIndex);
     var roomCompanyMap = buildRoomCompanyMap(progressRows);
     var byCompany = {};
+    // 只看 7 月及之后的消息
+    var JULY_1_MS = 1782835200000;
 
     for (var i = 0; i < records.length; i++) {
       var r = records[i];
+      if (r["msgtime"] && Number(r["msgtime"]) < JULY_1_MS) continue;
       var status = normalizeText(r["filter_status"]);
       if (status !== "ACCEPTED" && status !== "SKIPPED") continue;
 

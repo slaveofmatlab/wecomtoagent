@@ -893,7 +893,7 @@
   <!-- ====== 重点群监控 ====== -->
   <section id="priorityPanel" class="panel" hidden>
     <div class="table-section-title">
-      <span>🎯 重点群监控（图片下单）</span>
+      <span>🎯 重点群监控</span>
       <span style="font-size:11px;color:var(--muted);margin-left:12px;font-weight:400;" id="priorityNote"></span>
     </div>
     <div id="priorityTableWrap" class="table-wrap">
@@ -1522,15 +1522,10 @@
       return;
     }
 
-    // 过滤：只排除标记为手写的群（imageType = "手写" 或 "1"），其余都展示
-    var handWritten = groupRows.filter(function (g) {
-      var c = cfg.groups[g.groupName];
-      return c && (c.imageType === "手写" || c.imageType === "1");
-    });
+    // 只展示标记为"标准"的群
     var focused = groupRows.filter(function (g) {
       var c = cfg.groups[g.groupName];
-      if (!c) return false;
-      return c.imageType !== "手写" && c.imageType !== "1";
+      return c && c.tag === "标准";
     });
 
     if (!focused.length) {
@@ -1540,7 +1535,7 @@
 
     document.getElementById("priorityPanel").hidden = false;
     document.getElementById("priorityNote").textContent =
-      "共 " + focused.length + " 个群";
+      "共 " + focused.length + " 个标准群";
 
     var totalOrder = focused.reduce(function (s, g) { return s + g.orderTotal; }, 0);
     var totalAi = focused.reduce(function (s, g) { return s + (g.orderAiCount || 0); }, 0);

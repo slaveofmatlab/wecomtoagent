@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T01:03:43.958Z",
+  "generatedAt": "2026-07-15T01:24:13.059Z",
   "cutoffDate": "0714",
   "sources": {
     "salesPath": null,
@@ -45,11 +45,11 @@
         "registeredCount": 8,
         "itConfiguredCount": 8,
         "configRate": 1,
-        "orderTotal": 99,
-        "orderAiCount": 62,
-        "orderAiTotal": 62,
-        "aiRate": 0.6262626262626263,
-        "aiRateTotal": 0.6262626262626263,
+        "orderTotal": 109,
+        "orderAiCount": 70,
+        "orderAiTotal": 70,
+        "aiRate": 0.6422018348623854,
+        "aiRateTotal": 0.6422018348623854,
         "orderMethod": "图片下单 75%，PDF下单 19%"
       },
       {
@@ -212,12 +212,12 @@
     "totals": {
       "registeredCount": 266,
       "itConfiguredCount": 266,
-      "orderTotal": 1178,
-      "orderAiCount": 354,
-      "orderAiTotal": 354,
+      "orderTotal": 1188,
+      "orderAiCount": 362,
+      "orderAiTotal": 362,
       "configRate": 1,
-      "aiRate": 0.300509337860781,
-      "aiRateTotal": 0.300509337860781
+      "aiRate": 0.3047138047138047,
+      "aiRateTotal": 0.3047138047138047
     }
   },
   "groupSummary": {
@@ -483,6 +483,18 @@
         "orderAiTotal": 6,
         "aiRate": 0.5454545454545454,
         "aiRateTotal": 0.5454545454545454,
+        "orderMethod": "",
+        "hotelCodeCount": 1
+      },
+      {
+        "groupName": "企业微信-德立安&亚龙湾喜来登接收",
+        "operationCompany": "三亚德立安食品有限公司",
+        "itConfigured": true,
+        "orderTotal": 10,
+        "orderAiCount": 8,
+        "orderAiTotal": 8,
+        "aiRate": 0.8,
+        "aiRateTotal": 0.8,
         "orderMethod": "",
         "hotelCodeCount": 1
       },
@@ -873,18 +885,6 @@
       {
         "groupName": "德立安～同泰下单群",
         "operationCompany": "深圳市德立安食品有限公司",
-        "itConfigured": true,
-        "orderTotal": 0,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": null,
-        "aiRateTotal": null,
-        "orderMethod": "",
-        "hotelCodeCount": 1
-      },
-      {
-        "groupName": "企业微信-德立安&亚龙湾喜来登接收",
-        "operationCompany": "三亚德立安食品有限公司",
         "itConfigured": true,
         "orderTotal": 0,
         "orderAiCount": 0,

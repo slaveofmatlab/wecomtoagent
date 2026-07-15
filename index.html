@@ -1551,12 +1551,11 @@
       });
     }
 
+    document.getElementById("priorityPanel").hidden = false;
     if (!focused.length) {
-      document.getElementById("priorityPanel").hidden = true;
+      document.getElementById("priorityBody").innerHTML = '<tr><td colspan="7" style="color:var(--muted);padding:16px;">暂无匹配的标准群</td></tr>';
       return;
     }
-
-    document.getElementById("priorityPanel").hidden = false;
     document.getElementById("priorityNote").textContent =
       "共 " + focused.length + " 个标准群";
 

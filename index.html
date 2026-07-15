@@ -1586,6 +1586,7 @@
     html += "</tr>";
     document.getElementById("priorityBody").innerHTML = html;
   }
+  window.renderPriorityGroups = renderPriorityGroups;
 
   function deleteSelectedDate() {
     if (!_selectedDates || _selectedDates.size !== 1) return;

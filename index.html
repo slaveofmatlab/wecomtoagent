@@ -892,9 +892,18 @@
 
   <!-- ====== 重点群监控 ====== -->
   <section id="priorityPanel" class="panel" hidden>
-    <div class="table-section-title">
+    <div class="table-section-title" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
       <span>🎯 重点群监控</span>
-      <span style="font-size:11px;color:var(--muted);margin-left:12px;font-weight:400;" id="priorityNote"></span>
+      <select id="priorityFilter" onchange="renderPriorityGroups()" style="font-size:11px;padding:2px 6px;border-radius:6px;border:1px solid #d9e0ea;">
+        <option value="">全部</option>
+        <option value="图片下单">图片下单</option>
+        <option value="图文混发">图文混发</option>
+        <option value="Excel下单">Excel下单</option>
+        <option value="PDF下单">PDF下单</option>
+        <option value="文本消息">文本消息</option>
+        <option value="其他">其他</option>
+      </select>
+      <span style="font-size:11px;color:var(--muted);font-weight:400;" id="priorityNote"></span>
     </div>
     <div id="priorityTableWrap" class="table-wrap">
       <table class="summary-table" style="width:100%;">
@@ -1527,6 +1536,20 @@
       var c = cfg.groups[g.groupName];
       return c && c.tag === "标准";
     });
+
+    // 下单方式筛选
+    var filterType = document.getElementById("priorityFilter").value;
+    if (filterType) {
+      focused = focused.filter(function (g) {
+        var m = (cfg.groups[g.groupName] && cfg.groups[g.groupName].mainMethod) || "";
+        if (filterType === "其他") {
+          // "其他" = 不属于任何已知类型 或 mainMethod为空
+          var known = ["图片下单", "图文混发", "Excel下单", "PDF下单", "文本消息"];
+          return !m || !known.some(function (k) { return m.indexOf(k) === 0; });
+        }
+        return m.indexOf(filterType) === 0;
+      });
+    }
 
     if (!focused.length) {
       document.getElementById("priorityPanel").hidden = true;

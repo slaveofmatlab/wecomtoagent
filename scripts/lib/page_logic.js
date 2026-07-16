@@ -467,6 +467,7 @@ function buildGroupSummary(salesRows, pendingRows, progressRows, logSummary) {
       groups.set(name, {
         groupName: name,
         operationCompany: row.operationCompany || "",
+        operationCompanyKey: row.operationCompanyKey || "",
         hotelCodes: new Set(),
         itConfigured: false,
       });
@@ -474,7 +475,7 @@ function buildGroupSummary(salesRows, pendingRows, progressRows, logSummary) {
     const g = groups.get(name);
     if (row.hotelCode) g.hotelCodes.add(normalizeText(row.hotelCode));
     if (row.itConfigured) g.itConfigured = true;
-    if (row.operationCompany) g.operationCompany = row.operationCompany;
+    if (row.operationCompany) { g.operationCompany = row.operationCompany; g.operationCompanyKey = row.operationCompanyKey || ""; }
   }
 
   // 全局 IT已配置集合
@@ -501,10 +502,8 @@ function buildGroupSummary(salesRows, pendingRows, progressRows, logSummary) {
       for (const sr of salesRows) {
         const hc = normalizeText(sr.hotelCode);
         if (!hc || !g.hotelCodes.has(hc)) continue;
-        if (g.operationCompany) {
-          const srCompany = normalizeText(sr.operationCompany || "").replace(/[（(]/g, "(").replace(/[）)]/g, ")");
-          const grCompany = normalizeText(g.operationCompany).replace(/[（(]/g, "(").replace(/[）)]/g, ")");
-          if (srCompany !== grCompany) continue;
+        if (g.operationCompanyKey) {
+          if ((sr.operationCompanyKey || "") !== g.operationCompanyKey) continue;
         }
         orderTotal += 1;
         // 两层匹配：先客户订单号，再销售订单号兜底

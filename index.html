@@ -896,6 +896,7 @@
       <span>🎯 重点群监控</span>
       <select id="priorityFilter" onchange="renderPriorityGroups()" style="font-size:11px;padding:2px 6px;border-radius:6px;border:1px solid #d9e0ea;">
         <option value="">全部</option>
+        <option value="手写">手写</option>
         <option value="图片下单">图片下单</option>
         <option value="图文混发">图文混发</option>
         <option value="Excel下单">Excel下单</option>
@@ -1531,7 +1532,7 @@
       return;
     }
 
-    // 只展示标记为"标准"的群
+    // 只展示标记为"标准"的群（手写筛选项除外）
     var focused = groupRows.filter(function (g) {
       var c = cfg.groups[g.groupName];
       return c && c.tag === "标准";
@@ -1539,7 +1540,12 @@
 
     // 下单方式筛选
     var filterType = document.getElementById("priorityFilter").value;
-    if (filterType) {
+    if (filterType === "手写") {
+      focused = groupRows.filter(function (g) {
+        var c = cfg.groups[g.groupName];
+        return c && c.tag === "非标准";
+      });
+    } else if (filterType) {
       focused = focused.filter(function (g) {
         var m = (cfg.groups[g.groupName] && cfg.groups[g.groupName].mainMethod) || "";
         if (filterType === "其他") {

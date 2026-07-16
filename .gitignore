@@ -1,3 +1,5 @@
 node_modules/
 *:Zone.Identifier
 tmp/
+data/page_data.json
+data/trends.json

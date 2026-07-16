@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T01:05:38.310Z",
+  "generatedAt": "2026-07-16T01:09:13.117Z",
   "cutoffDate": "0715",
   "sources": {
     "salesPath": null,
@@ -16,28 +16,15 @@
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
         "operationCompanyKey": "上海/丰厨(上海)供应链管理有限公司",
-        "registeredCount": 160,
-        "itConfiguredCount": 160,
+        "registeredCount": 103,
+        "itConfiguredCount": 103,
         "configRate": 1,
-        "orderTotal": 450,
+        "orderTotal": 233,
         "orderAiCount": 0,
         "orderAiTotal": 0,
         "aiRate": 0,
         "aiRateTotal": 0,
         "orderMethod": "图片下单 42%，Excel下单 35%"
-      },
-      {
-        "operationCompany": "成都/丰厨(上海)供应链管理有限公司",
-        "operationCompanyKey": "成都/丰厨(上海)供应链管理有限公司",
-        "registeredCount": 5,
-        "itConfiguredCount": 5,
-        "configRate": 1,
-        "orderTotal": 131,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": ""
       },
       {
         "operationCompany": "浙江/丰厨(上海)供应链管理有限公司",
@@ -223,30 +210,18 @@
       }
     ],
     "totals": {
-      "registeredCount": 271,
-      "itConfiguredCount": 271,
-      "orderTotal": 1101,
+      "registeredCount": 209,
+      "itConfiguredCount": 209,
+      "orderTotal": 753,
       "orderAiCount": 110,
       "orderAiTotal": 110,
       "configRate": 1,
-      "aiRate": 0.09990917347865577,
-      "aiRateTotal": 0.09990917347865577
+      "aiRate": 0.1460823373173971,
+      "aiRateTotal": 0.1460823373173971
     }
   },
   "groupSummary": {
     "rows": [
-      {
-        "groupName": "上海-【竹筷子】机器人接单群",
-        "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
-        "itConfigured": true,
-        "orderTotal": 143,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "",
-        "hotelCodeCount": 6
-      },
       {
         "groupName": "浙江丰厨运营AI转单群",
         "operationCompany": "浙江/丰厨(上海)供应链管理有限公司",
@@ -258,18 +233,6 @@
         "aiRateTotal": 0,
         "orderMethod": "",
         "hotelCodeCount": 10
-      },
-      {
-        "groupName": "上海-长城汽车机器人接单群",
-        "operationCompany": "成都/丰厨(上海)供应链管理有限公司",
-        "itConfigured": true,
-        "orderTotal": 99,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "",
-        "hotelCodeCount": 4
       },
       {
         "groupName": "工行内部沟通群",
@@ -306,18 +269,6 @@
         "aiRateTotal": 0,
         "orderMethod": "",
         "hotelCodeCount": 2
-      },
-      {
-        "groupName": "上海-【人寿堂】机器人接单群",
-        "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
-        "itConfigured": true,
-        "orderTotal": 51,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "",
-        "hotelCodeCount": 32
       },
       {
         "groupName": "益海-工厂买菜私聊",
@@ -380,18 +331,6 @@
         "hotelCodeCount": 1
       },
       {
-        "groupName": "成都-长城汽车机器人接单群",
-        "operationCompany": "成都/丰厨(上海)供应链管理有限公司",
-        "itConfigured": true,
-        "orderTotal": 32,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "",
-        "hotelCodeCount": 1
-      },
-      {
         "groupName": "杭州德立安运营AI转单群",
         "operationCompany": "益海嘉里德立安（杭州）食品有限公司",
         "itConfigured": true,
@@ -426,18 +365,6 @@
         "aiRateTotal": 0,
         "orderMethod": "",
         "hotelCodeCount": 1
-      },
-      {
-        "groupName": "上海-【荷特宝】机器人接单群",
-        "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
-        "itConfigured": true,
-        "orderTotal": 24,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "",
-        "hotelCodeCount": 20
       },
       {
         "groupName": "德立安陕西-栀初-如意茵香茂御酒店下单",

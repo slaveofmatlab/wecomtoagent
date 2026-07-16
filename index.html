@@ -1556,10 +1556,8 @@
         return m.indexOf(filterType) === 0;
       });
     } else {
-      // 全部：所有群（只保留有数据的，即 itConfigured 的群）
-      focused = groupRows.filter(function (g) {
-        return g.orderTotal > 0;
-      });
+      // 全部：所有群
+      focused = groupRows.slice();
     }
 
     document.getElementById("priorityPanel").hidden = false;
@@ -1567,7 +1565,7 @@
       document.getElementById("priorityBody").innerHTML = '<tr><td colspan="7" style="color:var(--muted);padding:16px;">暂无匹配的群</td></tr>';
       return;
     }
-    var labelText = filterType === "全部" || !filterType ? "全部群" : (filterType === "手写" ? "手写群" : "标准群");
+    var labelText = !filterType ? "全部群" : (filterType === "手写" ? "手写群" : "标准群 · " + filterType);
     document.getElementById("priorityNote").textContent =
       "共 " + focused.length + " 个群（" + labelText + "）";
 

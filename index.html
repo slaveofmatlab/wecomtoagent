@@ -1534,38 +1534,42 @@
       return;
     }
 
-    // 只展示标记为"标准"的群（手写筛选项除外）
-    var focused = groupRows.filter(function (g) {
-      var c = cfg.groups[g.groupName];
-      return c && c.tag === "标准";
-    });
-
-    // 下单方式筛选
     var filterType = document.getElementById("priorityFilter").value;
+
+    // 按 tag 筛选：全部=所有群，手写=非标准，其他=标准
+    var focused;
     if (filterType === "手写") {
       focused = groupRows.filter(function (g) {
         var c = cfg.groups[g.groupName];
         return c && c.tag === "非标准";
       });
     } else if (filterType) {
-      focused = focused.filter(function (g) {
-        var m = (cfg.groups[g.groupName] && cfg.groups[g.groupName].mainMethod) || "";
+      // 具体下单方式 → 从标准群里再筛
+      focused = groupRows.filter(function (g) {
+        var c = cfg.groups[g.groupName];
+        if (!c || c.tag !== "标准") return false;
+        var m = c.mainMethod || "";
         if (filterType === "其他") {
-          // "其他" = 不属于任何已知类型 或 mainMethod为空
           var known = ["图片下单", "图文混发", "Excel下单", "PDF下单", "文本消息"];
           return !m || !known.some(function (k) { return m.indexOf(k) === 0; });
         }
         return m.indexOf(filterType) === 0;
       });
+    } else {
+      // 全部：所有群（只保留有数据的，即 itConfigured 的群）
+      focused = groupRows.filter(function (g) {
+        return g.orderTotal > 0;
+      });
     }
 
     document.getElementById("priorityPanel").hidden = false;
     if (!focused.length) {
-      document.getElementById("priorityBody").innerHTML = '<tr><td colspan="7" style="color:var(--muted);padding:16px;">暂无匹配的标准群</td></tr>';
+      document.getElementById("priorityBody").innerHTML = '<tr><td colspan="7" style="color:var(--muted);padding:16px;">暂无匹配的群</td></tr>';
       return;
     }
+    var labelText = filterType === "全部" || !filterType ? "全部群" : (filterType === "手写" ? "手写群" : "标准群");
     document.getElementById("priorityNote").textContent =
-      "共 " + focused.length + " 个标准群";
+      "共 " + focused.length + " 个群（" + labelText + "）";
 
     var totalOrder = focused.reduce(function (s, g) { return s + g.orderTotal; }, 0);
     var totalAi = focused.reduce(function (s, g) { return s + (g.orderAiCount || 0); }, 0);

@@ -468,13 +468,14 @@ function buildGroupSummary(salesRows, pendingRows, progressRows, logSummary) {
         groupName: name,
         operationCompany: row.operationCompany || "",
         operationCompanyKey: row.operationCompanyKey || "",
-        hotelCodes: new Set(),
+        hotelCodes: new Set(),    // 全部项目点（展示用）
+        itOkCodes: new Set(),     // 仅 IT 已配置的项目点（统计用，对齐公司汇总口径）
         itConfigured: false,
       });
     }
     const g = groups.get(name);
     if (row.hotelCode) g.hotelCodes.add(normalizeText(row.hotelCode));
-    if (row.itConfigured) g.itConfigured = true;
+    if (row.itConfigured) { g.itConfigured = true; if (row.hotelCode) g.itOkCodes.add(normalizeText(row.hotelCode)); }
     if (row.operationCompany) { g.operationCompany = row.operationCompany; g.operationCompanyKey = row.operationCompanyKey || ""; }
   }
 
@@ -501,7 +502,7 @@ function buildGroupSummary(salesRows, pendingRows, progressRows, logSummary) {
     if (g.itConfigured) {
       for (const sr of salesRows) {
         const hc = normalizeText(sr.hotelCode);
-        if (!hc || !g.hotelCodes.has(hc)) continue;
+        if (!hc || !g.itOkCodes.has(hc)) continue;
         if (g.operationCompanyKey) {
           if ((sr.operationCompanyKey || "") !== g.operationCompanyKey) continue;
         }

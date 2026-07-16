@@ -714,6 +714,7 @@
           </div>
         </div>
         <button class="secondary" onclick="exportTable()" style="font-size:11px;padding:3px 10px;">导出表格</button>
+        <button class="secondary" onclick="exportExcel()" style="font-size:11px;padding:3px 10px;">导出Excel</button>
         <button class="secondary" onclick="exportAll()" style="font-size:11px;padding:3px 10px;">导出全部</button>
       </span>
     </div>
@@ -939,6 +940,7 @@
 <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
 <script src="vendor/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script>
 (function () {
   "use strict";
@@ -1326,9 +1328,9 @@
       head += '<th class="group" rowspan="2">备注</th>';
       head += '</tr><tr>';
       selectedKeys.forEach(function(){
-        head += '<th class="group">已配置项目点<br>订单总行数</th>';
-        head += '<th class="group">AI 识别<br>订单行数</th>';
-        head += '<th class="group">AI 转单占比</th>';
+        head += '<th class="group" style="text-align:center">已配置项目点<br>订单总行数</th>';
+        head += '<th class="group" style="text-align:center">AI 识别<br>订单行数</th>';
+        head += '<th class="group" style="text-align:center">AI 转单占比</th>';
       });
       head += '</tr>';
     } else {
@@ -2502,23 +2504,71 @@
     link.click();
   }
   function exportChart() {
-    if (!window._tc) return;
-    var c = window._tc.canvas;
+    var trimmed = renderTrimmedChart();
+    if (!trimmed) return;
+    var h = loadHistory(); var keys = Object.keys(h).sort();
     var headerH = 60;
-    var tmp = document.createElement("canvas"); tmp.width = c.width; tmp.height = c.height + headerH;
-    var ctx = tmp.getContext("2d");
-    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, tmp.width, tmp.height);
-    // 标题
+    var outCanvas = document.createElement("canvas");
+    outCanvas.width = trimmed.canvas.width;
+    outCanvas.height = trimmed.canvas.height + headerH;
+    var ctx = outCanvas.getContext("2d");
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
     ctx.fillStyle = "#172033"; ctx.font = "bold 18px -apple-system,Microsoft YaHei,sans-serif";
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText("企业微信转单趋势图", tmp.width / 2, 22);
-    // 副标题（日期范围）
-    var h = loadHistory(); var keys = Object.keys(h).sort();
-    var subtitle = keys.length ? ("时间范围: " + keys[0] + " ~ " + keys[keys.length - 1] + " | 共 " + keys.length + " 天") : "";
+    ctx.fillText("企业微信转单趋势图", outCanvas.width / 2, 22);
+    var firstKey = keys[0], lastKey = keys[keys.length - 1];
+    var subtitle = "时间范围: " + firstKey + " ~ " + lastKey + " | 共 " + keys.length + " 天";
     ctx.fillStyle = "#64748b"; ctx.font = "12px -apple-system,Microsoft YaHei,sans-serif";
-    ctx.fillText(subtitle, tmp.width / 2, 44);
-    ctx.drawImage(c, 0, headerH);
-    downloadCanvas(tmp, "趋势图_" + new Date().toISOString().slice(0,10) + ".png");
+    ctx.fillText(subtitle, outCanvas.width / 2, 44);
+    ctx.drawImage(trimmed.canvas, 0, headerH);
+    downloadCanvas(outCanvas, "趋势图_" + new Date().toISOString().slice(0,10) + ".png");
+    trimmed.cleanup();
+  }
+
+  // 生成修剪后（只到最新数据日）的趋势图 canvas，返回 {canvas, cleanup} 或 null
+  function renderTrimmedChart() {
+    if (!window._tc) return null;
+    var liveLabels = window._tc.data.labels;
+    var configData = window._tc.data.datasets[0].data;
+    var aiData = window._tc.data.datasets[1].data;
+    var firstIdx = -1, lastIdx = -1;
+    for (var i = 0; i < liveLabels.length; i++) {
+      if (configData[i] != null || aiData[i] != null) {
+        if (firstIdx === -1) firstIdx = i;
+        lastIdx = i;
+      }
+    }
+    if (firstIdx === -1) return null;
+
+    var trimLabels = liveLabels.slice(firstIdx, lastIdx + 1);
+    var trimConfig = configData.slice(firstIdx, lastIdx + 1);
+    var trimAi = aiData.slice(firstIdx, lastIdx + 1);
+
+    var tempCanvas = document.createElement("canvas");
+    var chartW = Math.max(800, trimLabels.length * 48);
+    tempCanvas.width = chartW;
+    tempCanvas.height = 300;
+    tempCanvas.style.cssText = "position:absolute;left:-9999px;top:0;";
+    document.body.appendChild(tempCanvas);
+
+    var tempChart = new Chart(tempCanvas.getContext("2d"), {
+      type: "line",
+      data: {
+        labels: trimLabels,
+        datasets: [
+          { label: "配置率 %", data: trimConfig, borderColor: "#6d8f3c", backgroundColor: "rgba(109,143,60,0.08)", borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: "#6d8f3c", tension: 0.2, spanGaps: true },
+          { label: "AI转单占比 %", data: trimAi, borderColor: "#b45309", backgroundColor: "rgba(180,83,9,0.05)", borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: "#b45309", tension: 0.2, spanGaps: true }
+        ]
+      },
+      options: {
+        responsive: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: { legend: { position: "bottom" } },
+        scales: { y: { type: "linear", title: { display: true, text: "%" }, min: 0, max: 110, ticks: { stepSize: 20, callback: function(v) { return v > 100 ? "" : v + "%"; } } } }
+      }
+    });
+
+    return { canvas: tempCanvas, cleanup: function() { tempChart.destroy(); document.body.removeChild(tempCanvas); } };
   }
   // 截取整个表格（含横向滚动区域），不依赖容器可视宽度
   function captureFullTable() {
@@ -2540,16 +2590,19 @@
   }
   function exportAll() {
     captureFullTable().then(function(tableC) {
-      if (window._tc) {
-        var c = window._tc.canvas;
-        var h = tableC.height + c.height + 40;
+      var trimmed = renderTrimmedChart();
+      if (trimmed) {
+        var c = trimmed.canvas;
+        var tableH = tableC.height;
+        var h = tableH + c.height + 40;
         var w = Math.max(tableC.width, c.width);
         var merged = document.createElement("canvas"); merged.width = w; merged.height = h;
         var mctx = merged.getContext("2d");
         mctx.fillStyle = "#ffffff"; mctx.fillRect(0, 0, w, h);
         mctx.drawImage(tableC, (w - tableC.width) / 2, 0);
-        mctx.drawImage(c, (w - c.width) / 2, tableC.height + 40);
+        mctx.drawImage(c, (w - c.width) / 2, tableH + 40);
         downloadCanvas(merged, "看板全景_" + new Date().toISOString().slice(0,10) + ".png");
+        trimmed.cleanup();
       } else {
         downloadCanvas(tableC, "看板全景_" + new Date().toISOString().slice(0,10) + ".png");
       }
@@ -2558,6 +2611,320 @@
   window.exportChart = exportChart;
   window.exportTable = exportTable;
   window.exportAll = exportAll;
+
+  // ====== 导出 Excel ======
+  function exportExcel() {
+    if (typeof ExcelJS === "undefined") {
+      alert("ExcelJS 库加载失败，请刷新页面后重试。");
+      return;
+    }
+    var summary = window._latestSummary;
+    if (!summary || !summary.rows) { alert("暂无数据可导出"); return; }
+
+    var trends = window._trendsData || {};
+    var selectedKeys = (_selectedDates ? Array.from(_selectedDates).sort() : []);
+    var isMultiDay = selectedKeys.length > 0;
+
+    // 颜色定义
+    var DARK_GREEN = "FF5a7a2e";
+    var MID_GREEN = "FF6d8f3c";
+    var LIGHT_GREEN = "FFF4F9ED";
+    var WHITE = "FFFFFFFF";
+    var OK_GREEN = "FF15803d";
+    var WARN_AMBER = "FFb45309";
+    var RED = "FFb91c1c";
+    var MUTED = "FF94a3b8";
+    var BORDER_COLOR = "FFd9e0ea";
+    var HEADER_FONT_COLOR = "FFFFFFFF";
+
+    var wb = new ExcelJS.Workbook();
+    var ws = wb.addWorksheet("运营公司汇总");
+
+    // --- 辅助函数 ---
+    function pct(v) { return v != null ? (v * 100).toFixed(0) + "%" : "-"; }
+    function rateClass(v) {
+      if (v == null) return "none";
+      if (v >= 0.8) return "high";
+      if (v >= 0.5) return "mid";
+      return "low";
+    }
+
+    function applyCellStyle(cell, opts) {
+      opts = opts || {};
+      cell.alignment = { vertical: "middle", horizontal: opts.align || "center", wrapText: true };
+      cell.font = { name: "Microsoft YaHei", size: opts.fontSize || 11, bold: !!opts.bold, color: { argb: opts.fontColor || "FF172033" } };
+      cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: opts.fill || WHITE } };
+      cell.border = {
+        top: { style: "thin", color: { argb: BORDER_COLOR } },
+        left: { style: "thin", color: { argb: BORDER_COLOR } },
+        bottom: { style: "thin", color: { argb: BORDER_COLOR } },
+        right: { style: "thin", color: { argb: BORDER_COLOR } }
+      };
+    }
+
+    function headerStyle(cell, fillColor) {
+      applyCellStyle(cell, { bold: true, fill: fillColor || MID_GREEN, fontColor: HEADER_FONT_COLOR, fontSize: 11 });
+    }
+
+    function rateStyle(cell, rateVal) {
+      var rc = rateClass(rateVal);
+      var color = rc === "high" ? OK_GREEN : rc === "mid" ? WARN_AMBER : rc === "low" ? RED : MUTED;
+      applyCellStyle(cell, { bold: true, fontColor: color, fill: rc === "none" ? "FFF8FAFC" : WHITE });
+      cell.value = pct(rateVal);
+    }
+
+    var rowIdx = 1;
+
+    // --- 标题行 ---
+    var titleText = "企业微信转单看板 — 运营公司汇总";
+    if (isMultiDay) titleText += "（" + selectedKeys.join(" / ") + "）";
+    var totalCols = isMultiDay ? 4 + selectedKeys.length * 3 + 1 : 8;
+    ws.mergeCells(rowIdx, 1, rowIdx, totalCols);
+    var titleCell = ws.getCell(rowIdx, 1);
+    titleCell.value = titleText;
+    applyCellStyle(titleCell, { bold: true, fill: DARK_GREEN, fontColor: HEADER_FONT_COLOR, fontSize: 14 });
+    // 把合并区域内其他单元格也填上色（ExcelJS 只设左上角）
+    for (var tc = 2; tc <= totalCols; tc++) {
+      applyCellStyle(ws.getCell(rowIdx, tc), { bold: true, fill: DARK_GREEN, fontColor: HEADER_FONT_COLOR, fontSize: 14 });
+    }
+    ws.getRow(rowIdx).height = 32;
+    rowIdx++;
+
+    // --- 子标题行（仅多日模式） ---
+    if (isMultiDay) {
+      ws.getRow(rowIdx).height = 24;
+      // 固定列（rowspan 概念用跨行表示，这里简化为两行表头）
+      var col = 1;
+      ws.mergeCells(rowIdx, col, rowIdx + 1, col);
+      var c0 = ws.getCell(rowIdx, col); c0.value = "运营公司"; headerStyle(c0, MID_GREEN);
+      col++;
+      ws.mergeCells(rowIdx, col, rowIdx + 1, col);
+      var c1 = ws.getCell(rowIdx, col); c1.value = "已登记\n企业微信群\n项目点"; headerStyle(c1, MID_GREEN);
+      col++;
+      ws.mergeCells(rowIdx, col, rowIdx + 1, col);
+      var c2 = ws.getCell(rowIdx, col); c2.value = "IT已配置"; headerStyle(c2, MID_GREEN);
+      col++;
+      ws.mergeCells(rowIdx, col, rowIdx + 1, col);
+      var c3 = ws.getCell(rowIdx, col); c3.value = "项目点\n配置率"; headerStyle(c3, MID_GREEN);
+      col++;
+      selectedKeys.forEach(function(k) {
+        ws.mergeCells(rowIdx, col, rowIdx, col + 2);
+        var dc = ws.getCell(rowIdx, col);
+        dc.value = k + " 企微群订单";
+        applyCellStyle(dc, { bold: true, fill: "FFe8f0d8", fontColor: "FF5a7a2e", fontSize: 11 });
+        for (var j = col + 1; j <= col + 2; j++) {
+          applyCellStyle(ws.getCell(rowIdx, j), { bold: true, fill: "FFe8f0d8", fontColor: "FF5a7a2e", fontSize: 11 });
+        }
+        col += 3;
+      });
+      ws.mergeCells(rowIdx, col, rowIdx + 1, col);
+      var cR = ws.getCell(rowIdx, col); cR.value = "备注"; headerStyle(cR, MID_GREEN);
+      rowIdx++;
+
+      // 第二行表头（子列）
+      var col2 = 5; // 跳过前4个固定列
+      selectedKeys.forEach(function() {
+        var sc1 = ws.getCell(rowIdx, col2);
+        sc1.value = "已配置项目点\n订单总行数";
+        applyCellStyle(sc1, { bold: true, fill: LIGHT_GREEN, fontColor: "FF5a7a2e", fontSize: 10 });
+        col2++;
+        var sc2 = ws.getCell(rowIdx, col2);
+        sc2.value = "AI识别\n订单行数";
+        applyCellStyle(sc2, { bold: true, fill: LIGHT_GREEN, fontColor: "FF5a7a2e", fontSize: 10 });
+        col2++;
+        var sc3 = ws.getCell(rowIdx, col2);
+        sc3.value = "AI转单占比";
+        applyCellStyle(sc3, { bold: true, fill: LIGHT_GREEN, fontColor: "FF5a7a2e", fontSize: 10 });
+        col2++;
+      });
+      rowIdx++;
+    } else {
+      // 单日模式
+      ws.getRow(rowIdx).height = 36;
+      var hdrs = ["运营公司", "已登记\n企业微信群\n项目点", "IT已配置", "项目点配置率", "已配置项目点\n订单总行数", "AI识别\n订单行数", "AI转单占比", "备注"];
+      hdrs.forEach(function(h, i) {
+        var cell = ws.getCell(rowIdx, i + 1);
+        cell.value = h;
+        headerStyle(cell, MID_GREEN);
+      });
+      rowIdx++;
+    }
+
+    // --- 数据行 ---
+    function dayLookup(k) {
+      var idx = {};
+      var day = trends[k];
+      if (day && day.companies) {
+        day.companies.forEach(function(c) { idx[c.operationCompany] = c; });
+      }
+      return idx;
+    }
+    var dayLookups = {};
+    if (isMultiDay) selectedKeys.forEach(function(k) { dayLookups[k] = dayLookup(k); });
+
+    summary.rows.forEach(function(row) {
+      var col = 1;
+      // 运营公司
+      var nameCell = ws.getCell(rowIdx, col);
+      nameCell.value = row.operationCompany;
+      applyCellStyle(nameCell, { align: "left", bold: true });
+      col++;
+      // 已登记
+      var regCell = ws.getCell(rowIdx, col);
+      regCell.value = row.registeredCount;
+      applyCellStyle(regCell, {});
+      col++;
+      // IT已配置
+      var itCell = ws.getCell(rowIdx, col);
+      itCell.value = row.itConfiguredCount;
+      applyCellStyle(itCell, {});
+      col++;
+      // 配置率
+      rateStyle(ws.getCell(rowIdx, col), row.configRate);
+      col++;
+
+      if (isMultiDay) {
+        selectedKeys.forEach(function(k) {
+          var c = dayLookups[k][row.operationCompany];
+          if (c && c.orderTotal > 0) {
+            var otCell = ws.getCell(rowIdx, col);
+            otCell.value = c.orderTotal;
+            applyCellStyle(otCell, {});
+            col++;
+            var oaCell = ws.getCell(rowIdx, col);
+            oaCell.value = c.orderAiCount;
+            applyCellStyle(oaCell, c.orderAiCount === 0 ? { fontColor: "FFcbd5e1" } : {});
+            col++;
+            rateStyle(ws.getCell(rowIdx, col), c.aiRate);
+            col++;
+          } else {
+            var e1 = ws.getCell(rowIdx, col);
+            e1.value = "-";
+            applyCellStyle(e1, { fontColor: MUTED });
+            col++;
+            var e2 = ws.getCell(rowIdx, col);
+            e2.value = "-";
+            applyCellStyle(e2, { fontColor: MUTED });
+            col++;
+            var e3 = ws.getCell(rowIdx, col);
+            e3.value = "-";
+            applyCellStyle(e3, { fontColor: MUTED, bold: false });
+            col++;
+          }
+        });
+      } else {
+        var otCell = ws.getCell(rowIdx, col);
+        otCell.value = row.orderTotal;
+        applyCellStyle(otCell, {});
+        col++;
+        var oaCell = ws.getCell(rowIdx, col);
+        oaCell.value = row.orderAiCount;
+        applyCellStyle(oaCell, row.orderAiCount === 0 ? { fontColor: "FFcbd5e1" } : {});
+        col++;
+        rateStyle(ws.getCell(rowIdx, col), row.aiRate);
+        col++;
+      }
+      // 备注
+      var remarkCell = ws.getCell(rowIdx, col);
+      remarkCell.value = row.orderMethod || "";
+      applyCellStyle(remarkCell, { align: "left", fontSize: 10, fontColor: "FF64748b" });
+      rowIdx++;
+    });
+
+    // --- 合计行 ---
+    var totals = summary.totals;
+    var col = 1;
+    var tName = ws.getCell(rowIdx, col);
+    tName.value = "总计";
+    applyCellStyle(tName, { align: "left", bold: true, fill: LIGHT_GREEN });
+    col++;
+    var tReg = ws.getCell(rowIdx, col);
+    tReg.value = totals.registeredCount;
+    applyCellStyle(tReg, { bold: true, fill: LIGHT_GREEN });
+    col++;
+    var tIt = ws.getCell(rowIdx, col);
+    tIt.value = totals.itConfiguredCount;
+    applyCellStyle(tIt, { bold: true, fill: LIGHT_GREEN });
+    col++;
+    rateStyle(ws.getCell(rowIdx, col), totals.configRate);
+    ws.getCell(rowIdx, col).fill = { type: "pattern", pattern: "solid", fgColor: { argb: LIGHT_GREEN } };
+    col++;
+
+    if (isMultiDay) {
+      selectedKeys.forEach(function(k) {
+        var t = { orderTotal: 0, orderAiCount: 0 };
+        summary.rows.forEach(function(r) {
+          var c = dayLookups[k][r.operationCompany];
+          if (c) { t.orderTotal += c.orderTotal; t.orderAiCount += c.orderAiCount; }
+        });
+        var toCell = ws.getCell(rowIdx, col);
+        toCell.value = t.orderTotal;
+        applyCellStyle(toCell, { bold: true, fill: LIGHT_GREEN });
+        col++;
+        var taCell = ws.getCell(rowIdx, col);
+        taCell.value = t.orderAiCount;
+        applyCellStyle(taCell, { bold: true, fill: LIGHT_GREEN });
+        col++;
+        var rate = t.orderTotal > 0 ? t.orderAiCount / t.orderTotal : null;
+        rateStyle(ws.getCell(rowIdx, col), rate);
+        ws.getCell(rowIdx, col).fill = { type: "pattern", pattern: "solid", fgColor: { argb: LIGHT_GREEN } };
+        col++;
+      });
+    } else {
+      var toCell = ws.getCell(rowIdx, col);
+      toCell.value = totals.orderTotal;
+      applyCellStyle(toCell, { bold: true, fill: LIGHT_GREEN });
+      col++;
+      var taCell = ws.getCell(rowIdx, col);
+      taCell.value = totals.orderAiCount;
+      applyCellStyle(taCell, { bold: true, fill: LIGHT_GREEN });
+      col++;
+      rateStyle(ws.getCell(rowIdx, col), totals.aiRate);
+      ws.getCell(rowIdx, col).fill = { type: "pattern", pattern: "solid", fgColor: { argb: LIGHT_GREEN } };
+      col++;
+    }
+    // 合计行备注为空
+    var tRem = ws.getCell(rowIdx, col);
+    tRem.value = "";
+    applyCellStyle(tRem, { fill: LIGHT_GREEN });
+
+    // --- 列宽 ---
+    ws.getColumn(1).width = 18;
+    if (isMultiDay) {
+      ws.getColumn(2).width = 12;
+      ws.getColumn(3).width = 10;
+      ws.getColumn(4).width = 10;
+      var baseCol = 5;
+      selectedKeys.forEach(function(_, di) {
+        ws.getColumn(baseCol + di * 3).width = 14;
+        ws.getColumn(baseCol + di * 3 + 1).width = 14;
+        ws.getColumn(baseCol + di * 3 + 2).width = 12;
+      });
+      ws.getColumn(baseCol + selectedKeys.length * 3).width = 16;
+    } else {
+      ws.getColumn(2).width = 12;
+      ws.getColumn(3).width = 10;
+      ws.getColumn(4).width = 11;
+      ws.getColumn(5).width = 14;
+      ws.getColumn(6).width = 14;
+      ws.getColumn(7).width = 12;
+      ws.getColumn(8).width = 16;
+    }
+
+    // --- 下载 ---
+    wb.xlsx.writeBuffer().then(function(buf) {
+      var blob = new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "运营公司汇总_" + new Date().toISOString().slice(0, 10) + ".xlsx";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }
+  window.exportExcel = exportExcel;
 
 })();
 </script>

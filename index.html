@@ -2561,7 +2561,7 @@
     tempCanvas.style.height = "300px";
     wrapper.appendChild(tempCanvas);
 
-    var chartConfig = {
+    var tempChart = new Chart(tempCanvas.getContext("2d"), {
       type: "line",
       data: {
         labels: trimLabels,
@@ -2578,28 +2578,24 @@
         plugins: { legend: { position: "bottom" } },
         scales: { y: { type: "linear", title: { display: true, text: "%" }, min: 0, max: 110, ticks: { stepSize: 20, callback: function(v) { return v > 100 ? "" : v + "%"; } } } }
       }
-    };
-    // 如果用户开启了数据标签，导出时也带上
+    });
+
+    // animation:false 时 Chart.js 同步绘制，meta 数据已就绪，直接画标签
     if (_showLabels) {
-      chartConfig.plugins = [{
-        id: "datalabels",
-        afterDatasetsDraw: function(chart) {
-          var ctx2 = chart.ctx;
-          chart.data.datasets.forEach(function(ds, di) {
-            var meta = chart.getDatasetMeta(di);
-            meta.data.forEach(function(pt, i) {
-              var v = ds.data[i];
-              if (v == null) return;
-              ctx2.fillStyle = ds.borderColor;
-              ctx2.font = "bold 11px -apple-system,Microsoft YaHei,sans-serif";
-              ctx2.textAlign = "center";
-              ctx2.fillText(v + "%", pt.x, pt.y - 10);
-            });
-          });
-        }
-      }];
+      var dctx = tempCanvas.getContext("2d");
+      dctx.font = "bold 11px -apple-system,Microsoft YaHei,sans-serif";
+      dctx.textAlign = "center";
+      dctx.textBaseline = "bottom";
+      tempChart.data.datasets.forEach(function(ds) {
+        var meta = tempChart.getDatasetMeta(ds);
+        dctx.fillStyle = ds.borderColor;
+        meta.data.forEach(function(pt, i) {
+          var v = ds.data[i];
+          if (v == null) return;
+          dctx.fillText(v + "%", pt.x, pt.y - 6);
+        });
+      });
     }
-    var tempChart = new Chart(tempCanvas.getContext("2d"), chartConfig);
 
     // 等待浏览器完成首次绘制后再捕获
     requestAnimationFrame(function() {

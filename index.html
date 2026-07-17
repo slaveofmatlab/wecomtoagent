@@ -174,6 +174,25 @@
       opacity: 0.55;
     }
 
+    /* 重点群监控筛选 chips（可多选） */
+    .filter-chip {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid #d9e0ea;
+      background: #fff;
+      color: var(--muted);
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .filter-chip:hover { opacity: 1; border-color: var(--accent-dark); color: var(--accent-dark); }
+    .filter-chip.active {
+      background: var(--accent-dark);
+      border-color: var(--accent-dark);
+      color: #fff;
+      font-weight: 600;
+    }
+
     #statusMsg {
       font-size: 12px;
       margin-top: 0;
@@ -895,16 +914,17 @@
   <section id="priorityPanel" class="panel" hidden>
     <div class="table-section-title" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
       <span>🎯 重点群监控</span>
-      <select id="priorityFilter" onchange="renderPriorityGroups()" style="font-size:11px;padding:2px 6px;border-radius:6px;border:1px solid #d9e0ea;">
-        <option value="">全部</option>
-        <option value="手写">手写</option>
-        <option value="图片下单">图片下单</option>
-        <option value="图文混发">图文混发</option>
-        <option value="Excel下单">Excel下单</option>
-        <option value="PDF下单">PDF下单</option>
-        <option value="文本消息">文本消息</option>
-        <option value="其他">其他</option>
-      </select>
+      <div id="priorityFilterChips" style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
+        <button type="button" class="filter-chip active" data-filter="">全部</button>
+        <button type="button" class="filter-chip" data-filter="机器人">机器人</button>
+        <button type="button" class="filter-chip" data-filter="手写">手写</button>
+        <button type="button" class="filter-chip" data-filter="图片下单">图片下单</button>
+        <button type="button" class="filter-chip" data-filter="图文混发">图文混发</button>
+        <button type="button" class="filter-chip" data-filter="Excel下单">Excel下单</button>
+        <button type="button" class="filter-chip" data-filter="PDF下单">PDF下单</button>
+        <button type="button" class="filter-chip" data-filter="文本消息">文本消息</button>
+        <button type="button" class="filter-chip" data-filter="其他">其他</button>
+      </div>
       <span style="font-size:11px;color:var(--muted);font-weight:400;" id="priorityNote"></span>
     </div>
     <div id="priorityTableWrap" class="table-wrap">
@@ -1518,6 +1538,7 @@
 
   // ====== 重点群监控 ======
   var _priorityConfig = null;  // priority_groups.json 内容
+  var _priorityFilters = new Set();  // 选中的分类集合，空 = 全部（可多选）
 
   function loadPriorityConfig() {
     return fetch("/basicData/priority_groups.json?_=" + Date.now())
@@ -1525,6 +1546,49 @@
       .then(function (cfg) { _priorityConfig = cfg; renderPriorityGroups(); })
       .catch(function () {});
   }
+
+  // 给一个群定分类（每个群只属于一类）：
+  // - 群名带"机器人接单群"→ 机器人（按群名匹配，不依赖 priority_groups.json，
+  //   且从其他分类里剔除——机器人群的下单方式是 Excel/PDF 也不算进那些类）
+  // - 配置 tag=非标准 → 手写
+  // - 配置 tag=标准 → 按 mainMethod 前缀归到 图片下单/图文混发/Excel下单/PDF下单/文本消息
+  // - tag=标准但 mainMethod 空或不认识 → 其他
+  // - 不在配置里的群 → null，只在"全部"里出现
+  function priorityCategory(g, cfg) {
+    if ((g.groupName || "").indexOf("机器人接单群") >= 0) return "机器人";
+    var c = cfg.groups[g.groupName];
+    if (!c) return null;
+    if (c.tag === "非标准") return "手写";
+    if (c.tag !== "标准") return null;
+    var m = c.mainMethod || "";
+    var known = ["图片下单", "图文混发", "Excel下单", "PDF下单", "文本消息"];
+    for (var i = 0; i < known.length; i++) {
+      if (m.indexOf(known[i]) === 0) return known[i];
+    }
+    return "其他";
+  }
+
+  function togglePriorityFilter(value) {
+    if (!value) {
+      _priorityFilters.clear();          // 点"全部"清空选择
+    } else if (_priorityFilters.has(value)) {
+      _priorityFilters.delete(value);
+    } else {
+      _priorityFilters.add(value);
+    }
+    // 更新 chips 高亮：无选中时"全部"亮
+    var chips = document.querySelectorAll("#priorityFilterChips .filter-chip");
+    chips.forEach(function (btn) {
+      var v = btn.getAttribute("data-filter");
+      btn.classList.toggle("active", v === "" ? _priorityFilters.size === 0 : _priorityFilters.has(v));
+    });
+    renderPriorityGroups();
+  }
+
+  document.getElementById("priorityFilterChips").addEventListener("click", function (e) {
+    var btn = e.target.closest(".filter-chip");
+    if (btn) togglePriorityFilter(btn.getAttribute("data-filter"));
+  });
 
   function renderPriorityGroups() {
     var cfg = _priorityConfig;
@@ -1534,38 +1598,19 @@
       return;
     }
 
-    var filterType = document.getElementById("priorityFilter").value;
-
-    // 按 tag 筛选：全部=所有群，手写=非标准，其他=标准
-    var focused;
-    if (filterType === "手写") {
-      focused = groupRows.filter(function (g) {
-        var c = cfg.groups[g.groupName];
-        return c && c.tag === "非标准";
-      });
-    } else if (filterType) {
-      // 具体下单方式 → 从标准群里再筛
-      focused = groupRows.filter(function (g) {
-        var c = cfg.groups[g.groupName];
-        if (!c || c.tag !== "标准") return false;
-        var m = c.mainMethod || "";
-        if (filterType === "其他") {
-          var known = ["图片下单", "图文混发", "Excel下单", "PDF下单", "文本消息"];
-          return !m || !known.some(function (k) { return m.indexOf(k) === 0; });
-        }
-        return m.indexOf(filterType) === 0;
-      });
-    } else {
-      // 全部：所有群
-      focused = groupRows.slice();
-    }
+    // 多选：选中的分类取并集；一个都没选 = 全部群
+    var selected = _priorityFilters;
+    var focused = selected.size === 0
+      ? groupRows.slice()
+      : groupRows.filter(function (g) { return selected.has(priorityCategory(g, cfg)); });
 
     document.getElementById("priorityPanel").hidden = false;
     if (!focused.length) {
       document.getElementById("priorityBody").innerHTML = '<tr><td colspan="7" style="color:var(--muted);padding:16px;">暂无匹配的群</td></tr>';
+      document.getElementById("priorityNote").textContent = "共 0 个群";
       return;
     }
-    var labelText = !filterType ? "全部群" : (filterType === "手写" ? "手写群" : "标准群 · " + filterType);
+    var labelText = selected.size === 0 ? "全部群" : Array.from(selected).join("、");
     document.getElementById("priorityNote").textContent =
       "共 " + focused.length + " 个群（" + labelText + "）";
 
@@ -1574,7 +1619,10 @@
 
     var html = "";
     focused.forEach(function (g, i) {
-      var method = (cfg.groups[g.groupName] && cfg.groups[g.groupName].mainMethod) || g.orderMethod || "-";
+      var cat = priorityCategory(g, cfg);
+      var method = cat === "机器人"
+        ? "机器人"
+        : ((cfg.groups[g.groupName] && cfg.groups[g.groupName].mainMethod) || g.orderMethod || "-");
       var aiPct = g.orderTotal > 0 ? Math.round((g.orderAiCount || 0) / g.orderTotal * 100) + "%" : "-";
       html += "<tr>";
       html += "<td>" + g.groupName + "</td>";

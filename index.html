@@ -919,7 +919,7 @@
         <button type="button" class="filter-chip" data-filter="机器人">机器人</button>
         <button type="button" class="filter-chip" data-filter="手写">手写</button>
         <button type="button" class="filter-chip" data-filter="图片下单">图片下单</button>
-        <button type="button" class="filter-chip" data-filter="图文混发">图文混发</button>
+        <button type="button" class="filter-chip" data-filter="混合">混合</button>
         <button type="button" class="filter-chip" data-filter="Excel下单">Excel下单</button>
         <button type="button" class="filter-chip" data-filter="PDF下单">PDF下单</button>
         <button type="button" class="filter-chip" data-filter="文本消息">文本消息</button>
@@ -938,6 +938,7 @@
             <th class="group">订单行数</th>
             <th class="group">AI 已转</th>
             <th class="group">AI 转单占比</th>
+            <th class="group">备注现状</th>
           </tr>
         </thead>
         <tbody id="priorityBody"></tbody>
@@ -1550,21 +1551,26 @@
   // 给一个群定分类（每个群只属于一类）：
   // - 群名带"机器人接单群"→ 机器人（按群名匹配，不依赖 priority_groups.json，
   //   且从其他分类里剔除——机器人群的下单方式是 Excel/PDF 也不算进那些类）
+  // - 配置里有 category 字段 → 手动指定分类，优先于所有自动规则
+  //   （如"益海&全季郑汴路供应对接群"业务指定放文本消息）
   // - 配置 tag=非标准 → 手写
-  // - 配置 tag=标准 → 按 mainMethod 前缀归到 图片下单/图文混发/Excel下单/PDF下单/文本消息
-  // - tag=标准但 mainMethod 空或不认识 → 其他
+  // - 配置 tag=标准：mainMethod 以图片下单开头（含带百分比的）→ 图片下单（保持
+  //   原范围不动）；图文混发或其余带百分比的（如"Excel下单 63%"，说明混用多种
+  //   方式）→ 混合；纯 Excel下单/PDF下单/文本消息 → 对应类；空或不认识 → 其他
   // - 不在配置里的群 → null，只在"全部"里出现
   function priorityCategory(g, cfg) {
     if ((g.groupName || "").indexOf("机器人接单群") >= 0) return "机器人";
     var c = cfg.groups[g.groupName];
     if (!c) return null;
+    if (c.category) return c.category;
     if (c.tag === "非标准") return "手写";
     if (c.tag !== "标准") return null;
     var m = c.mainMethod || "";
-    var known = ["图片下单", "图文混发", "Excel下单", "PDF下单", "文本消息"];
-    for (var i = 0; i < known.length; i++) {
-      if (m.indexOf(known[i]) === 0) return known[i];
-    }
+    if (!m) return "其他";
+    if (m.indexOf("图片下单") === 0) return "图片下单";
+    if (m.indexOf("图文混发") === 0 || /\d+%/.test(m)) return "混合";
+    var known = ["Excel下单", "PDF下单", "文本消息"];
+    if (known.indexOf(m) >= 0) return m;
     return "其他";
   }
 
@@ -1606,7 +1612,7 @@
 
     document.getElementById("priorityPanel").hidden = false;
     if (!focused.length) {
-      document.getElementById("priorityBody").innerHTML = '<tr><td colspan="7" style="color:var(--muted);padding:16px;">暂无匹配的群</td></tr>';
+      document.getElementById("priorityBody").innerHTML = '<tr><td colspan="8" style="color:var(--muted);padding:16px;">暂无匹配的群</td></tr>';
       document.getElementById("priorityNote").textContent = "共 0 个群";
       return;
     }
@@ -1620,9 +1626,16 @@
     var html = "";
     focused.forEach(function (g, i) {
       var cat = priorityCategory(g, cfg);
-      var method = cat === "机器人"
-        ? "机器人"
-        : ((cfg.groups[g.groupName] && cfg.groups[g.groupName].mainMethod) || g.orderMethod || "-");
+      var c = cfg.groups[g.groupName];
+      // 下单方式列跟分类走：手写群显示"手写"（不显示统计出来的消息类型），
+      // 混合群显示"混合"并附主要方式占比，手动指定分类的显示指定值，其余显示方法名
+      var method;
+      if (cat === "机器人") method = "机器人";
+      else if (cat === "手写") method = "手写";
+      else if (cat === "混合") method = "混合" + (c && c.mainMethod && c.mainMethod.indexOf("图文混发") < 0 ? "（" + c.mainMethod + "）" : "");
+      else if (c && c.category) method = c.category;
+      else method = (c && c.mainMethod) || g.orderMethod || "-";
+      var note = (c && c.note) || "";
       var aiPct = g.orderTotal > 0 ? Math.round((g.orderAiCount || 0) / g.orderTotal * 100) + "%" : "-";
       html += "<tr>";
       html += "<td>" + g.groupName + "</td>";
@@ -1632,6 +1645,7 @@
       html += '<td class="number">' + g.orderTotal + "</td>";
       html += '<td class="number' + ((g.orderAiCount || 0) === 0 ? " zero-cell" : "") + '">' + (g.orderAiCount || 0) + "</td>";
       html += '<td class="rate-cell ' + rateClass(g.aiRate) + '">' + aiPct + "</td>";
+      html += '<td style="font-size:11px;color:#64748b;">' + (note || "-") + "</td>";
       html += "</tr>";
     });
     // 合计行
@@ -1640,6 +1654,7 @@
     html += '<td class="number">' + totalOrder + "</td>";
     html += '<td class="number">' + totalAi + "</td>";
     html += '<td class="rate-cell ' + rateClass(totalOrder > 0 ? totalAi / totalOrder : null) + '">' + (totalOrder > 0 ? Math.round(totalAi / totalOrder * 100) + "%" : "-") + "</td>";
+    html += "<td></td>";
     html += "</tr>";
     document.getElementById("priorityBody").innerHTML = html;
   }

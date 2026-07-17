@@ -1635,7 +1635,8 @@
       else if (cat === "混合") method = "混合" + (c && c.mainMethod && c.mainMethod.indexOf("图文混发") < 0 ? "（" + c.mainMethod + "）" : "");
       else if (c && c.category) method = c.category;
       else method = (c && c.mainMethod) || g.orderMethod || "-";
-      var note = (c && c.note) || "";
+      // 备注：单群 note 优先，其次分类级默认备注（如所有机器人群统一一条）
+      var note = (c && c.note) || (cfg.categoryNotes && cfg.categoryNotes[cat]) || "";
       var aiPct = g.orderTotal > 0 ? Math.round((g.orderAiCount || 0) / g.orderTotal * 100) + "%" : "-";
       html += "<tr>";
       html += "<td>" + g.groupName + "</td>";

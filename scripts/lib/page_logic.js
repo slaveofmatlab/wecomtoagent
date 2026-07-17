@@ -374,10 +374,15 @@ function buildCompanySummary(salesRows, pendingRows, progressRows, logSummary) {
     if (row.itConfigured) entry.itOkCodes.add(row.hotelCode);
   }
 
-  // 构建全局 IT已配置 集合（跨公司——项目点代码是全局唯一的）
+  // 构建全局 IT已配置 集合 + 项目点 → 推进表运营公司 映射（项目点代码全局唯一）。
+  // 同一项目点在销售订单表和推进表里的运营公司可能填得不一致（如"郑州/丰厨(上海)"
+  // vs "上海/丰厨(上海)"），订单归属以推进表为准，与群维度同口径，两边合计才对得上。
   const allItOkCodes = new Set();
-  for (const [key, entry] of byCompany) {
-    for (const code of entry.itOkCodes) allItOkCodes.add(code);
+  const codeToCompany = new Map();
+  for (const row of progressRows) {
+    if (!row.operationCompanyKey || !row.hotelCode || !row.itConfigured) continue;
+    allItOkCodes.add(row.hotelCode);
+    codeToCompany.set(row.hotelCode, { key: row.operationCompanyKey, name: row.operationCompany });
   }
 
 	// 待转单 → 客户订单号 → 转单状态（主匹配）；销售订单号 → 转单状态（兜底匹配）
@@ -396,12 +401,14 @@ function buildCompanySummary(salesRows, pendingRows, progressRows, logSummary) {
 		  }
 		}
 	
-	// 销售订单 → 匹配 IT已配置集合 + 待转单状态（两层匹配）
+	// 销售订单 → 匹配 IT已配置集合 + 待转单状态（两层匹配）。
+	// 归属公司用推进表登记的运营公司（codeToCompany），不用销售表里的写法。
 	for (const row of salesRows) {
 	  if (!row.operationCompanyKey) continue;
 	  if (!row.hotelCode || !allItOkCodes.has(row.hotelCode)) continue;
-	
-	  const entry = ensure(row.operationCompanyKey, row.operationCompany);
+
+	  const owner = codeToCompany.get(row.hotelCode);
+	  const entry = ensure(owner.key, owner.name);
 	  entry.orderTotal += 1;
 	
 	  // 先按客户订单号匹配，再按销售订单号兜底
@@ -455,37 +462,50 @@ function buildCompanySummary(salesRows, pendingRows, progressRows, logSummary) {
   return { rows: summary, totals };
 }
 
-// 群维度汇总：按企业微信群名称聚合，用于看板「重点群监控」
+// 群维度汇总：按企业微信群名称聚合，用于看板「重点群监控」。
+// 订单归属完全按项目点代码（推进表登记），与 buildCompanySummary 同口径、同条件
+// （IT已配置 + 推进表有运营公司），保证「全部群」合计与公司汇总总计严格相等。
 function buildGroupSummary(salesRows, pendingRows, progressRows, logSummary) {
   const groups = new Map();
 
-  // 从推进表收集群信息
-  for (const row of progressRows) {
-    const name = row.groupName;
-    if (!name) continue;
+  const ensureGroup = (name) => {
     if (!groups.has(name)) {
       groups.set(name, {
         groupName: name,
-        operationCompany: row.operationCompany || "",
-        operationCompanyKey: row.operationCompanyKey || "",
+        operationCompany: "",
+        operationCompanyKey: "",
         hotelCodes: new Set(),    // 全部项目点（展示用）
-        itOkCodes: new Set(),     // 仅 IT 已配置的项目点（统计用，对齐公司汇总口径）
         itConfigured: false,
+        orderTotal: 0,
+        orderAiCount: 0,
+        orderAiTotal: 0,
       });
     }
-    const g = groups.get(name);
-    if (row.hotelCode) g.hotelCodes.add(normalizeText(row.hotelCode));
-    if (row.itConfigured) { g.itConfigured = true; if (row.hotelCode) g.itOkCodes.add(normalizeText(row.hotelCode)); }
+    return groups.get(name);
+  };
+
+  // 从推进表收集群信息
+  for (const row of progressRows) {
+    if (!row.groupName) continue;
+    const g = ensureGroup(row.groupName);
+    if (row.hotelCode) g.hotelCodes.add(row.hotelCode);
+    if (row.itConfigured) g.itConfigured = true;
     if (row.operationCompany) { g.operationCompany = row.operationCompany; g.operationCompanyKey = row.operationCompanyKey || ""; }
   }
 
-  // 全局 IT已配置集合
-  const allItOkCodes = new Set();
+  // 每个 IT已配置项目点唯一归属到一个群（同一项目点登记在多个群时取推进表里最后
+  // 出现的），避免同一订单行在多个群里重复计数。不校验销售表运营公司与群登记公司
+  // 是否一致——项目点代码全局唯一，公司名两表可能填得不同（如郑州/上海丰厨）。
+  // 条件与 buildCompanySummary 的 allItOkCodes 完全一致；推进表没填群名的配置行
+  // 归入兜底桶，保证不漏行。
+  const UNNAMED_GROUP = "（推进表未填群名）";
+  const codeToGroup = new Map();
   for (const row of progressRows) {
-    if (row.itConfigured && row.hotelCode) allItOkCodes.add(normalizeText(row.hotelCode));
+    if (!row.operationCompanyKey || !row.hotelCode || !row.itConfigured) continue;
+    codeToGroup.set(row.hotelCode, row.groupName || UNNAMED_GROUP);
   }
 
-  // 待转单匹配：客户订单号（主）+ 销售订单号（兜底）
+  // 待转单匹配：客户订单号（主）+ 销售订单号（兜底），与公司汇总相同
   const pendingMap = new Map();
   const pendingBySalesNo = new Map();
   for (const row of pendingRows) {
@@ -496,37 +516,30 @@ function buildGroupSummary(salesRows, pendingRows, progressRows, logSummary) {
     if (sk && !pendingBySalesNo.has(sk)) pendingBySalesNo.set(sk, row.transferStatus);
   }
 
-  // 统计每个群的订单
-  for (const [name, g] of groups) {
-    let orderTotal = 0, orderAi = 0, orderAiTotal = 0;
-    if (g.itConfigured) {
-      for (const sr of salesRows) {
-        const hc = normalizeText(sr.hotelCode);
-        if (!hc || !g.itOkCodes.has(hc)) continue;
-        if (g.operationCompanyKey) {
-          if ((sr.operationCompanyKey || "") !== g.operationCompanyKey) continue;
-        }
-        orderTotal += 1;
-        // 两层匹配：先客户订单号，再销售订单号兜底
-        const custKey = normalizeText(sr.customerOrderNo);
-        let pendingStatus = pendingMap.get(custKey);
-        if (!pendingStatus) {
-          const sk = normalizeText(sr.orderNo);
-          pendingStatus = pendingBySalesNo.get(sk);
-        }
-        if (pendingStatus) {
-          orderAiTotal += 1;
-          if (pendingStatus.includes("已转")) orderAi += 1;
-        }
-      }
+  // 单次遍历销售订单，按项目点代码归到对应群
+  for (const sr of salesRows) {
+    if (!sr.operationCompanyKey) continue;
+    const groupName = sr.hotelCode ? codeToGroup.get(sr.hotelCode) : undefined;
+    if (!groupName) continue;
+    const g = ensureGroup(groupName);
+    g.orderTotal += 1;
+    // 两层匹配：先客户订单号，再销售订单号兜底
+    const custKey = normalizeText(sr.customerOrderNo);
+    let pendingStatus = pendingMap.get(custKey);
+    if (!pendingStatus) {
+      pendingStatus = pendingBySalesNo.get(normalizeText(sr.orderNo));
     }
-    g.orderTotal = orderTotal;
-    g.orderAiCount = orderAi;
-    g.orderAiTotal = orderAiTotal;
-    g.aiRate = orderTotal > 0 ? orderAi / orderTotal : null;
-    g.aiRateTotal = orderTotal > 0 ? orderAiTotal / orderTotal : null;
+    if (pendingStatus) {
+      g.orderAiTotal += 1;
+      if (pendingStatus.includes("已转")) g.orderAiCount += 1;
+    }
+  }
+
+  for (const g of groups.values()) {
+    g.aiRate = g.orderTotal > 0 ? g.orderAiCount / g.orderTotal : null;
+    g.aiRateTotal = g.orderTotal > 0 ? g.orderAiTotal / g.orderTotal : null;
     // 下单方式备注
-    const companyKey = normalizeText(g.operationCompany).replace(/[（(]/g, "(").replace(/[）)]/g, ")");
+    const companyKey = normalizeCompanyName(g.operationCompany);
     g.orderMethod = logSummary && logSummary[companyKey] ? logSummary[companyKey].remark : "";
     // 清理 Set（不可序列化）
     g.hotelCodeCount = g.hotelCodes.size;
@@ -541,9 +554,10 @@ function buildGroupSummary(salesRows, pendingRows, progressRows, logSummary) {
 
 function findFile(dir, pattern) {
   if (!fs.existsSync(dir)) return null;
-  // 先找根目录（跳过临时文件和 Zone.Identifier）
+  // 先找根目录（跳过临时文件和 Zone.Identifier）；按文件名排序取最后一个匹配，
+  // 不依赖系统 readdir 顺序，保证多份同名变体（如"- 副本"）时结果确定
   let best = null;
-  for (const name of fs.readdirSync(dir)) {
+  for (const name of fs.readdirSync(dir).sort()) {
     if (name.startsWith("~$") || name.includes(":Zone.Identifier")) continue;
     const fullPath = path.join(dir, name);
     if (fs.statSync(fullPath).isDirectory()) continue;

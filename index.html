@@ -2575,25 +2575,12 @@
         interaction: { mode: "index", intersect: false },
         plugins: { legend: { position: "bottom" } },
         scales: { y: { type: "linear", title: { display: true, text: "%" }, min: 0, max: 110, ticks: { stepSize: 20, callback: function(v) { return v > 100 ? "" : v + "%"; } } } }
-      }
+      },
+      // 导出图始终带数据标签（不依赖页面上的"显示数据标签"开关）。
+      // 用与主图相同的 afterDatasetsDraw 插件绘制：getDatasetMeta 必须传数据集序号 di，
+      // 且插件在 Chart.js 渲染管线内执行，devicePixelRatio=2 的坐标缩放才正确。
+      plugins: [{ id: "datalabels", afterDatasetsDraw: function(chart) { var ctx2 = chart.ctx; chart.data.datasets.forEach(function(ds, di) { var meta = chart.getDatasetMeta(di); meta.data.forEach(function(pt, i) { var v = ds.data[i]; if (v == null) return; ctx2.fillStyle = ds.borderColor; ctx2.font = "bold 11px -apple-system,Microsoft YaHei,sans-serif"; ctx2.textAlign = "center"; ctx2.fillText(v + "%", pt.x, pt.y - 10); }); }); } }]
     });
-
-    // animation:false 时 Chart.js 同步绘制，meta 数据已就绪，直接画标签
-    if (_showLabels) {
-      var dctx = tempCanvas.getContext("2d");
-      dctx.font = "bold 11px -apple-system,Microsoft YaHei,sans-serif";
-      dctx.textAlign = "center";
-      dctx.textBaseline = "bottom";
-      tempChart.data.datasets.forEach(function(ds) {
-        var meta = tempChart.getDatasetMeta(ds);
-        dctx.fillStyle = ds.borderColor;
-        meta.data.forEach(function(pt, i) {
-          var v = ds.data[i];
-          if (v == null) return;
-          dctx.fillText(v + "%", pt.x, pt.y - 6);
-        });
-      });
-    }
 
     // 等待浏览器完成首次绘制后再捕获
     requestAnimationFrame(function() {

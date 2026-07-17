@@ -32,16 +32,19 @@ function cutoffToKey(cutoff) {
   return cutoff.slice(0, 2) + "-" + cutoff.slice(2, 4);
 }
 
-// 在指定目录找匹配文件（不递归）
+// 在指定目录找匹配文件（不递归）。与 page_logic.findFile 同语义：按文件名排序取
+// 最后一个匹配，保证趋势导出和 page_data 导出在同一天挑到同一份文件
+// （如 7月15日 有"推进表 - 副本"和正式版两份，取正式版）。
 function findFileInDir(dir, pattern) {
   if (!fs.existsSync(dir)) return null;
-  for (const name of fs.readdirSync(dir)) {
-    if (name.startsWith("~$")) continue;
+  let best = null;
+  for (const name of fs.readdirSync(dir).sort()) {
+    if (name.startsWith("~$") || name.includes(":Zone.Identifier")) continue;
     const fullPath = path.join(dir, name);
     if (fs.statSync(fullPath).isDirectory()) continue;
-    if (name.includes(pattern)) return fullPath;
+    if (name.includes(pattern)) best = fullPath;
   }
-  return null;
+  return best;
 }
 
 function loadExisting() {

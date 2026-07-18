@@ -1646,7 +1646,7 @@
       html += '<td class="number">' + g.orderTotal + "</td>";
       html += '<td class="number' + ((g.orderAiCount || 0) === 0 ? " zero-cell" : "") + '">' + (g.orderAiCount || 0) + "</td>";
       html += '<td class="rate-cell ' + rateClass(g.aiRate) + '">' + aiPct + "</td>";
-      html += '<td style="font-size:11px;color:#64748b;">' + (note || "-") + "</td>";
+      html += '<td style="font-size:11px;color:#64748b;">' + (note ? note.replace(/\n/g, '<br/>') : '-') + "</td>";
       html += "</tr>";
     });
     // 合计行

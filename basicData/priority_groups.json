@@ -5,7 +5,8 @@
   "groups": {
     "三亚亚龙湾维景酒店--德立安沟通群": {
       "tag": "标准",
-      "mainMethod": "Excel下单 67%"
+      "mainMethod": "Excel下单",
+      "category": "Excel下单"
     },
     "三亚天域酒店--德立安沟通群": {
       "tag": "标准",
@@ -38,7 +39,8 @@
     },
     "丰厨&延长下单群": {
       "tag": "标准",
-      "mainMethod": "图片下单 53%"
+      "mainMethod": "Excel下单",
+      "category": "Excel下单"
     },
     "丰厨-强华学校客户下单群": {
       "tag": "非标准",
@@ -54,8 +56,9 @@
     },
     "人寿堂供应链业务对接群": {
       "tag": "非标准",
-      "mainMethod": "图片下单 80%",
-      "note": "需要按品类拆单"
+      "mainMethod": "PDF+Excel",
+      "note": "需要按品类拆单",
+      "category": "混合"
     },
     "仁恒皇冠&德立安沟通群": {
       "tag": "标准",
@@ -67,7 +70,8 @@
     },
     "信津洲际&德立安沟通群": {
       "tag": "标准",
-      "mainMethod": "PDF下单 80%"
+      "mainMethod": "PDF下单",
+      "category": "PDF下单"
     },
     "冀三姐下单群": {
       "tag": "非标准",
@@ -84,9 +88,10 @@
       "note": "业务要试销售提的销售报价，所以先手工做了一下，看看能不能匹配新一期报价"
     },
     "同济大学内部沟通群": {
-      "tag": "非标准",
-      "mainMethod": "Excel下单 38%",
-      "note": "excel格式混乱，空格过多无法识别"
+      "tag": "标准",
+      "mainMethod": "Excel+文字",
+      "note": "excel格式混乱，空格过多无法识别",
+      "category": "混合"
     },
     "周口天天向上-丰厨供应链沟通群": {
       "tag": "非标准",
@@ -98,8 +103,9 @@
     },
     "安徽奇瑞自动接单群": {
       "tag": "非标准",
-      "mainMethod": "文本消息 33%",
-      "note": "类似一个文件多项目点：需要导入到系统时按餐厅名称拆开，并把餐厅名称备注到订单里"
+      "mainMethod": "Excel下单",
+      "note": "类似一个文件多项目点：需要导入到系统时按餐厅名称拆开，并把餐厅名称备注到订单里",
+      "category": "Excel下单"
     },
     "工行内部沟通群": {
       "tag": "非标准",
@@ -116,7 +122,8 @@
     },
     "德立安&星茉下单群": {
       "tag": "非标准",
-      "mainMethod": "图片下单 75%"
+      "mainMethod": "文本消息",
+      "category": "文本消息"
     },
     "德立安&米屋下单群": {
       "tag": "标准",
@@ -191,15 +198,18 @@
     },
     "益分销PLUS-深圳国际会展中心洲际酒店": {
       "tag": "标准",
-      "mainMethod": "PDF下单 50%"
+      "mainMethod": "PDF下单",
+      "category": "PDF下单"
     },
     "益彩-营销公司PDF抓单群": {
       "tag": "标准",
-      "mainMethod": "PDF下单 38%"
+      "mainMethod": "PDF为主，少量图片",
+      "category": "混合"
     },
     "益彩PDF抓单群": {
       "tag": "标准",
-      "mainMethod": "文本消息 38%"
+      "mainMethod": "PDF下单",
+      "category": "PDF下单"
     },
     "益海&全季郑汴路供应对接群": {
       "tag": "非标准",
@@ -217,21 +227,25 @@
     },
     "神农氏内部沟通群": {
       "tag": "标准",
-      "mainMethod": "Excel下单 63%",
-      "note": "一个订单却被拆单（业务人员联系不上，具体情况不明）"
+      "mainMethod": "Excel为主，少量文字",
+      "note": "一个订单却被拆单（业务人员联系不上，具体情况不明）",
+      "category": "混合"
     },
     "粮贝铁路生鲜订单群": {
       "tag": "非标准",
-      "mainMethod": "Excel下单 34%",
-      "note": "最近换人下单，已跟进"
+      "mainMethod": "Excel下单",
+      "note": "最近换人下单，已跟进",
+      "category": "Excel下单"
     },
     "索迪斯内部沟通群": {
       "tag": "非标准",
-      "mainMethod": "图片下单 67%"
+      "mainMethod": "Excel下单",
+      "category": "Excel下单"
     },
     "葡国餐厅对账接单群": {
       "tag": "标准",
-      "mainMethod": "Excel下单 25%"
+      "mainMethod": "文本消息",
+      "category": "文本消息"
     },
     "铁路标品转单群": {
       "tag": "标准",
@@ -239,7 +253,8 @@
     },
     "陵水绿城蓝湾威斯汀酒店--德立安沟通群": {
       "tag": "标准",
-      "mainMethod": ""
+      "mainMethod": "PDF下单",
+      "category": "PDF下单"
     }
   },
   "categoryNotes": {

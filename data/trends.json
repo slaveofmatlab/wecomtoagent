@@ -1156,5 +1156,16 @@
       }
     ],
     "ts": "2026-07-21T01:00:19.999Z"
+  },
+  "07-20": {
+    "cutoff": "0720",
+    "registered": 0,
+    "itOk": 0,
+    "configRate": null,
+    "orderTotal": 0,
+    "orderAi": 0,
+    "aiRate": null,
+    "companies": [],
+    "ts": "2026-07-21T01:02:07.302Z"
   }
 }

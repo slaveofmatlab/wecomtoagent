@@ -168,7 +168,21 @@ function parseWecomProgress(workbook, cutoffDate = DEFAULT_CUTOFF_DATE) {
     ? (headerCells[deleteMarkPos] || `列${deleteMarkPos + 1}`)
     : null;
 
-  return rowsToObjects(rows, headerIndex).map((row, index) => {
+  const records = rowsToObjects(rows, headerIndex);
+
+  // 容错：推进表有时"项目点代码"列表头丢失（表格里那一格是数据值而非标题），
+  // rowsToObjects 会把那个数据值当成列名。检测首行的值形如 KHXMD/Biz 的列，自动修正。
+  if (records.length > 0 && !records.some(r => normalizeText(r["项目点代码"] || ""))) {
+    const firstRow = records[0];
+    const guessedKey = Object.keys(firstRow).find(k =>
+      k !== "项目点代码" && /^[A-Z]{2,}\d+$/i.test(normalizeText(firstRow[k]))
+    );
+    if (guessedKey) {
+      records.forEach(r => { r["项目点代码"] = r[guessedKey]; });
+    }
+  }
+
+  return records.map((row, index) => {
     const operationCompany = getFirst(row, ["运营公司"]);
     const joinStatus = getFirst(row, ["是否加群-张利拉", "是否加群"]);
     const itStatus = getFirst(row, ["IT是否配置完成-邓虎", "IT是否配置完成"]);

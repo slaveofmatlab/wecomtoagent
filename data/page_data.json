@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-28T03:15:55.354Z",
+  "generatedAt": "2026-07-28T03:17:11.752Z",
   "cutoffDate": "0727",
   "sources": {
     "salesPath": null,
@@ -16,10 +16,10 @@
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
         "operationCompanyKey": "上海/丰厨(上海)供应链管理有限公司",
-        "registeredCount": 160,
-        "itConfiguredCount": 160,
+        "registeredCount": 91,
+        "itConfiguredCount": 91,
         "configRate": 1,
-        "orderTotal": 1125,
+        "orderTotal": 1011,
         "orderAiCount": 0,
         "orderAiTotal": 0,
         "aiRate": 0,
@@ -236,14 +236,14 @@
       }
     ],
     "totals": {
-      "registeredCount": 314,
-      "itConfiguredCount": 279,
-      "orderTotal": 1881,
+      "registeredCount": 245,
+      "itConfiguredCount": 210,
+      "orderTotal": 1767,
       "orderAiCount": 181,
       "orderAiTotal": 181,
-      "configRate": 0.8885350318471338,
-      "aiRate": 0.0962254120148857,
-      "aiRateTotal": 0.0962254120148857
+      "configRate": 0.8571428571428571,
+      "aiRate": 0.10243350311262026,
+      "aiRateTotal": 0.10243350311262026
     }
   },
   "groupSummary": {
@@ -286,19 +286,6 @@
         "aiRateTotal": 0.08695652173913043,
         "orderMethod": "",
         "hotelCodeCount": 10
-      },
-      {
-        "groupName": "工行内部沟通群",
-        "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
-        "operationCompanyKey": "上海/丰厨(上海)供应链管理有限公司",
-        "itConfigured": true,
-        "orderTotal": 114,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "",
-        "hotelCodeCount": 3
       },
       {
         "groupName": "冀三姐下单群",
@@ -767,19 +754,6 @@
         "aiRateTotal": 1,
         "orderMethod": "",
         "hotelCodeCount": 1
-      },
-      {
-        "groupName": "粮贝铁路生鲜订单群",
-        "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
-        "operationCompanyKey": "上海/丰厨(上海)供应链管理有限公司",
-        "itConfigured": true,
-        "orderTotal": 0,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": null,
-        "aiRateTotal": null,
-        "orderMethod": "",
-        "hotelCodeCount": 66
       },
       {
         "groupName": "铁路标品转单群",

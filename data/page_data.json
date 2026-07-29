@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-29T05:25:19.055Z",
+  "generatedAt": "2026-07-29T05:43:31.484Z",
   "cutoffDate": "0728",
   "sources": {
     "salesPath": null,
@@ -16,14 +16,14 @@
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
         "operationCompanyKey": "上海/丰厨(上海)供应链管理有限公司",
-        "registeredCount": 91,
-        "itConfiguredCount": 91,
+        "registeredCount": 94,
+        "itConfiguredCount": 94,
         "configRate": 1,
-        "orderTotal": 251,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
+        "orderTotal": 365,
+        "orderAiCount": 114,
+        "orderAiTotal": 114,
+        "aiRate": 0.31232876712328766,
+        "aiRateTotal": 0.31232876712328766,
         "orderMethod": "Excel下单 43%，图片下单 36%"
       },
       {
@@ -59,10 +59,10 @@
         "itConfiguredCount": 6,
         "configRate": 1,
         "orderTotal": 88,
-        "orderAiCount": 57,
-        "orderAiTotal": 57,
-        "aiRate": 0.6477272727272727,
-        "aiRateTotal": 0.6477272727272727,
+        "orderAiCount": 85,
+        "orderAiTotal": 85,
+        "aiRate": 0.9659090909090909,
+        "aiRateTotal": 0.9659090909090909,
         "orderMethod": "图片下单 61%，Excel下单 18%"
       },
       {
@@ -236,14 +236,14 @@
       }
     ],
     "totals": {
-      "registeredCount": 211,
-      "itConfiguredCount": 211,
-      "orderTotal": 938,
-      "orderAiCount": 219,
-      "orderAiTotal": 221,
+      "registeredCount": 214,
+      "itConfiguredCount": 214,
+      "orderTotal": 1052,
+      "orderAiCount": 361,
+      "orderAiTotal": 363,
       "configRate": 1,
-      "aiRate": 0.23347547974413646,
-      "aiRateTotal": 0.23560767590618337
+      "aiRate": 0.3431558935361217,
+      "aiRateTotal": 0.3450570342205323
     }
   },
   "groupSummary": {
@@ -260,6 +260,19 @@
         "aiRateTotal": 0,
         "orderMethod": "",
         "hotelCodeCount": 6
+      },
+      {
+        "groupName": "工行内部沟通群",
+        "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+        "operationCompanyKey": "上海/丰厨(上海)供应链管理有限公司",
+        "itConfigured": true,
+        "orderTotal": 114,
+        "orderAiCount": 114,
+        "orderAiTotal": 114,
+        "aiRate": 1,
+        "aiRateTotal": 1,
+        "orderMethod": "",
+        "hotelCodeCount": 3
       },
       {
         "groupName": "浙江丰厨运营AI转单群",
@@ -397,10 +410,10 @@
         "operationCompanyKey": "北京/丰厨(上海)供应链管理有限公司",
         "itConfigured": true,
         "orderTotal": 28,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
+        "orderAiCount": 28,
+        "orderAiTotal": 28,
+        "aiRate": 1,
+        "aiRateTotal": 1,
         "orderMethod": "",
         "hotelCodeCount": 4
       },

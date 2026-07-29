@@ -182,14 +182,21 @@ function parseWecomProgress(workbook, cutoffDate = DEFAULT_CUTOFF_DATE) {
     }
   }
 
+  // 暂时不纳入统计口径的群，自动排除，不用每天手动标"删除"
+  const PERMANENTLY_EXCLUDED_GROUPS = new Set([
+    "粮贝铁路生鲜订单群",
+    "工行内部沟通群",
+  ]);
+
   return records.map((row, index) => {
     const operationCompany = getFirst(row, ["运营公司"]);
     const joinStatus = getFirst(row, ["是否加群-张利拉", "是否加群"]);
     const itStatus = getFirst(row, ["IT是否配置完成-邓虎", "IT是否配置完成"]);
     const deleteMark = deleteMarkKey ? normalizeText(row[deleteMarkKey]) : "";
+    const groupName = getFirst(row, ["企业微信群名称"]);
     return {
       rowIndex: index + 1,
-      groupName: getFirst(row, ["企业微信群名称"]),
+      groupName,
       groupId: getFirst(row, ["群ID"]),
       operationCompany,
       operationCompanyKey: normalizeCompanyName(operationCompany),
@@ -197,7 +204,7 @@ function parseWecomProgress(workbook, cutoffDate = DEFAULT_CUTOFF_DATE) {
       hotelName: getFirst(row, ["项目点名称"]),
       joined: isConfirmedByCutoff(joinStatus, cutoffDate),
       itConfigured: isConfirmedByCutoff(itStatus, cutoffDate),
-      deleted: deleteMark.includes("删除"),
+      deleted: deleteMark.includes("删除") || PERMANENTLY_EXCLUDED_GROUPS.has(groupName),
     };
   })
     .filter((row) => !row.deleted)

@@ -258,6 +258,35 @@
       "tag": "标准",
       "mainMethod": "PDF下单",
       "category": "PDF下单"
+    },
+    "三亚大东海酒店&德立安沟通群": {
+      "tag": "标准",
+      "mainMethod": "PDF下单"
+    },
+    "陵水希尔顿&德立安沟通群": {
+      "tag": "标准",
+      "mainMethod": "PDF下单"
+    },
+    "海口君华海逸酒店&德立安沟通群": {
+      "tag": "标准",
+      "mainMethod": "PDF下单"
+    },
+    "三亚半山半岛洲际&德立安沟通群": {
+      "tag": "标准",
+      "mainMethod": "PDF下单"
+    },
+    "三亚国光豪生酒店&德立安沟通群": {
+      "tag": "标准",
+      "mainMethod": "图片下单",
+      "category": "混合"
+    },
+    "三亚胜意酒店&德立安沟通群": {
+      "tag": "标准",
+      "mainMethod": "文本消息"
+    },
+    "世外桃源&丰厨（成都）服务沟通群": {
+      "tag": "标准",
+      "mainMethod": "图片下单"
     }
   },
   "categoryNotes": {

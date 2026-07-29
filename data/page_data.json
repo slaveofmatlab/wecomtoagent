@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-29T01:51:29.411Z",
+  "generatedAt": "2026-07-29T01:54:31.810Z",
   "cutoffDate": "0728",
   "sources": {
     "salesPath": null,
@@ -16,27 +16,14 @@
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
         "operationCompanyKey": "上海/丰厨(上海)供应链管理有限公司",
-        "registeredCount": 160,
-        "itConfiguredCount": 160,
+        "registeredCount": 91,
+        "itConfiguredCount": 91,
         "configRate": 1,
-        "orderTotal": 544,
+        "orderTotal": 251,
         "orderAiCount": 0,
         "orderAiTotal": 0,
         "aiRate": 0,
         "aiRateTotal": 0,
-        "orderMethod": ""
-      },
-      {
-        "operationCompany": "三亚德立安食品有限公司",
-        "operationCompanyKey": "三亚德立安食品有限公司",
-        "registeredCount": 42,
-        "itConfiguredCount": 42,
-        "configRate": 1,
-        "orderTotal": 173,
-        "orderAiCount": 71,
-        "orderAiTotal": 71,
-        "aiRate": 0.41040462427745666,
-        "aiRateTotal": 0.41040462427745666,
         "orderMethod": ""
       },
       {
@@ -55,9 +42,9 @@
       {
         "operationCompany": "浙江/丰厨(上海)供应链管理有限公司",
         "operationCompanyKey": "浙江/丰厨(上海)供应链管理有限公司",
-        "registeredCount": 11,
+        "registeredCount": 10,
         "itConfiguredCount": 10,
-        "configRate": 0.9090909090909091,
+        "configRate": 1,
         "orderTotal": 103,
         "orderAiCount": 18,
         "orderAiTotal": 18,
@@ -79,6 +66,19 @@
         "orderMethod": ""
       },
       {
+        "operationCompany": "三亚德立安食品有限公司",
+        "operationCompanyKey": "三亚德立安食品有限公司",
+        "registeredCount": 14,
+        "itConfiguredCount": 14,
+        "configRate": 1,
+        "orderTotal": 85,
+        "orderAiCount": 71,
+        "orderAiTotal": 71,
+        "aiRate": 0.8352941176470589,
+        "aiRateTotal": 0.8352941176470589,
+        "orderMethod": ""
+      },
+      {
         "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
         "operationCompanyKey": "郑州/丰厨(上海)供应链管理有限公司",
         "registeredCount": 3,
@@ -92,19 +92,6 @@
         "orderMethod": ""
       },
       {
-        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
-        "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
-        "registeredCount": 20,
-        "itConfiguredCount": 16,
-        "configRate": 0.8,
-        "orderTotal": 62,
-        "orderAiCount": 53,
-        "orderAiTotal": 55,
-        "aiRate": 0.8548387096774194,
-        "aiRateTotal": 0.8870967741935484,
-        "orderMethod": ""
-      },
-      {
         "operationCompany": "成都/丰厨(上海)供应链管理有限公司",
         "operationCompanyKey": "成都/丰厨(上海)供应链管理有限公司",
         "registeredCount": 5,
@@ -115,6 +102,19 @@
         "orderAiTotal": 0,
         "aiRate": 0,
         "aiRateTotal": 0,
+        "orderMethod": ""
+      },
+      {
+        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+        "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
+        "registeredCount": 10,
+        "itConfiguredCount": 10,
+        "configRate": 1,
+        "orderTotal": 55,
+        "orderAiCount": 53,
+        "orderAiTotal": 55,
+        "aiRate": 0.9636363636363636,
+        "aiRateTotal": 1,
         "orderMethod": ""
       },
       {
@@ -236,31 +236,18 @@
       }
     ],
     "totals": {
-      "registeredCount": 319,
-      "itConfiguredCount": 314,
-      "orderTotal": 1326,
+      "registeredCount": 211,
+      "itConfiguredCount": 211,
+      "orderTotal": 938,
       "orderAiCount": 219,
       "orderAiTotal": 221,
-      "configRate": 0.9843260188087775,
-      "aiRate": 0.16515837104072398,
-      "aiRateTotal": 0.16666666666666666
+      "configRate": 1,
+      "aiRate": 0.23347547974413646,
+      "aiRateTotal": 0.23560767590618337
     }
   },
   "groupSummary": {
     "rows": [
-      {
-        "groupName": "粮贝铁路生鲜订单群",
-        "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
-        "operationCompanyKey": "上海/丰厨(上海)供应链管理有限公司",
-        "itConfigured": true,
-        "orderTotal": 179,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "",
-        "hotelCodeCount": 66
-      },
       {
         "groupName": "上海-【竹筷子】机器人接单群",
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
@@ -275,19 +262,6 @@
         "hotelCodeCount": 6
       },
       {
-        "groupName": "工行内部沟通群",
-        "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
-        "operationCompanyKey": "上海/丰厨(上海)供应链管理有限公司",
-        "itConfigured": true,
-        "orderTotal": 114,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "",
-        "hotelCodeCount": 3
-      },
-      {
         "groupName": "浙江丰厨运营AI转单群",
         "operationCompany": "浙江/丰厨(上海)供应链管理有限公司",
         "operationCompanyKey": "浙江/丰厨(上海)供应链管理有限公司",
@@ -298,7 +272,7 @@
         "aiRate": 0.17475728155339806,
         "aiRateTotal": 0.17475728155339806,
         "orderMethod": "",
-        "hotelCodeCount": 11
+        "hotelCodeCount": 10
       },
       {
         "groupName": "冀三姐下单群",
@@ -353,19 +327,6 @@
         "hotelCodeCount": 1
       },
       {
-        "groupName": "三亚订单群（上午）",
-        "operationCompany": "三亚德立安食品有限公司",
-        "operationCompanyKey": "三亚德立安食品有限公司",
-        "itConfigured": true,
-        "orderTotal": 46,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "",
-        "hotelCodeCount": 15
-      },
-      {
         "groupName": "上海-长城汽车机器人接单群",
         "operationCompany": "成都/丰厨(上海)供应链管理有限公司",
         "operationCompanyKey": "成都/丰厨(上海)供应链管理有限公司",
@@ -377,19 +338,6 @@
         "aiRateTotal": 0,
         "orderMethod": "",
         "hotelCodeCount": 4
-      },
-      {
-        "groupName": "三亚订单群（下午）",
-        "operationCompany": "三亚德立安食品有限公司",
-        "operationCompanyKey": "三亚德立安食品有限公司",
-        "itConfigured": true,
-        "orderTotal": 41,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "",
-        "hotelCodeCount": 12
       },
       {
         "groupName": "德立安陕西-栀初-如意茵香茂御酒店下单",
@@ -678,19 +626,6 @@
         "hotelCodeCount": 1
       },
       {
-        "groupName": "德立安&康辰对账下单群",
-        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
-        "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
-        "itConfigured": true,
-        "orderTotal": 4,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "",
-        "hotelCodeCount": 1
-      },
-      {
         "groupName": "葡国餐厅对账接单群",
         "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
         "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
@@ -713,19 +648,6 @@
         "orderAiTotal": 3,
         "aiRate": 1,
         "aiRateTotal": 1,
-        "orderMethod": "",
-        "hotelCodeCount": 1
-      },
-      {
-        "groupName": "德立安&哼哈嘿下单群",
-        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
-        "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
-        "itConfigured": true,
-        "orderTotal": 3,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
         "orderMethod": "",
         "hotelCodeCount": 1
       },
@@ -821,19 +743,6 @@
         "hotelCodeCount": 1
       },
       {
-        "groupName": "澄迈温德姆酒店&德立安沟通群",
-        "operationCompany": "三亚德立安食品有限公司",
-        "operationCompanyKey": "三亚德立安食品有限公司",
-        "itConfigured": true,
-        "orderTotal": 1,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": 0,
-        "aiRateTotal": 0,
-        "orderMethod": "",
-        "hotelCodeCount": 1
-      },
-      {
         "groupName": "铁路标品转单群",
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
         "operationCompanyKey": "上海/丰厨(上海)供应链管理有限公司",
@@ -864,32 +773,6 @@
         "operationCompany": "益海嘉里德立安(上海)食品有限公司",
         "operationCompanyKey": "益海嘉里德立安(上海)食品有限公司",
         "itConfigured": true,
-        "orderTotal": 0,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": null,
-        "aiRateTotal": null,
-        "orderMethod": "",
-        "hotelCodeCount": 2
-      },
-      {
-        "groupName": "德立安&华禧跃下单群",
-        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
-        "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
-        "itConfigured": true,
-        "orderTotal": 0,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": null,
-        "aiRateTotal": null,
-        "orderMethod": "",
-        "hotelCodeCount": 2
-      },
-      {
-        "groupName": "德立安&海龟下单群",
-        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
-        "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
-        "itConfigured": false,
         "orderTotal": 0,
         "orderAiCount": 0,
         "orderAiTotal": 0,
@@ -1189,58 +1072,6 @@
         "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
         "operationCompanyKey": "成都/丰厨(成都)供应链管理有限公司",
         "itConfigured": true,
-        "orderTotal": 0,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": null,
-        "aiRateTotal": null,
-        "orderMethod": "",
-        "hotelCodeCount": 1
-      },
-      {
-        "groupName": "德立安&壹颗糖下单对账群",
-        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
-        "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
-        "itConfigured": true,
-        "orderTotal": 0,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": null,
-        "aiRateTotal": null,
-        "orderMethod": "",
-        "hotelCodeCount": 1
-      },
-      {
-        "groupName": "德立安&必霖奈尔下单对账群",
-        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
-        "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
-        "itConfigured": true,
-        "orderTotal": 0,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": null,
-        "aiRateTotal": null,
-        "orderMethod": "",
-        "hotelCodeCount": 1
-      },
-      {
-        "groupName": "德立安-曲江芙蓉阁下单群",
-        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
-        "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
-        "itConfigured": false,
-        "orderTotal": 0,
-        "orderAiCount": 0,
-        "orderAiTotal": 0,
-        "aiRate": null,
-        "aiRateTotal": null,
-        "orderMethod": "",
-        "hotelCodeCount": 1
-      },
-      {
-        "groupName": "德立安-永昌宾馆下单群",
-        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
-        "operationCompanyKey": "益海嘉里德立安(陕西)食品有限公司",
-        "itConfigured": false,
         "orderTotal": 0,
         "orderAiCount": 0,
         "orderAiTotal": 0,

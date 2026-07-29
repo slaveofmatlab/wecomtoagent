@@ -185,7 +185,6 @@ function parseWecomProgress(workbook, cutoffDate = DEFAULT_CUTOFF_DATE) {
   // 暂时不纳入统计口径的群，自动排除，不用每天手动标"删除"
   const PERMANENTLY_EXCLUDED_GROUPS = new Set([
     "粮贝铁路生鲜订单群",
-    "工行内部沟通群",
   ]);
 
   return records.map((row, index) => {
@@ -210,6 +209,14 @@ function parseWecomProgress(workbook, cutoffDate = DEFAULT_CUTOFF_DATE) {
     .filter((row) => !row.deleted)
     .filter((row) => row.operationCompany || row.hotelCode);
 }
+
+// 小程序下单的项目点：这些项目点已转小程序，订单不存在失败，统计时算100% AI成功
+const MINI_PROGRAM_CODES = new Set([
+  "KHXMD10195", // 工行-仓库（工行内部沟通群）
+  "KHXMD10196", // 工行-小卖部（工行内部沟通群）
+  "KHXMD10144", // 工行-大厨房（工行内部沟通群）
+  "KHXMD10235", // 大兴工厂（北京丰厨转单群）
+]);
 
 // ---- 微信日志 → 下单方式（备注列） ----
 
@@ -431,18 +438,24 @@ function buildCompanySummary(salesRows, pendingRows, progressRows, logSummary) {
 	  const owner = codeToCompany.get(row.hotelCode);
 	  const entry = ensure(owner.key, owner.name);
 	  entry.orderTotal += 1;
-	
-	  // 先按客户订单号匹配，再按销售订单号兜底
-	  const custKey = normalizeText(row.customerOrderNo);
-	  let pendingStatus = pendingMap.get(custKey);
-	  if (!pendingStatus) {
-	    const salesKey = normalizeText(row.orderNo);
-	    pendingStatus = pendingBySalesNo.get(salesKey);
-	  }
-	  if (pendingStatus) {
-	    entry.orderAiTotal += 1;  // 匹配到AI待转单就算（已转+未转）
-	    if (pendingStatus.includes("已转")) {
-	      entry.orderAi += 1;     // 已转单
+
+	  // 小程序项目点的订单不存在失败，算100% AI成功
+	  if (MINI_PROGRAM_CODES.has(row.hotelCode)) {
+	    entry.orderAiTotal += 1;
+	    entry.orderAi += 1;
+	  } else {
+	    // 先按客户订单号匹配，再按销售订单号兜底
+	    const custKey = normalizeText(row.customerOrderNo);
+	    let pendingStatus = pendingMap.get(custKey);
+	    if (!pendingStatus) {
+	      const salesKey = normalizeText(row.orderNo);
+	      pendingStatus = pendingBySalesNo.get(salesKey);
+	    }
+	    if (pendingStatus) {
+	      entry.orderAiTotal += 1;  // 匹配到AI待转单就算（已转+未转）
+	      if (pendingStatus.includes("已转")) {
+	        entry.orderAi += 1;     // 已转单
+	      }
 	    }
 	  }
 	}
@@ -544,15 +557,21 @@ function buildGroupSummary(salesRows, pendingRows, progressRows, logSummary) {
     if (!groupName) continue;
     const g = ensureGroup(groupName);
     g.orderTotal += 1;
-    // 两层匹配：先客户订单号，再销售订单号兜底
-    const custKey = normalizeText(sr.customerOrderNo);
-    let pendingStatus = pendingMap.get(custKey);
-    if (!pendingStatus) {
-      pendingStatus = pendingBySalesNo.get(normalizeText(sr.orderNo));
-    }
-    if (pendingStatus) {
+    // 小程序项目点的订单算100% AI成功
+    if (MINI_PROGRAM_CODES.has(sr.hotelCode)) {
       g.orderAiTotal += 1;
-      if (pendingStatus.includes("已转")) g.orderAiCount += 1;
+      g.orderAiCount += 1;
+    } else {
+      // 两层匹配：先客户订单号，再销售订单号兜底
+      const custKey = normalizeText(sr.customerOrderNo);
+      let pendingStatus = pendingMap.get(custKey);
+      if (!pendingStatus) {
+        pendingStatus = pendingBySalesNo.get(normalizeText(sr.orderNo));
+      }
+      if (pendingStatus) {
+        g.orderAiTotal += 1;
+        if (pendingStatus.includes("已转")) g.orderAiCount += 1;
+      }
     }
   }
 

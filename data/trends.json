@@ -1843,18 +1843,18 @@
   },
   "07-28": {
     "cutoff": "0728",
-    "registered": 211,
-    "itOk": 211,
+    "registered": 214,
+    "itOk": 214,
     "configRate": 1,
-    "orderTotal": 938,
-    "orderAi": 219,
-    "aiRate": 0.23347547974413646,
+    "orderTotal": 1052,
+    "orderAi": 361,
+    "aiRate": 0.3431558935361217,
     "companies": [
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
-        "orderTotal": 251,
-        "orderAiCount": 0,
-        "aiRate": 0
+        "orderTotal": 365,
+        "orderAiCount": 114,
+        "aiRate": 0.31232876712328766
       },
       {
         "operationCompany": "西安/丰厨(上海)供应链管理有限公司",
@@ -1871,8 +1871,8 @@
       {
         "operationCompany": "北京/丰厨(上海)供应链管理有限公司",
         "orderTotal": 88,
-        "orderAiCount": 57,
-        "aiRate": 0.6477272727272727
+        "orderAiCount": 85,
+        "aiRate": 0.9659090909090909
       },
       {
         "operationCompany": "三亚德立安食品有限公司",
@@ -1953,6 +1953,6 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-07-29T05:25:19.055Z"
+    "ts": "2026-07-29T05:43:31.485Z"
   }
 }

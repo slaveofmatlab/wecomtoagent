@@ -756,6 +756,7 @@
   <section id="trendPanel" class="panel" hidden>
     <div class="table-section-title">📈 数据趋势</div>
     <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
+      <button id="btnRangeToggle" class="secondary" onclick="toggleTrendRange()" style="font-size:11px;padding:3px 10px;">全部</button>
       <button id="btnLabelToggle" class="secondary" onclick="toggleLabels()" style="font-size:11px;padding:3px 10px;">显示数据标签</button>
       <button class="secondary" onclick="exportChart()" style="font-size:11px;padding:3px 10px;">导出趋势图</button>
       <button class="secondary" onclick="clearHistory()" style="font-size:11px;padding:3px 10px;">清除历史</button>
@@ -2484,6 +2485,13 @@
   var _showLabels = false;
   function toggleLabels() { _showLabels = !_showLabels; document.getElementById("btnLabelToggle").textContent = _showLabels ? "隐藏数据标签" : "显示数据标签"; renderTrend(); }
   window.toggleLabels = toggleLabels;
+  var _trendRange = "30d"; // "30d" | "all"
+  function toggleTrendRange() {
+    _trendRange = _trendRange === "30d" ? "all" : "30d";
+    document.getElementById("btnRangeToggle").textContent = _trendRange === "30d" ? "全部" : "近30天";
+    renderTrend();
+  }
+  window.toggleTrendRange = toggleTrendRange;
   function renderTrend() {
     var h = loadHistory();
     var keys = Object.keys(h).sort();
@@ -2494,19 +2502,13 @@
       return;
     }
     document.getElementById("trendPanel").hidden = false;
-    // 生成整个月的横轴标签（07-01 ~ 07-31），数据点只落在有数据的日期上
-    var firstKey = keys[0], lastKey = keys[keys.length - 1];
-    var m0 = parseInt(firstKey.split("-")[0]), d0 = 1; // 月初
-    var m1 = parseInt(lastKey.split("-")[0]), d1 = new Date(2026, m1, 0).getDate(); // 月末
-    var labels = [];
-    for (var mm = m0; mm <= m1; mm++) {
-      var endD = (mm === m1) ? d1 : new Date(2026, mm, 0).getDate();
-      for (var dd = (mm === m0 ? d0 : 1); dd <= endD; dd++) {
-        labels.push(String(mm).padStart(2, "0") + "-" + String(dd).padStart(2, "0"));
-      }
-    }
+    // 只显示有数据的日期作为横轴标签；默认近30天，可切换全部
+    var labels = _trendRange === "30d" ? keys.slice(-30) : keys;
     var configData = labels.map(function(l){ var v = h[l]; return v && v.configRate != null ? (v.configRate*100).toFixed(1) : null; });
     var aiData = labels.map(function(l){ var v = h[l]; return v && v.aiRate != null ? (v.aiRate*100).toFixed(1) : null; });
+    // 动态宽度：每个标签至少 45px，保证"全部"模式可横向滚动
+    var chartWidth = Math.max(labels.length * 45, 600);
+    document.getElementById("trendChartInner").style.minWidth = chartWidth + "px";
     if (window._tc) window._tc.destroy();
     window._tc = new Chart(document.getElementById("trendChart").getContext("2d"), {
       type: "line",

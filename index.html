@@ -755,11 +755,28 @@
   <!-- ====== 数据趋势 ====== -->
   <section id="trendPanel" class="panel" hidden>
     <div class="table-section-title">📈 数据趋势</div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
-      <button id="btnRangeToggle" class="secondary" onclick="toggleTrendRange()" style="font-size:11px;padding:3px 10px;">全部</button>
-      <button id="btnLabelToggle" class="secondary" onclick="toggleLabels()" style="font-size:11px;padding:3px 10px;">显示数据标签</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:6px;">
+      <span style="font-size:11px;color:var(--muted);">范围：</span>
+      <button id="btnRange7" class="secondary" onclick="setTrendRange(7)" style="font-size:11px;padding:3px 8px;">7天</button>
+      <button id="btnRange14" class="secondary" onclick="setTrendRange(14)" style="font-size:11px;padding:3px 8px;">14天</button>
+      <button id="btnRange30" class="secondary" style="font-size:11px;padding:3px 8px;background:#e8f0d8;color:#2d4a1e;border-color:#6d8f3c;font-weight:600;">30天</button>
+      <button id="btnRangeAll" class="secondary" onclick="setTrendRange(0)" style="font-size:11px;padding:3px 8px;">全部</button>
+      <button id="btnTrendCal" class="secondary" onclick="toggleTrendCalendar()" style="font-size:11px;padding:3px 8px;">📅 自定义</button>
+      <button id="btnLabelToggle" class="secondary" onclick="toggleLabels()" style="font-size:11px;padding:3px 10px;margin-left:4px;">显示数据标签</button>
       <button class="secondary" onclick="exportChart()" style="font-size:11px;padding:3px 10px;">导出趋势图</button>
       <button class="secondary" onclick="clearHistory()" style="font-size:11px;padding:3px 10px;">清除历史</button>
+    </div>
+    <!-- 趋势图专属日历 -->
+    <div id="trendCalPanel" style="display:none;background:#f8faf7;border:1px solid #d9e0ea;border-radius:8px;padding:8px 10px;margin-bottom:6px;max-width:340px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <button onclick="trendCalNav(-1)" style="background:none;border:none;cursor:pointer;font-size:16px;padding:0 4px;">◀</button>
+        <span id="trendCalLabel" style="font-weight:600;font-size:12px;"></span>
+        <button onclick="trendCalNav(1)" style="background:none;border:none;cursor:pointer;font-size:16px;padding:0 4px;">▶</button>
+      </div>
+      <div id="trendCalGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:11px;"></div>
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <button onclick="trendCalClear()" style="flex:1;font-size:11px;padding:3px;background:#fee2e2;border:1px solid #fca5a5;border-radius:4px;cursor:pointer;">清除自选</button>
+      </div>
     </div>
     <div style="overflow-x:auto;margin-bottom:8px;" id="trendChartWrap">
       <div style="height:300px;min-width:100%;" id="trendChartInner">
@@ -2485,13 +2502,118 @@
   var _showLabels = false;
   function toggleLabels() { _showLabels = !_showLabels; document.getElementById("btnLabelToggle").textContent = _showLabels ? "隐藏数据标签" : "显示数据标签"; renderTrend(); }
   window.toggleLabels = toggleLabels;
-  var _trendRange = "30d"; // "30d" | "all"
-  function toggleTrendRange() {
-    _trendRange = _trendRange === "30d" ? "all" : "30d";
-    document.getElementById("btnRangeToggle").textContent = _trendRange === "30d" ? "全部" : "近30天";
+  var _trendDays = 30; // 默认近30天；0 = 全部
+  var _tCustomDates = null; // null=用预设按钮；Set=自定义选中日期
+  var _tCalYear = null, _tCalMonth = null; // 趋势日历状态
+
+  function initTrendCal() {
+    if (_tCalYear !== null) return;
+    var now = new Date();
+    _tCalYear = now.getFullYear();
+    _tCalMonth = now.getMonth();
+  }
+
+  function toggleTrendCalendar() {
+    var panel = document.getElementById("trendCalPanel");
+    if (panel.style.display === "none") {
+      initTrendCal();
+      renderTrendCalendar();
+      panel.style.display = "";
+      document.getElementById("btnTrendCal").style.background = "#e8f0d8";
+      document.getElementById("btnTrendCal").style.borderColor = "#6d8f3c";
+    } else {
+      panel.style.display = "none";
+      document.getElementById("btnTrendCal").style.background = "";
+      document.getElementById("btnTrendCal").style.borderColor = "";
+    }
+  }
+  window.toggleTrendCalendar = toggleTrendCalendar;
+
+  function trendCalNav(delta) {
+    initTrendCal();
+    _tCalMonth += delta;
+    if (_tCalMonth < 0) { _tCalMonth = 11; _tCalYear--; }
+    if (_tCalMonth > 11) { _tCalMonth = 0; _tCalYear++; }
+    renderTrendCalendar();
+  }
+  window.trendCalNav = trendCalNav;
+
+  function renderTrendCalendar() {
+    initTrendCal();
+    var trends = window._trendsData || {};
+    var mNames = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+    document.getElementById("trendCalLabel").textContent = _tCalYear + "年" + mNames[_tCalMonth];
+
+    var html = "";
+    ["一","二","三","四","五","六","日"].forEach(function(d) {
+      html += '<div style="color:var(--muted);font-size:10px;padding:1px 0;">' + d + '</div>';
+    });
+    var firstDay = (new Date(_tCalYear, _tCalMonth, 1).getDay() + 6) % 7;
+    var daysInMonth = new Date(_tCalYear, _tCalMonth + 1, 0).getDate();
+    for (var i = 0; i < firstDay; i++) html += "<div></div>";
+    for (var d = 1; d <= daysInMonth; d++) {
+      var mm = String(_tCalMonth + 1).padStart(2, "0");
+      var dd = String(d).padStart(2, "0");
+      var key = mm + "-" + dd;
+      var hasData = !!trends[key];
+      var isSel = _tCustomDates && _tCustomDates.has(key);
+      var bg = isSel ? "#6d8f3c" : (hasData ? "#e8f0d8" : "transparent");
+      var clr = isSel ? "#fff" : (hasData ? "#2d4a1e" : "#c0ccd8");
+      var cur = hasData ? "pointer" : "default";
+      html += '<div onclick="trendCalSelect(event,\'' + key + '\')" style="padding:2px 0;border-radius:3px;cursor:' + cur + ';background:' + bg + ';color:' + clr + ';font-size:11px;">' + d + '</div>';
+    }
+    document.getElementById("trendCalGrid").innerHTML = html;
+
+    var btn = document.getElementById("btnTrendCal");
+    if (_tCustomDates && _tCustomDates.size > 0) {
+      btn.textContent = "📅 已选" + _tCustomDates.size + "天";
+    } else {
+      btn.textContent = "📅 自定义";
+    }
+  }
+
+  function trendCalSelect(event, key) {
+    event.stopPropagation();
+    var trends = window._trendsData || {};
+    if (!trends[key]) return; // 没有数据的日期不可选
+    if (!_tCustomDates) _tCustomDates = new Set();
+    if (_tCustomDates.has(key)) _tCustomDates.delete(key);
+    else _tCustomDates.add(key);
+    if (_tCustomDates.size === 0) _tCustomDates = null; // 全清空则回到预设模式
+    renderTrendCalendar();
     renderTrend();
   }
-  window.toggleTrendRange = toggleTrendRange;
+  window.trendCalSelect = trendCalSelect;
+
+  function trendCalClear() {
+    _tCustomDates = null;
+    document.getElementById("btnTrendCal").textContent = "📅 自定义";
+    document.getElementById("trendCalPanel").style.display = "none";
+    document.getElementById("btnTrendCal").style.background = "";
+    document.getElementById("btnTrendCal").style.borderColor = "";
+    renderTrendCalendar();
+    renderTrend();
+  }
+  window.trendCalClear = trendCalClear;
+
+  function setTrendRange(n) {
+    _trendDays = n;
+    _tCustomDates = null; // 用预设按钮时清空自定义选择
+    document.getElementById("btnTrendCal").textContent = "📅 自定义";
+    document.getElementById("trendCalPanel").style.display = "none";
+    document.getElementById("btnTrendCal").style.background = "";
+    document.getElementById("btnTrendCal").style.borderColor = "";
+    ["btnRange7","btnRange14","btnRange30","btnRangeAll"].forEach(function(id) {
+      var el = document.getElementById(id);
+      var active = (id === "btnRange30" && n === 30) || (id === "btnRange7" && n === 7) || (id === "btnRange14" && n === 14) || (id === "btnRangeAll" && n === 0);
+      el.style.background = active ? "#e8f0d8" : "";
+      el.style.color = active ? "#2d4a1e" : "";
+      el.style.borderColor = active ? "#6d8f3c" : "";
+      el.style.fontWeight = active ? "600" : "";
+    });
+    renderTrend();
+  }
+  window.setTrendRange = setTrendRange;
   function renderTrend() {
     var h = loadHistory();
     var keys = Object.keys(h).sort();
@@ -2502,8 +2624,13 @@
       return;
     }
     document.getElementById("trendPanel").hidden = false;
-    // 只显示有数据的日期作为横轴标签；默认近30天，可切换全部
-    var labels = _trendRange === "30d" ? keys.slice(-30) : keys;
+    // 自定义日期优先，否则按预设按钮（近N天/全部）
+    var labels;
+    if (_tCustomDates && _tCustomDates.size > 0) {
+      labels = Array.from(_tCustomDates).sort();
+    } else {
+      labels = _trendDays > 0 ? keys.slice(-_trendDays) : keys;
+    }
     var configData = labels.map(function(l){ var v = h[l]; return v && v.configRate != null ? (v.configRate*100).toFixed(1) : null; });
     var aiData = labels.map(function(l){ var v = h[l]; return v && v.aiRate != null ? (v.aiRate*100).toFixed(1) : null; });
     // 动态宽度：每个标签至少 45px，保证"全部"模式可横向滚动

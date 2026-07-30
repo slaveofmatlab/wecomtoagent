@@ -1729,18 +1729,18 @@
   },
   "07-27": {
     "cutoff": "0727",
-    "registered": 245,
-    "itOk": 210,
-    "configRate": 0.8571428571428571,
-    "orderTotal": 1767,
-    "orderAi": 181,
-    "aiRate": 0.10243350311262026,
+    "registered": 248,
+    "itOk": 213,
+    "configRate": 0.8588709677419355,
+    "orderTotal": 1881,
+    "orderAi": 319,
+    "aiRate": 0.1695906432748538,
     "companies": [
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
-        "orderTotal": 1011,
-        "orderAiCount": 0,
-        "aiRate": 0
+        "orderTotal": 1125,
+        "orderAiCount": 114,
+        "aiRate": 0.10133333333333333
       },
       {
         "operationCompany": "西安/丰厨(上海)供应链管理有限公司",
@@ -1769,8 +1769,8 @@
       {
         "operationCompany": "北京/丰厨(上海)供应链管理有限公司",
         "orderTotal": 60,
-        "orderAiCount": 0,
-        "aiRate": 0
+        "orderAiCount": 24,
+        "aiRate": 0.4
       },
       {
         "operationCompany": "成都/丰厨(上海)供应链管理有限公司",
@@ -1839,22 +1839,22 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-07-28T03:17:11.752Z"
+    "ts": "2026-07-29T08:03:49.608Z"
   },
   "07-28": {
     "cutoff": "0728",
-    "registered": 211,
-    "itOk": 211,
+    "registered": 214,
+    "itOk": 214,
     "configRate": 1,
-    "orderTotal": 938,
-    "orderAi": 219,
-    "aiRate": 0.23347547974413646,
+    "orderTotal": 1052,
+    "orderAi": 361,
+    "aiRate": 0.3431558935361217,
     "companies": [
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
-        "orderTotal": 251,
-        "orderAiCount": 0,
-        "aiRate": 0
+        "orderTotal": 365,
+        "orderAiCount": 114,
+        "aiRate": 0.31232876712328766
       },
       {
         "operationCompany": "西安/丰厨(上海)供应链管理有限公司",
@@ -1871,8 +1871,8 @@
       {
         "operationCompany": "北京/丰厨(上海)供应链管理有限公司",
         "orderTotal": 88,
-        "orderAiCount": 57,
-        "aiRate": 0.6477272727272727
+        "orderAiCount": 85,
+        "aiRate": 0.9659090909090909
       },
       {
         "operationCompany": "三亚德立安食品有限公司",
@@ -1953,6 +1953,120 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-07-29T05:25:19.055Z"
+    "ts": "2026-07-29T08:05:12.517Z"
+  },
+  "07-29": {
+    "cutoff": "0729",
+    "registered": 256,
+    "itOk": 248,
+    "configRate": 0.96875,
+    "orderTotal": 1011,
+    "orderAi": 268,
+    "aiRate": 0.26508407517309596,
+    "companies": [
+      {
+        "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+        "orderTotal": 352,
+        "orderAiCount": 104,
+        "aiRate": 0.29545454545454547
+      },
+      {
+        "operationCompany": "西安/丰厨(上海)供应链管理有限公司",
+        "orderTotal": 142,
+        "orderAiCount": 0,
+        "aiRate": 0
+      },
+      {
+        "operationCompany": "三亚德立安食品有限公司",
+        "orderTotal": 95,
+        "orderAiCount": 33,
+        "aiRate": 0.3473684210526316
+      },
+      {
+        "operationCompany": "浙江/丰厨(上海)供应链管理有限公司",
+        "orderTotal": 95,
+        "orderAiCount": 6,
+        "aiRate": 0.06315789473684211
+      },
+      {
+        "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
+        "orderTotal": 74,
+        "orderAiCount": 0,
+        "aiRate": 0
+      },
+      {
+        "operationCompany": "北京/丰厨(上海)供应链管理有限公司",
+        "orderTotal": 73,
+        "orderAiCount": 72,
+        "aiRate": 0.9863013698630136
+      },
+      {
+        "operationCompany": "成都/丰厨(上海)供应链管理有限公司",
+        "orderTotal": 52,
+        "orderAiCount": 0,
+        "aiRate": 0
+      },
+      {
+        "operationCompany": "重庆/丰厨(成都)供应链管理有限公司",
+        "orderTotal": 51,
+        "orderAiCount": 0,
+        "aiRate": 0
+      },
+      {
+        "operationCompany": "广州益嘉德立安食品有限公司",
+        "orderTotal": 36,
+        "orderAiCount": 21,
+        "aiRate": 0.5833333333333334
+      },
+      {
+        "operationCompany": "益海嘉里德立安（杭州）食品有限公司",
+        "orderTotal": 16,
+        "orderAiCount": 13,
+        "aiRate": 0.8125
+      },
+      {
+        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+        "orderTotal": 13,
+        "orderAiCount": 10,
+        "aiRate": 0.7692307692307693
+      },
+      {
+        "operationCompany": "成都/丰厨(成都)供应链管理有限公司",
+        "orderTotal": 6,
+        "orderAiCount": 4,
+        "aiRate": 0.6666666666666666
+      },
+      {
+        "operationCompany": "深圳市德立安食品有限公司",
+        "orderTotal": 5,
+        "orderAiCount": 5,
+        "aiRate": 1
+      },
+      {
+        "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+        "orderTotal": 1,
+        "orderAiCount": 0,
+        "aiRate": 0
+      },
+      {
+        "operationCompany": "益彩（上海）供应链管理有限公司",
+        "orderTotal": 0,
+        "orderAiCount": 0,
+        "aiRate": null
+      },
+      {
+        "operationCompany": "益海嘉里食品营销有限公司上海分公司",
+        "orderTotal": 0,
+        "orderAiCount": 0,
+        "aiRate": null
+      },
+      {
+        "operationCompany": "益海津农德立安（天津）供应链管理有限公司",
+        "orderTotal": 0,
+        "orderAiCount": 0,
+        "aiRate": null
+      }
+    ],
+    "ts": "2026-07-30T01:22:33.898Z"
   }
 }

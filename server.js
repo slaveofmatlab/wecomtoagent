@@ -192,9 +192,10 @@ function loadCumulativePending() {
 }
 
 function saveCumulativePending(map) {
+  // 紧凑格式（无缩进），减少磁盘 I/O 和 GitHub push 体积
   fs.writeFileSync(
     path.join(ROOT, "data", "pending_cumulative.json"),
-    JSON.stringify(map, null, 2)
+    JSON.stringify(map)
   );
 }
 
@@ -620,17 +621,15 @@ async function handleExportOrderMethod(req, res) {
       return;
     }
 
-    // 与看板重点群监控完全一致的逻辑：priority_groups.json category 优先，否则用 orderMethod
+    // 与看板 priorityCategory() 完全一致的分类逻辑
     var syntheticLogSummary = logSummary || {};
     var gsRows = (currentPageData.groupSummary && currentPageData.groupSummary.rows) || [];
     if (gsRows.length > 0) {
-      // 读取 priority_groups.json（与 index.html 同逻辑）
       var pgGroups = {};
       try {
         var pgPath = path.join(ROOT, "basicData", "priority_groups.json");
         if (fs.existsSync(pgPath)) {
-          var pg = JSON.parse(fs.readFileSync(pgPath, "utf8"));
-          pgGroups = pg.groups || {};
+          pgGroups = (JSON.parse(fs.readFileSync(pgPath, "utf8")).groups) || {};
         }
       } catch(e) {}
 
@@ -639,20 +638,35 @@ async function handleExportOrderMethod(req, res) {
         var gr = gsRows[gi];
         var ck = gr.operationCompanyKey;
         if (!ck || !gr.orderTotal) continue;
-        // 与看板 index.html 完全一致的判定逻辑
-        var pg = pgGroups[gr.groupName] || {};
-        var method;
-        if (pg.category) {
-          method = pg.category;
-        } else if (gr.groupName.indexOf("机器人接单群") >= 0) {
-          method = "Excel下单";
+        var c = pgGroups[gr.groupName] || {};
+
+        // 完全复制看板 priorityCategory 逻辑
+        var cat;
+        if ((gr.groupName || "").indexOf("机器人接单群") >= 0) {
+          cat = "机器人";
+        } else if (!c || Object.keys(c).length === 0) {
+          continue;  // 不在配置里的群跳过
+        } else if (c.category) {
+          cat = c.category;
+        } else if (c.tag === "非标准") {
+          cat = "手写";
+        } else if (c.tag !== "标准") {
+          continue;
         } else {
-          method = (pg.mainMethod) || gr.orderMethod || "";
+          var m = c.mainMethod || "";
+          if (!m) { cat = "其他"; }
+          else if (m.indexOf("图片下单") === 0) { cat = "图片下单"; }
+          else if (m.indexOf("图文混发") === 0 || /\d+%/.test(m)) { cat = "混合"; }
+          else if (["Excel下单","PDF下单","文本消息"].indexOf(m) >= 0) { cat = m; }
+          else { cat = "其他"; }
         }
-        if (!method) continue;
-        var m = method.match(/^(\S+)/);
-        if (!m) continue;
-        method = m[1];
+
+        // 机器人 → 根据订单量分配到 Excel/PDF/图片（按群备注粗略判断）
+        var method;
+        if (cat === "机器人") { method = "Excel下单"; }
+        else if (cat === "其他") { method = "混合"; }
+        else { method = cat; }
+
         if (!companyMethods[ck]) companyMethods[ck] = {};
         companyMethods[ck][method] = (companyMethods[ck][method] || 0) + gr.orderTotal;
       }

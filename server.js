@@ -620,8 +620,77 @@ async function handleExportOrderMethod(req, res) {
       return;
     }
 
-    const companySummaryRows = (currentPageData.companySummary && currentPageData.companySummary.rows) || [];
-    const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, logSummary || {}, companySummaryRows);
+    // 从 priority_groups.json 读入手动指定的下单方式分类，构建 logSummary 替代数据
+    // 这样不依赖微信日志，也不会上传日志覆盖用户设定
+    var syntheticLogSummary = logSummary || {};
+    try {
+      var pgPath = path.join(ROOT, "basicData", "priority_groups.json");
+      if (fs.existsSync(pgPath)) {
+        var pg = JSON.parse(fs.readFileSync(pgPath, "utf8"));
+        var groups = pg.groups || {};
+        var gsRows = (currentPageData.groupSummary && currentPageData.groupSummary.rows) || [];
+
+        // groupName → category
+        var groupCategory = {};
+        for (var gn in groups) {
+          var g = groups[gn];
+          // 机器人接单群 → 跳过（由群名自动判定）
+          if (gn.indexOf("机器人接单群") >= 0) continue;
+          if (g.category) groupCategory[gn] = g.category;
+        }
+
+        // 按公司聚合各下单方式
+        var companyMethods = {};  // companyKey → { method → orderCount }
+        for (var gi = 0; gi < gsRows.length; gi++) {
+          var gr = gsRows[gi];
+          var ck = gr.operationCompanyKey;
+          if (!ck || !gr.orderTotal) continue;
+          // 确定下单方式：priority_groups category → 群名自动判定 → 备注重解析
+          var method = null;
+          if (groupCategory[gr.groupName]) {
+            method = groupCategory[gr.groupName];
+          } else if (gr.groupName.indexOf("机器人接单群") >= 0) {
+            method = "Excel下单";  // 机器人群默认 Excel
+          } else if (gr.orderMethod) {
+            // 从备注重解析：取第一个方式
+            var m = gr.orderMethod.match(/^(\S+)/);
+            if (m) method = m[1];
+          }
+          if (!method) continue;
+
+          if (!companyMethods[ck]) companyMethods[ck] = {};
+          companyMethods[ck][method] = (companyMethods[ck][method] || 0) + gr.orderTotal;
+        }
+
+        // 构建 logSummary 格式：{ companyKey: { methodStats: [{label, count}], remark: "..." } }
+        var built = {};
+        for (var ck2 in companyMethods) {
+          var methods = companyMethods[ck2];
+          var methodStats = [];
+          var total = 0;
+          for (var mt in methods) {
+            methodStats.push({ label: mt, count: methods[mt], processed: true });
+            total += methods[mt];
+          }
+          methodStats.sort(function (a, b) { return b.count - a.count; });
+          // 生成 remark
+          var remarkParts = methodStats.slice(0, 2).map(function (ms) {
+            return ms.label + " " + Math.round(ms.count / total * 100) + "%";
+          });
+          built[ck2] = { methodStats: methodStats, remark: remarkParts.join("，") };
+        }
+        // 合并：syntheticLogSummary 优先，built 补充缺失的公司
+        for (var ck3 in built) {
+          if (!syntheticLogSummary[ck3] || !syntheticLogSummary[ck3].methodStats || syntheticLogSummary[ck3].methodStats.length === 0) {
+            syntheticLogSummary[ck3] = built[ck3];
+          }
+        }
+      }
+    } catch (e) {
+      console.log("priority_groups 解析失败，使用原始 logSummary:", e.message);
+    }
+
+    const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, syntheticLogSummary);
 
     // --- 创建 Excel 工作簿 ---
     const wb = new ExcelJS.Workbook();

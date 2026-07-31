@@ -1387,12 +1387,12 @@
   },
   "07-22": {
     "cutoff": "0722",
-    "registered": 280,
-    "itOk": 278,
-    "configRate": 0.9928571428571429,
+    "registered": 214,
+    "itOk": 212,
+    "configRate": 0.9906542056074766,
     "orderTotal": 1777,
-    "orderAi": 193,
-    "aiRate": 0.10861001688238604,
+    "orderAi": 300,
+    "aiRate": 0.16882386043894204,
     "companies": [
       {
         "operationCompany": "北京/丰厨(上海)供应链管理有限公司",
@@ -1403,8 +1403,8 @@
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
         "orderTotal": 389,
-        "orderAiCount": 0,
-        "aiRate": 0
+        "orderAiCount": 107,
+        "aiRate": 0.2750642673521851
       },
       {
         "operationCompany": "西安/丰厨(上海)供应链管理有限公司",
@@ -1497,7 +1497,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-07-23T05:23:25.623Z"
+    "ts": "2026-07-31T10:15:39.055Z"
   },
   "07-23": {
     "cutoff": "0723",

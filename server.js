@@ -683,7 +683,23 @@ async function handleExportOrderMethod(req, res) {
       for (var ck4 in built) { syntheticLogSummary[ck4] = built[ck4]; }
     }
 
-    const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, syntheticLogSummary);
+    // 用累积待转单做匹配（与看板同口径）
+    var exportMatchingRows = pendingRows;
+    if (Object.keys(currentCumulativePending).length > 0) {
+      exportMatchingRows = [];
+      for (var ek in currentCumulativePending) {
+        var e = currentCumulativePending[ek];
+        if (e.row) { exportMatchingRows.push(e.row); continue; }
+        var isSales = ek.charAt(0) === '_';
+        exportMatchingRows.push({
+          customerOrderNo: isSales ? '' : ek,
+          salesOrderNo: isSales ? (e.s || ek.slice(1)) : (e.s || ''),
+          transferStatus: e.t || '',
+          createdBy: '供应链管理员',
+        });
+      }
+    }
+    const report = buildOrderMethodReport(salesRows, exportMatchingRows, progressRows, syntheticLogSummary);
 
     // --- 创建 Excel 工作簿 ---
     const wb = new ExcelJS.Workbook();

@@ -256,21 +256,23 @@ async function handleUpload(req, res) {
   if (!progressWb) throw new Error("缺少推进表文件");
 
   // 解析当天待转单，合并入累积 Map（紧凑格式：{s: salesOrderNo, t: transferStatus, d: [dates]}）
-  // 只保留 AI 条目（createdBy=供应链管理员），节省存储空间，确保 GitHub API 1MB 限制内
+  // key = customerOrderNo（如果非空），否则 '_' + salesOrderNo（兜底匹配用）
   const todayPendingRows = parsePendingWecom(pendingWb);
-  const todayDate = cutoff; // MMDD，如 "0730"
+  const todayDate = cutoff;
   for (const row of todayPendingRows) {
     if (row.createdBy !== '供应链管理员') continue;
-    const key = normalizeText(row.customerOrderNo);
-    if (!key) continue;
-    const entry = currentCumulativePending[key];
+    var custKey = normalizeText(row.customerOrderNo);
+    var salesKey = normalizeText(row.salesOrderNo);
+    if (!custKey && !salesKey) continue;
+    var mapKey = custKey || ('_' + salesKey);
+    var entry = currentCumulativePending[mapKey];
     if (entry) {
       entry.s = row.salesOrderNo || '';
       entry.t = row.transferStatus || '';
       if (!entry.d) entry.d = [];
       if (!entry.d.includes(todayDate)) entry.d.push(todayDate);
     } else {
-      currentCumulativePending[key] = {
+      currentCumulativePending[mapKey] = {
         s: row.salesOrderNo || '',
         t: row.transferStatus || '',
         d: [todayDate],
@@ -280,24 +282,24 @@ async function handleUpload(req, res) {
   saveCumulativePending(currentCumulativePending);
 
   // 累积待转单用于 AI 匹配（从紧凑格式展开为 buildCompanySummary 需要的行格式）
-  const mergedRows = Object.entries(currentCumulativePending).map(function ([key, entry]) {
-    // 兼容旧格式 {row, dates} 和新格式 {s, t, d}
-    if (entry.row) {
-      return entry.row;
-    }
-    var s = entry.s || '';
-    var t = entry.t || '';
-    // 兼容旧格式：entry 本身可能就是 row 对象（plain row without wrapper）
-    if (!s && !t && entry.transferStatus) {
-      return entry;
-    }
-    return {
-      customerOrderNo: key,
-      salesOrderNo: typeof s === 'string' ? s : '',
-      transferStatus: typeof t === 'string' ? t : (entry.transferStatus || ''),
+  var mergedRows = [];
+  for (var entryKey in currentCumulativePending) {
+    var entry = currentCumulativePending[entryKey];
+    // 兼容旧格式 {row, dates}
+    if (entry.row) { mergedRows.push(entry.row); continue; }
+    var entryS = entry.s || '';
+    var entryT = entry.t || '';
+    // 兼容旧格式：entry 本身可能是 row 对象
+    if (!entryS && !entryT && entry.transferStatus) { mergedRows.push(entry); continue; }
+    // _ 前缀的 entryKey → customerOrderNo 为空，salesOrderNo 从 entryKey 或 entry.s 取
+    var isSalesKey = entryKey.charAt(0) === '_';
+    mergedRows.push({
+      customerOrderNo: isSalesKey ? '' : entryKey,
+      salesOrderNo: isSalesKey ? (entryS || entryKey.slice(1)) : entryS,
+      transferStatus: typeof entryT === 'string' ? entryT : (entry.transferStatus || ''),
       createdBy: '供应链管理员',
-    };
-  });
+    });
+  }
 
   const data = buildPageData({
     salesWorkbook: salesWb,

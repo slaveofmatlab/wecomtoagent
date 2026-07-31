@@ -620,20 +620,36 @@ async function handleExportOrderMethod(req, res) {
       return;
     }
 
-    // 从看板已有的 groupSummary.orderMethod 直接取下单方式（与重点群监控显示完全一致）
-    // 聚合到公司级别，不依赖日志、不做任何转换
+    // 与看板重点群监控完全一致的逻辑：priority_groups.json category 优先，否则用 orderMethod
     var syntheticLogSummary = logSummary || {};
     var gsRows = (currentPageData.groupSummary && currentPageData.groupSummary.rows) || [];
     if (gsRows.length > 0) {
+      // 读取 priority_groups.json（与 index.html 同逻辑）
+      var pgGroups = {};
+      try {
+        var pgPath = path.join(ROOT, "basicData", "priority_groups.json");
+        if (fs.existsSync(pgPath)) {
+          var pg = JSON.parse(fs.readFileSync(pgPath, "utf8"));
+          pgGroups = pg.groups || {};
+        }
+      } catch(e) {}
+
       var companyMethods = {};
       for (var gi = 0; gi < gsRows.length; gi++) {
         var gr = gsRows[gi];
         var ck = gr.operationCompanyKey;
         if (!ck || !gr.orderTotal) continue;
-        // 直接用看板显示的 orderMethod（优先用 priority_groups category）
-        var method = gr.orderMethod || '';
+        // 与看板 index.html 完全一致的判定逻辑
+        var pg = pgGroups[gr.groupName] || {};
+        var method;
+        if (pg.category) {
+          method = pg.category;
+        } else if (gr.groupName.indexOf("机器人接单群") >= 0) {
+          method = "Excel下单";
+        } else {
+          method = (pg.mainMethod) || gr.orderMethod || "";
+        }
         if (!method) continue;
-        // 取第一个方式作为主分类（如 "图片下单 75%，PDF下单 19%" → "图片下单"）
         var m = method.match(/^(\S+)/);
         if (!m) continue;
         method = m[1];
@@ -650,7 +666,7 @@ async function handleExportOrderMethod(req, res) {
         var remarkParts = stats.slice(0,2).map(function(s){ return s.label + ' ' + Math.round(s.count/total*100) + '%'; });
         built[ck2] = { methodStats: stats, remark: remarkParts.join('，') };
       }
-      for (var ck3 in built) { syntheticLogSummary[ck3] = built[ck3]; }
+      for (var ck4 in built) { syntheticLogSummary[ck4] = built[ck4]; }
     }
 
     const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, syntheticLogSummary);

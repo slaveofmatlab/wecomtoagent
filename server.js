@@ -620,7 +620,8 @@ async function handleExportOrderMethod(req, res) {
       return;
     }
 
-    const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, logSummary || {});
+    const companySummaryRows = (currentPageData.companySummary && currentPageData.companySummary.rows) || [];
+    const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, logSummary || {}, companySummaryRows);
 
     // --- 创建 Excel 工作簿 ---
     const wb = new ExcelJS.Workbook();

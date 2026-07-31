@@ -738,7 +738,7 @@ function buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, logWo
  * 数据来源：微信日志（消息类型分布）+ 销售订单（订单行数/AI转单）。
  * 订单行数按各公司消息类型比例分配到各下单方式。
  */
-function buildOrderMethodReport(salesRows, pendingRows, progressRows, logSummary) {
+function buildOrderMethodReport(salesRows, pendingRows, progressRows, logSummary, companySummaryRows) {
   // 所有下单方式（固定顺序，与参考模板一致）
   var ALL_METHODS = ["图片下单", "PDF下单", "文本消息", "Excel下单", "混合", "手写"];
 
@@ -752,12 +752,58 @@ function buildOrderMethodReport(salesRows, pendingRows, progressRows, logSummary
     return null; // 不归入任何已知类
   }
 
+  // 从 orderMethod 备注字符串反推下单方式分布（如 "图片下单 75%，PDF下单 19%"）
+  // 用于 logSummary 缺失时的 fallback
+  function parseRemarkToMethods(remark) {
+    var result = {};
+    if (!remark) return result;
+    var parts = remark.split(/[，,]/);
+    for (var i = 0; i < parts.length; i++) {
+      var m = parts[i].match(/(.+?)\s*(\d+)%?/);
+      if (m) {
+        var method = normalizeMethod(m[1].trim());
+        var pct = parseInt(m[2], 10);
+        if (method && pct > 0) result[method] = pct;
+      }
+    }
+    // 如果只有一种方法且没带百分比，直接100%
+    if (Object.keys(result).length === 0 && remark.trim()) {
+      var singleMethod = normalizeMethod(remark.trim());
+      if (singleMethod) result[singleMethod] = 100;
+    }
+    return result;
+  }
+
+  // 从 companySummary 构建 fallback method 分布
+  var remarkFallback = {};
+  if (companySummaryRows && companySummaryRows.length) {
+    for (var ri = 0; ri < companySummaryRows.length; ri++) {
+      var cr = companySummaryRows[ri];
+      if (cr.orderMethod && cr.operationCompanyKey) {
+        remarkFallback[cr.operationCompanyKey] = parseRemarkToMethods(cr.orderMethod);
+      }
+    }
+  }
+
   // --- 1. 从 logSummary 提取各公司消息类型分布 ---
   // companyKey → { methodLabel → messageCount }
   var companyMethodMsgs = {};
   var companyTotalMsgs = {};
   for (var ck in logSummary) {
     var stats = logSummary[ck].methodStats || [];
+    if (stats.length === 0) {
+      // fallback: 从 orderMethod 备注反推
+      var fb = remarkFallback[ck];
+      if (fb && Object.keys(fb).length > 0) {
+        companyMethodMsgs[ck] = {};
+        companyTotalMsgs[ck] = 0;
+        for (var m in fb) {
+          companyMethodMsgs[ck][m] = fb[m];
+          companyTotalMsgs[ck] += fb[m];
+        }
+        continue;
+      }
+    }
     companyMethodMsgs[ck] = {};
     companyTotalMsgs[ck] = 0;
     for (var i = 0; i < stats.length; i++) {
@@ -836,12 +882,22 @@ function buildOrderMethodReport(salesRows, pendingRows, progressRows, logSummary
     companyMethodOrders[ck3] = {};
 
     if (!msgs || totalMsgs === 0) {
-      // 无日志数据的公司：全部归入"其他"类（不显示在任何具体下单方式下）
-      // 汇总列有数据，各下单方式列为 0
-      for (var mj = 0; mj < ALL_METHODS.length; mj++) {
-        companyMethodOrders[ck3][ALL_METHODS[mj]] = { orderLines: 0, aiLines: 0 };
+      // 尝试从 orderMethod 备注反推（无需日志文件）
+      var fb = remarkFallback[ck3];
+      if (fb && Object.keys(fb).length > 0) {
+        msgs = fb;
+        totalMsgs = 0;
+        for (var fk in fb) { totalMsgs += fb[fk]; }
+        // 更新 companyMethodMsgs 以便后续使用
+        companyMethodMsgs[ck3] = fb;
+        companyTotalMsgs[ck3] = totalMsgs;
+      } else {
+        // 无任何数据：各下单方式列为 0
+        for (var mj = 0; mj < ALL_METHODS.length; mj++) {
+          companyMethodOrders[ck3][ALL_METHODS[mj]] = { orderLines: 0, aiLines: 0 };
+        }
+        continue;
       }
-      continue;
     }
 
     for (var mj2 = 0; mj2 < ALL_METHODS.length; mj2++) {

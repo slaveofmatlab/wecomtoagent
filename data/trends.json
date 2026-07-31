@@ -2075,8 +2075,8 @@
     "itOk": 256,
     "configRate": 1,
     "orderTotal": 1579,
-    "orderAi": 308,
-    "aiRate": 0.19506016466117795,
+    "orderAi": 309,
+    "aiRate": 0.19569347688410385,
     "companies": [
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
@@ -2111,8 +2111,8 @@
       {
         "operationCompany": "浙江/丰厨(上海)供应链管理有限公司",
         "orderTotal": 69,
-        "orderAiCount": 8,
-        "aiRate": 0.11594202898550725
+        "orderAiCount": 9,
+        "aiRate": 0.13043478260869565
       },
       {
         "operationCompany": "重庆/丰厨(成都)供应链管理有限公司",
@@ -2181,6 +2181,6 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-07-31T08:54:46.763Z"
+    "ts": "2026-07-31T09:02:09.165Z"
   }
 }

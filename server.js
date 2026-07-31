@@ -255,32 +255,49 @@ async function handleUpload(req, res) {
 
   if (!progressWb) throw new Error("缺少推进表文件");
 
-  // 解析当天待转单，合并入累积 Map（按 customerOrderNo 去重，记录每条出现在哪些日期）
+  // 解析当天待转单，合并入累积 Map（紧凑格式：{s: salesOrderNo, t: transferStatus, d: [dates]}）
+  // 只保留 AI 条目（createdBy=供应链管理员），节省存储空间，确保 GitHub API 1MB 限制内
   const todayPendingRows = parsePendingWecom(pendingWb);
   const todayDate = cutoff; // MMDD，如 "0730"
   for (const row of todayPendingRows) {
+    if (row.createdBy !== '供应链管理员') continue;
     const key = normalizeText(row.customerOrderNo);
     if (!key) continue;
     const entry = currentCumulativePending[key];
-    if (entry && entry.row) {
-      // 新格式：更新 row（新覆盖旧），追加日期
-      entry.row = row;
-      if (!entry.dates.includes(todayDate)) entry.dates.push(todayDate);
-    } else if (entry && !entry.row) {
-      // 旧格式迁移：plain row → {row, dates}
-      const oldRow = entry;
-      currentCumulativePending[key] = { row: row, dates: [todayDate] };
-      // 如果旧格式的 transferStatus 不同，以新的为准
+    if (entry) {
+      entry.s = row.salesOrderNo || '';
+      entry.t = row.transferStatus || '';
+      if (!entry.d) entry.d = [];
+      if (!entry.d.includes(todayDate)) entry.d.push(todayDate);
     } else {
-      // 新条目
-      currentCumulativePending[key] = { row: row, dates: [todayDate] };
+      currentCumulativePending[key] = {
+        s: row.salesOrderNo || '',
+        t: row.transferStatus || '',
+        d: [todayDate],
+      };
     }
   }
   saveCumulativePending(currentCumulativePending);
 
-  // 累积待转单用于 AI 匹配（提取 row 字段）
-  const mergedRows = Object.values(currentCumulativePending)
-    .map(function (entry) { return entry.row || entry; }); // entry.row 新格式，entry 旧格式兜底
+  // 累积待转单用于 AI 匹配（从紧凑格式展开为 buildCompanySummary 需要的行格式）
+  const mergedRows = Object.entries(currentCumulativePending).map(function ([key, entry]) {
+    // 兼容旧格式 {row, dates} 和新格式 {s, t, d}
+    if (entry.row) {
+      return entry.row;
+    }
+    var s = entry.s || '';
+    var t = entry.t || '';
+    // 兼容旧格式：entry 本身可能就是 row 对象（plain row without wrapper）
+    if (!s && !t && entry.transferStatus) {
+      return entry;
+    }
+    return {
+      customerOrderNo: key,
+      salesOrderNo: typeof s === 'string' ? s : '',
+      transferStatus: typeof t === 'string' ? t : (entry.transferStatus || ''),
+      createdBy: '供应链管理员',
+    };
+  });
 
   const data = buildPageData({
     salesWorkbook: salesWb,
@@ -421,17 +438,25 @@ async function handleExportPendingBackup(req, res) {
   });
 
   // 数据行
-  entries.forEach(function (entry, ri) {
-    var row = entry.row || entry;  // 新格式 {row, dates}，旧格式 plain row 兜底
-    var dates = entry.dates || [];
+  // 数据行
+  Object.entries(currentCumulativePending).forEach(function (kv, ri) {
+    var custNo = kv[0];
+    var entry = kv[1];
+    // 兼容多种格式
+    var row = entry.row || entry;
+    var salesNo = entry.s || row.salesOrderNo || '';
+    var status = entry.t || row.transferStatus || '';
+    var createdBy = row.createdBy || '供应链管理员';
+    var dates = entry.d || entry.dates || [];
+
     var rowData = [
-      row.customerOrderNo || "",
-      row.salesOrderNo || "",
-      row.transferStatus || "",
-      row.createdBy || "",
-      row.operationCompany || "",
-      row.hotelName || "",
-      dates.join(", "),
+      custNo,
+      salesNo,
+      status,
+      createdBy,
+      row.operationCompany || '',
+      row.hotelName || '',
+      Array.isArray(dates) ? dates.join(', ') : '',
     ];
     rowData.forEach(function (v, ci) { ws.getCell(ri + 2, ci + 1).value = v; });
   });
@@ -499,7 +524,7 @@ async function handleClearPending(req, res) {
     var newMap = {};
     for (var key in currentCumulativePending) {
       var entry = currentCumulativePending[key];
-      var dates = entry.dates || [];
+      var dates = entry.d || entry.dates || [];
       // 如果该条目在保留日期范围内出现过，保留
       var shouldKeep = dates.some(function (d) { return keepDates.has(d); });
       if (shouldKeep) {
@@ -522,11 +547,12 @@ async function handleClearPending(req, res) {
     var newMap = {};
     for (var key in currentCumulativePending) {
       var entry = currentCumulativePending[key];
-      var dates = entry.dates || [];
+      var dates = entry.d || entry.dates || [];
       // 过滤掉要删除的日期
       var remaining = dates.filter(function (d) { return !removeSet.has(d); });
       if (remaining.length > 0) {
-        entry.dates = remaining;
+        if (entry.d) { entry.d = remaining; }
+        else { entry.dates = remaining; }
         newMap[key] = entry;
       } else {
         removed++;

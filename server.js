@@ -311,15 +311,24 @@ async function handleUpload(req, res) {
     pendingRowsForMatching: mergedRows,
   });
 
-  // 没有上传日志时，保留上一次的备注（备注来自消息日志，不随订单每天变）
-  if (!logWb && currentPageData && currentPageData.companySummary) {
-    const oldRemarks = {};
-    (currentPageData.companySummary.rows || []).forEach((r) => {
-      if (r.orderMethod && r.operationCompany) oldRemarks[r.operationCompany] = r.orderMethod;
-    });
-    data.companySummary.rows.forEach((r) => {
-      if (!r.orderMethod && oldRemarks[r.operationCompany]) r.orderMethod = oldRemarks[r.operationCompany];
-    });
+  // 没有上传日志时，保留上一次的备注和下单方式分布（用于按下单形式导出）
+  if (!logWb && currentPageData) {
+    // 保留 orderMethod 备注
+    if (currentPageData.companySummary) {
+      const oldRemarks = {};
+      (currentPageData.companySummary.rows || []).forEach((r) => {
+        if (r.orderMethod && r.operationCompany) oldRemarks[r.operationCompany] = r.orderMethod;
+      });
+      data.companySummary.rows.forEach((r) => {
+        if (!r.orderMethod && oldRemarks[r.operationCompany]) r.orderMethod = oldRemarks[r.operationCompany];
+      });
+    }
+    // 保留 logSummary（下单方式分布），否则按下单形式导出全是 0
+    if (!data.logSummary || Object.keys(data.logSummary).length === 0) {
+      if (currentPageData.logSummary && Object.keys(currentPageData.logSummary).length > 0) {
+        data.logSummary = currentPageData.logSummary;
+      }
+    }
   }
 
   // 更新内存

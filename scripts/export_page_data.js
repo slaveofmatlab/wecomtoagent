@@ -4,6 +4,7 @@
  * 用法:
  *   node scripts/export_page_data.js
  *   node scripts/export_page_data.js --sales 示例数据/销售订单全链路.xlsx --pending 示例数据/待转单-全量.xlsx --progress basicData/企业微信AI转单推进表.xlsx
+ *   node scripts/export_page_data.js --cutoff 0730 --lookback 7   # 回溯7天待转单做累积匹配
  */
 const fs = require("fs");
 const path = require("path");
@@ -27,6 +28,7 @@ function parseArgs(argv) {
     else if (arg === "--log") opts.log = argv[++i];
     else if (arg === "--cutoff") opts.cutoff = argv[++i];
     else if (arg === "--out") opts.out = argv[++i];
+    else if (arg === "--lookback") opts.lookback = parseInt(argv[++i], 10);
     else if (arg === "--help" || arg === "-h") opts.help = true;
   }
   return opts;
@@ -47,6 +49,7 @@ function printHelp() {
   --log <path>       微信消息日志 xlsx（默认 basicData/*微信日志* 或根目录）
   --cutoff <MMDD>    快照截止日期，推进表里晚于这天的"OK-MMDD"确认状态不计入（默认 ${DEFAULT_CUTOFF_DATE}，对应文件名"7.2日"）
   --out <path>       输出 JSON（默认 data/page_data.json）
+  --lookback N       回溯 N 天待转单做累积匹配（默认 7，传 0 关闭）
 `);
 }
 
@@ -58,7 +61,10 @@ function main() {
   }
 
   const cutoffDate = opts.cutoff || DEFAULT_CUTOFF_DATE;
-  const loaded = loadDefaultData(ROOT, cutoffDate);
+  // 默认回溯 7 天，解决待转单和销售订单跨日期时差问题
+  // 传 --lookback 0 可关闭（只用当天待转单）
+  const lookbackDays = opts.lookback !== undefined ? opts.lookback : 7;
+  const loaded = loadDefaultData(ROOT, cutoffDate, lookbackDays);
   const sources = { ...loaded.sources };
 
   let salesWorkbook = loaded.salesWorkbook;
@@ -91,7 +97,10 @@ function main() {
     sources.logPath = logPath;
   }
 
-  const data = buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, logWorkbook, cutoffDate, sources });
+  const data = buildPageData({
+    salesWorkbook, pendingWorkbook, progressWorkbook, logWorkbook, cutoffDate, sources,
+    pendingRowsForMatching: loaded.mergedPendingRowsForMatching,
+  });
 
   const outPath = opts.out ? resolvePath(opts.out) : OUT_PATH;
   fs.mkdirSync(path.dirname(outPath), { recursive: true });

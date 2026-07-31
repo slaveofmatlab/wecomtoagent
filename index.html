@@ -660,6 +660,8 @@
     <div class="actions">
       <button id="recalcBtn">☁️ 上传并更新数据（所有人可见）</button>
       <button class="secondary" id="reloadBtn">📂 重新加载 page_data.json</button>
+      <button class="secondary" id="exportPendingBtn" title="下载累积待转单 Excel 备份，不删除任何数据">📥 下载累积待转单备份</button>
+      <button class="secondary" id="clearPendingBtn" style="color:#b45309" title="按条件清理累积待转单">🗑️ 清理累积待转单…</button>
     </div>
     <div id="statusMsg" class="loading">正在加载示例数据…</div>
   </section>
@@ -945,6 +947,8 @@
         <button type="button" class="filter-chip" data-filter="其他">其他</button>
       </div>
       <span style="font-size:11px;color:var(--muted);font-weight:400;" id="priorityNote"></span>
+      <button id="exportOrderMethodBtn" class="secondary" style="margin-left:auto;font-size:11px;"
+              onclick="exportOrderMethod()">📥 按下单形式导出</button>
     </div>
     <div id="priorityTableWrap" class="table-wrap">
       <table class="summary-table" style="width:100%;">
@@ -980,7 +984,6 @@
 <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
 <script src="vendor/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script>
 (function () {
   "use strict";
@@ -1679,6 +1682,42 @@
     document.getElementById("priorityBody").innerHTML = html;
   }
   window.renderPriorityGroups = renderPriorityGroups;
+
+  function exportOrderMethod() {
+    var btn = document.getElementById("exportOrderMethodBtn");
+    if (!window._latestSummary) {
+      setStatus("还没有数据，请先上传文件或加载数据", "warn");
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = "导出中…";
+    setStatus("正在生成 Excel…", "loading");
+
+    fetch("/api/export-order-method")
+      .then(function (r) {
+        if (!r.ok) return r.json().then(function (d) { throw new Error(d.error || "HTTP " + r.status); });
+        return r.blob();
+      })
+      .then(function (blob) {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "按下单形式统计_" + (document.getElementById("cutoffInput").value || "data") + ".xlsx";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        setStatus("Excel 已导出", "ok");
+        btn.disabled = false;
+        btn.textContent = "📥 按下单形式导出";
+      })
+      .catch(function (err) {
+        setStatus("导出失败：" + err.message, "err");
+        btn.disabled = false;
+        btn.textContent = "📥 按下单形式导出";
+      });
+  }
+  window.exportOrderMethod = exportOrderMethod;
 
   function deleteSelectedDate() {
     if (!_selectedDates || _selectedDates.size !== 1) return;
@@ -2474,6 +2513,81 @@
 
   document.getElementById("recalcBtn").addEventListener("click", recalcFromUploads);
   document.getElementById("reloadBtn").addEventListener("click", loadFromJson);
+
+  // 下载累积待转单备份（仅下载，不清理）
+  document.getElementById("exportPendingBtn").addEventListener("click", function () {
+    setStatus("正在生成累积待转单备份…", "loading");
+    var btn = document.getElementById("exportPendingBtn");
+    btn.disabled = true;
+    fetch("/api/export-pending-backup")
+      .then(function (resp) {
+        var ctype = resp.headers.get("Content-Type") || "";
+        if (ctype.includes("json")) {
+          return resp.json().then(function (j) { setStatus(j.message || "无数据", "ok"); });
+        }
+        return resp.blob().then(function (blob) {
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url;
+          var d = resp.headers.get("Content-Disposition") || "";
+          var m = d.match(/filename="?([^"]+)"?/);
+          a.download = m ? decodeURIComponent(m[1]) : "pending_backup.xlsx";
+          a.click();
+          URL.revokeObjectURL(url);
+          setStatus("备份已下载，累积待转单数据未被删除。", "ok");
+        });
+      }).catch(function (err) {
+        setStatus("下载失败：" + err.message, "err");
+      }).finally(function () { btn.disabled = false; });
+  });
+
+  // 清理累积待转单（支持多种策略）
+  document.getElementById("clearPendingBtn").addEventListener("click", function () {
+    var choice = prompt(
+      "选择清理策略：\n\n" +
+      "1 — 全部清空\n" +
+      "2 — 只保留最近 7 天的数据（推荐）\n" +
+      "3 — 只保留最近 30 天的数据\n\n" +
+      "请输入数字 1/2/3："
+    );
+    if (!choice) return;
+
+    var body;
+    var desc;
+    if (choice === "1") {
+      body = JSON.stringify({ action: "all" });
+      desc = "全部清空";
+    } else if (choice === "2") {
+      body = JSON.stringify({ action: "keepLast", days: 7 });
+      desc = "保留最近7天";
+    } else if (choice === "3") {
+      body = JSON.stringify({ action: "keepLast", days: 30 });
+      desc = "保留最近30天";
+    } else {
+      setStatus("无效选择", "warn");
+      return;
+    }
+
+    if (!confirm("确定要清理累积待转单吗？\n\n策略: " + desc + "\n\n⚠️ 建议先点击「下载累积待转单备份」保存 Excel，再执行清理。")) return;
+
+    setStatus("正在清理…", "loading");
+    var btn = document.getElementById("clearPendingBtn");
+    btn.disabled = true;
+    fetch("/api/clear-pending", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: body,
+    }).then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j.success) {
+          setStatus("清理完成: " + j.before + " → " + j.after + " (删除 " + j.removed + " 条)", "ok");
+        } else {
+          setStatus("清理失败: " + (j.error || "未知错误"), "err");
+        }
+      }).catch(function (err) {
+        setStatus("清理失败：" + err.message, "err");
+      }).finally(function () { btn.disabled = false; });
+  });
 
   // 启动：先检查登录状态，已登录则直接显示看板，否则显示登录框
   checkAuth().then(function(authenticated) {

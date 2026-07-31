@@ -614,14 +614,41 @@ function findFile(dir, pattern) {
   return best;
 }
 
-function loadDefaultData(rootDir, cutoffDate) {
+/**
+ * 合并多天的待转单数据，按 customerOrderNo 去重（后面的覆盖前面的，保留最新状态）。
+ * 没有 customerOrderNo 的行按 salesOrderNo 去重。
+ * @param {Array<Array<Object>>} pendingRowsList - 按日期从早到晚排列的待转单行数组
+ * @returns {Array<Object>} 合并去重后的待转单行
+ */
+function mergePendingRows(pendingRowsList) {
+  const byCust = new Map();   // customerOrderNo → row
+  const bySales = new Map();  // salesOrderNo → row（没有 customerOrderNo 的行）
+
+  for (const batch of pendingRowsList) {
+    if (!batch || batch.length === 0) continue;
+    for (const row of batch) {
+      const custKey = normalizeText(row.customerOrderNo);
+      if (custKey) {
+        byCust.set(custKey, row);       // 后写的覆盖先写的 → 保留最新状态
+      } else {
+        const salesKey = normalizeText(row.salesOrderNo);
+        if (salesKey) bySales.set(salesKey, row);
+      }
+    }
+  }
+
+  return [...byCust.values(), ...bySales.values()];
+}
+
+function loadDefaultData(rootDir, cutoffDate, lookbackDays) {
+  lookbackDays = lookbackDays || 0;
   const root = rootDir || path.join(__dirname, "..", "..");
   const basicDir = path.join(root, "basicData");
   const sampleDir = path.join(root, "示例数据");
 
   // 优先在匹配 cutoff 日期的子文件夹里找（如 --cutoff 0703 → 7月3日/）
-  const month = String(parseInt(cutoffDate.slice(0, 2), 10));
-  const day = String(parseInt(cutoffDate.slice(2, 4), 10));
+  const month = parseInt(cutoffDate.slice(0, 2), 10);
+  const day = parseInt(cutoffDate.slice(2, 4), 10);
   const dateDirName = `${month}月${day}日`;
   const dateSubDir = path.join(sampleDir, dateDirName);
   const searchDir = (fs.existsSync(dateSubDir)) ? dateSubDir : sampleDir;
@@ -641,6 +668,7 @@ function loadDefaultData(rootDir, cutoffDate) {
     pendingWorkbook: null,
     progressWorkbook: null,
     logWorkbook: null,
+    mergedPendingRowsForMatching: null,
   };
 
   if (salesPath && fs.existsSync(salesPath)) result.salesWorkbook = readWorkbookFromPath(salesPath);
@@ -648,17 +676,47 @@ function loadDefaultData(rootDir, cutoffDate) {
   if (progressPath && fs.existsSync(progressPath)) result.progressWorkbook = readWorkbookFromPath(progressPath);
   if (logPath && fs.existsSync(logPath)) result.logWorkbook = readWorkbookFromPath(logPath);
 
+  // 回溯 N 天累积待转单，解决"待转单在前、销售订单在后"的时差误判
+  if (lookbackDays > 0) {
+    const pendingRowsList = [];
+    for (let i = 0; i < lookbackDays; i++) {
+      const d = new Date(2026, month - 1, day - i);
+      const dirName = `${d.getMonth() + 1}月${d.getDate()}日`;
+      const dir = path.join(sampleDir, dirName);
+      if (!fs.existsSync(dir)) continue;
+      const pf = findFile(dir, "待转单");
+      if (!pf) continue;
+      try {
+        const wb = readWorkbookFromPath(pf);
+        pendingRowsList.push(parsePendingWecom(wb));
+      } catch (e) {
+        // 某一天的文件损坏或格式不对，跳过
+      }
+    }
+    // 只在确实有多天数据时才启用合并（只有当天数据的话没必要）
+    if (pendingRowsList.length > 1) {
+      result.mergedPendingRowsForMatching = mergePendingRows(pendingRowsList);
+    }
+  }
+
   return result;
 }
 
-function buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, logWorkbook, cutoffDate = DEFAULT_CUTOFF_DATE, sources = {} }) {
+function buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, logWorkbook, cutoffDate = DEFAULT_CUTOFF_DATE, sources = {}, pendingRowsForMatching = null }) {
   const salesRows = salesWorkbook ? parseSalesFull(salesWorkbook) : [];
   const pendingRows = pendingWorkbook ? parsePendingWecom(pendingWorkbook) : [];
   const progressRows = progressWorkbook ? parseWecomProgress(progressWorkbook, cutoffDate) : [];
 
+  // 如果外部传入了累积合并后的待转单（跨天去重），用于 AI 匹配；
+  // 否则退化到用当天的待转单（向后兼容）
+  const matchingRows = pendingRowsForMatching !== null ? pendingRowsForMatching : pendingRows;
+
   const logSummary = parseWecomLogForSummary(logWorkbook || null, progressRows);
-  const companySummary = buildCompanySummary(salesRows, pendingRows, progressRows, logSummary);
-  const groupSummary = buildGroupSummary(salesRows, pendingRows, progressRows, logSummary);
+  const companySummary = buildCompanySummary(salesRows, matchingRows, progressRows, logSummary);
+  const groupSummary = buildGroupSummary(salesRows, matchingRows, progressRows, logSummary);
+
+  // 日志统计（含完整 methodStats，供导出 Excel 用）
+  const logStats = logSummary ? buildLogStats(logSummary, progressRows) : null;
 
   return {
     generatedAt: new Date().toISOString(),
@@ -670,6 +728,253 @@ function buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, logWo
     pendingTotals: calcPendingTotals(pendingRows),
     companySummary,
     groupSummary,
+    logStats,
+    logSummary: logSummary || {},
+  };
+}
+
+/**
+ * 按下单方式 × 运营公司 生成交叉统计报表数据。
+ * 数据来源：微信日志（消息类型分布）+ 销售订单（订单行数/AI转单）。
+ * 订单行数按各公司消息类型比例分配到各下单方式。
+ */
+function buildOrderMethodReport(salesRows, pendingRows, progressRows, logSummary) {
+  // 所有下单方式（固定顺序，与参考模板一致）
+  var ALL_METHODS = ["图片下单", "PDF下单", "文本消息", "Excel下单", "混合", "手写"];
+
+  // 将日志里的方法标签归一到 ALL_METHODS
+  function normalizeMethod(label) {
+    if (!label) return null;
+    if (label === "图文混发") return "混合";
+    if (ALL_METHODS.indexOf(label) >= 0) return label;
+    // Word下单、图片文件、文件下单(.xxx)等→归入混合
+    if (label.indexOf("Word") >= 0 || label.indexOf("文件下单") >= 0 || label.indexOf("图片文件") >= 0) return "混合";
+    return null; // 不归入任何已知类
+  }
+
+  // --- 1. 从 logSummary 提取各公司消息类型分布 ---
+  // companyKey → { methodLabel → messageCount }
+  var companyMethodMsgs = {};
+  var companyTotalMsgs = {};
+  for (var ck in logSummary) {
+    var stats = logSummary[ck].methodStats || [];
+    companyMethodMsgs[ck] = {};
+    companyTotalMsgs[ck] = 0;
+    for (var i = 0; i < stats.length; i++) {
+      var label = normalizeMethod(stats[i].label);
+      if (!label) continue;
+      var count = stats[i].count;
+      companyMethodMsgs[ck][label] = (companyMethodMsgs[ck][label] || 0) + count;
+      companyTotalMsgs[ck] += count;
+    }
+  }
+
+  // --- 2. 从销售数据 + 推进表 计算各公司订单行数和 AI 转单数 ---
+  // 构建 IT已配置项目点集合 + 项目点→公司映射（与 buildCompanySummary 同口径）
+  var allItOkCodes = new Set();
+  var codeToCompany = new Map();
+  for (var pi = 0; pi < progressRows.length; pi++) {
+    var pr = progressRows[pi];
+    if (!pr.operationCompanyKey || !pr.hotelCode || !pr.itConfigured) continue;
+    allItOkCodes.add(pr.hotelCode);
+    codeToCompany.set(pr.hotelCode, { key: pr.operationCompanyKey, name: pr.operationCompany });
+  }
+
+  // 待转单匹配
+  var pendingMap = new Map();
+  var pendingBySalesNo = new Map();
+  for (var pi2 = 0; pi2 < pendingRows.length; pi2++) {
+    var pe = pendingRows[pi2];
+    if (pe.createdBy !== "供应链管理员") continue;
+    var ck2 = normalizeText(pe.customerOrderNo);
+    if (ck2 && !pendingMap.has(ck2)) pendingMap.set(ck2, pe.transferStatus);
+    var sk = normalizeText(pe.salesOrderNo);
+    if (sk && !pendingBySalesNo.has(sk)) pendingBySalesNo.set(sk, pe.transferStatus);
+  }
+
+  // 按公司累计：总订单行数、AI已转行数
+  var companyOrders = {};  // ck → { total, ai }
+  for (var si = 0; si < salesRows.length; si++) {
+    var sr = salesRows[si];
+    if (!sr.operationCompanyKey) continue;
+    if (!sr.hotelCode || !allItOkCodes.has(sr.hotelCode)) continue;
+    var owner = codeToCompany.get(sr.hotelCode);
+    if (!owner) continue;
+    var ck = owner.key;
+    if (!companyOrders[ck]) companyOrders[ck] = { total: 0, ai: 0 };
+    companyOrders[ck].total += 1;
+    if (MINI_PROGRAM_CODES.has(sr.hotelCode)) {
+      companyOrders[ck].ai += 1;
+    } else {
+      var custKey = normalizeText(sr.customerOrderNo);
+      var ps = pendingMap.get(custKey);
+      if (!ps) ps = pendingBySalesNo.get(normalizeText(sr.orderNo));
+      if (ps && ps.includes("已转")) companyOrders[ck].ai += 1;
+    }
+  }
+
+  // --- 3. 按比例分配订单行数到各下单方式 ---
+  // companyKey → { method → { orderLines, aiLines } }
+  var companyMethodOrders = {};
+  var methodTotals = {};  // 汇总：各下单方式的总订单行数/AI
+  for (var mi = 0; mi < ALL_METHODS.length; mi++) {
+    methodTotals[ALL_METHODS[mi]] = { orderLines: 0, aiLines: 0 };
+  }
+  var grandOrderLines = 0;
+  var grandAiLines = 0;
+
+  // 收集所有有订单的公司（按订单行数排序，含无日志的公司）
+  var allCompanyKeys = Object.keys(companyOrders).sort(function (a, b) {
+    return companyOrders[b].total - companyOrders[a].total;
+  });
+
+  for (var ai2 = 0; ai2 < allCompanyKeys.length; ai2++) {
+    var ck3 = allCompanyKeys[ai2];
+    var ord = companyOrders[ck3];
+    var msgs = companyMethodMsgs[ck3];
+    var totalMsgs = companyTotalMsgs[ck3] || 0;
+    companyMethodOrders[ck3] = {};
+
+    if (!msgs || totalMsgs === 0) {
+      // 无日志数据的公司：全部归入"其他"类（不显示在任何具体下单方式下）
+      // 汇总列有数据，各下单方式列为 0
+      for (var mj = 0; mj < ALL_METHODS.length; mj++) {
+        companyMethodOrders[ck3][ALL_METHODS[mj]] = { orderLines: 0, aiLines: 0 };
+      }
+      continue;
+    }
+
+    for (var mj2 = 0; mj2 < ALL_METHODS.length; mj2++) {
+      var method = ALL_METHODS[mj2];
+      var msgCount = msgs[method] || 0;
+      var proportion = totalMsgs > 0 ? msgCount / totalMsgs : 0;
+      var orderLines = Math.round(ord.total * proportion);
+      var aiLines = Math.round(ord.ai * proportion);
+
+      companyMethodOrders[ck3][method] = { orderLines: orderLines, aiLines: aiLines };
+      methodTotals[method].orderLines += orderLines;
+      methodTotals[method].aiLines += aiLines;
+    }
+    grandOrderLines += ord.total;
+    grandAiLines += ord.ai;
+  }
+
+  // --- 4. 公司名（展示用）---
+  var companyNames = {};
+  for (var pi3 = 0; pi3 < progressRows.length; pi3++) {
+    var pr2 = progressRows[pi3];
+    if (pr2.operationCompanyKey && pr2.operationCompany) {
+      companyNames[pr2.operationCompanyKey] = pr2.operationCompany;
+    }
+  }
+
+  // --- 5. 组装返回数据 ---
+  // 左表：按方法汇总
+  var leftRows = [];
+  for (var mk = 0; mk < ALL_METHODS.length; mk++) {
+    var m = ALL_METHODS[mk];
+    var mt = methodTotals[m];
+    var aiRate = mt.orderLines > 0 ? Math.round(mt.aiLines / mt.orderLines * 100) + "%" : "0%";
+    leftRows.push({
+      method: m,
+      orderLines: mt.orderLines,
+      aiLines: mt.aiLines,
+      aiRate: aiRate,
+    });
+  }
+  var leftTotal = {
+    method: "总计",
+    orderLines: grandOrderLines,
+    aiLines: grandAiLines,
+    aiRate: grandOrderLines > 0 ? Math.round(grandAiLines / grandOrderLines * 100) + "%" : "0%",
+  };
+
+  // 右表：公司 × 下单方式
+  var rightCompanies = [];
+  var rightTotals = { summary: { orderLines: 0, aiLines: 0 }, methods: {} };
+  for (var mn = 0; mn < ALL_METHODS.length; mn++) {
+    rightTotals.methods[ALL_METHODS[mn]] = { orderLines: 0, aiLines: 0 };
+  }
+  for (var ai3 = 0; ai3 < allCompanyKeys.length; ai3++) {
+    var ck4 = allCompanyKeys[ai3];
+    var ord2 = companyOrders[ck4];
+    var methodData = companyMethodOrders[ck4] || {};
+    var displayName = companyNames[ck4] || ck4;
+    var compAiRate = ord2.total > 0 ? Math.round(ord2.ai / ord2.total * 100) + "%" : "0%";
+
+    var compEntry = {
+      company: displayName,
+      companyKey: ck4,
+      summary: {
+        orderLines: ord2.total,
+        aiLines: ord2.ai,
+        aiRate: compAiRate,
+      },
+      methods: {},
+    };
+
+    // 各方法
+    var compMethodTotal = 0;
+    var compMethodAiTotal = 0;
+    for (var mp = 0; mp < ALL_METHODS.length; mp++) {
+      var m2 = ALL_METHODS[mp];
+      var md = methodData[m2] || { orderLines: 0, aiLines: 0 };
+      var rate = md.orderLines > 0 ? Math.round(md.aiLines / md.orderLines * 100) + "%" : "0%";
+      compEntry.methods[m2] = {
+        orderLines: md.orderLines,
+        aiLines: md.aiLines,
+        aiRate: rate,
+      };
+      compMethodTotal += md.orderLines;
+      compMethodAiTotal += md.aiLines;
+      rightTotals.methods[m2].orderLines += md.orderLines;
+      rightTotals.methods[m2].aiLines += md.aiLines;
+    }
+    rightTotals.summary.orderLines += ord2.total;
+    rightTotals.summary.aiLines += ord2.ai;
+
+    rightCompanies.push(compEntry);
+  }
+  rightTotals.summary.aiRate = rightTotals.summary.orderLines > 0
+    ? Math.round(rightTotals.summary.aiLines / rightTotals.summary.orderLines * 100) + "%"
+    : "0%";
+  for (var mq = 0; mq < ALL_METHODS.length; mq++) {
+    var m3 = ALL_METHODS[mq];
+    var rt = rightTotals.methods[m3];
+    rt.aiRate = rt.orderLines > 0 ? Math.round(rt.aiLines / rt.orderLines * 100) + "%" : "0%";
+  }
+
+  return {
+    methods: ALL_METHODS,
+    leftRows: leftRows,
+    leftTotal: leftTotal,
+    rightCompanies: rightCompanies,
+    rightTotals: rightTotals,
+  };
+}
+
+/**
+ * 从 logSummary 提取统计摘要（消息类型分布汇总）。
+ */
+function buildLogStats(logSummary, progressRows) {
+  var methodTotalMsgs = {};
+  var totalMsgs = 0;
+  var totalAccepted = 0;
+  for (var ck in logSummary) {
+    var stats = logSummary[ck].methodStats || [];
+    for (var i = 0; i < stats.length; i++) {
+      var label = stats[i].label;
+      var count = stats[i].count;
+      if (!methodTotalMsgs[label]) methodTotalMsgs[label] = 0;
+      methodTotalMsgs[label] += count;
+      totalMsgs += count;
+      if (stats[i].processed) totalAccepted += count;
+    }
+  }
+  return {
+    methodCounts: methodTotalMsgs,
+    totalMessages: totalMsgs,
+    totalAccepted: totalAccepted,
   };
 }
 
@@ -696,4 +1001,7 @@ module.exports = {
   findFile,
   loadDefaultData,
   buildPageData,
+  buildOrderMethodReport,
+  buildLogStats,
+  mergePendingRows,
 };

@@ -1,4 +1,19 @@
 {
+  "2602900": {
+    "row": {
+      "rowIndex": 1681,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "2602900",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南唐华酒店管理有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
   "2602920": {
     "row": {
       "rowIndex": 3296,
@@ -104,6 +119,21 @@
       "0730"
     ]
   },
+  "2603727": {
+    "row": {
+      "rowIndex": 858,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2603727",
+      "salesOrderNo": "SE2026072900659",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南玺威实业有限责任公司三亚酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
   "2603736": {
     "row": {
       "rowIndex": 1856,
@@ -164,6 +194,36 @@
       "0730"
     ]
   },
+  "2604735": {
+    "row": {
+      "rowIndex": 1285,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "2604735",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "珠海格旅悦溪酒店管理有限公司香洲英迪格酒店分公司-珠海市香洲区健体巷1号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2604764": {
+    "row": {
+      "rowIndex": 1262,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "2604764",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "珠海格旅悦溪酒店管理有限公司香洲英迪格酒店分公司-珠海市香洲区健体巷1号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
   "2605214": {
     "row": {
       "rowIndex": 3078,
@@ -192,6 +252,126 @@
     },
     "dates": [
       "0730"
+    ]
+  },
+  "2606111": {
+    "row": {
+      "rowIndex": 1809,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2606111",
+      "salesOrderNo": "SE2026072900294",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳好日子酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2606121": {
+    "row": {
+      "rowIndex": 1808,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2606121",
+      "salesOrderNo": "SE2026072900295",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳好日子酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2606136": {
+    "row": {
+      "rowIndex": 1806,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2606136",
+      "salesOrderNo": "SE2026072900296",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳好日子酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2606144": {
+    "row": {
+      "rowIndex": 1805,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2606144",
+      "salesOrderNo": "SE2026072900297",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳好日子酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2606148": {
+    "row": {
+      "rowIndex": 1804,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2606148",
+      "salesOrderNo": "SE2026072900298",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳好日子酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2606757": {
+    "row": {
+      "rowIndex": 1660,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2606757",
+      "salesOrderNo": "SE2026072900322",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚兰海半山度假酒店有限公司 -吉阳区大东海鹿岭路32号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2606763": {
+    "row": {
+      "rowIndex": 1665,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2606763",
+      "salesOrderNo": "SE2026072900321",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚兰海半山度假酒店有限公司 -吉阳区大东海鹿岭路32号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2606769": {
+    "row": {
+      "rowIndex": 1666,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2606769",
+      "salesOrderNo": "SE2026072900320",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚兰海半山度假酒店有限公司 -吉阳区大东海鹿岭路32号"
+    },
+    "dates": [
+      "0729"
     ]
   },
   "2606779": {
@@ -299,6 +479,36 @@
       "0730"
     ]
   },
+  "2606979": {
+    "row": {
+      "rowIndex": 2076,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2606979",
+      "salesOrderNo": "SE2026072900233",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "永安酒店（中山）有限公司-中山市南区兴南路8号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2606992": {
+    "row": {
+      "rowIndex": 2079,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2606992",
+      "salesOrderNo": "SE2026072900232",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "永安酒店（中山）有限公司-中山市南区兴南路8号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
   "2606998": {
     "row": {
       "rowIndex": 2181,
@@ -357,6 +567,81 @@
     },
     "dates": [
       "0730"
+    ]
+  },
+  "2607318": {
+    "row": {
+      "rowIndex": 1131,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607318",
+      "salesOrderNo": "SE2026072900624",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州平高酒店集团有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2607322": {
+    "row": {
+      "rowIndex": 1132,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607322",
+      "salesOrderNo": "SE2026072900623",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州平高酒店集团有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2607339": {
+    "row": {
+      "rowIndex": 1130,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607339",
+      "salesOrderNo": "SE2026072900622",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州平高酒店集团有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2607345": {
+    "row": {
+      "rowIndex": 1125,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607345",
+      "salesOrderNo": "SE2026072900620",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州平高酒店集团有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2607356": {
+    "row": {
+      "rowIndex": 1126,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607356",
+      "salesOrderNo": "SE2026072900621",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州平高酒店集团有限公司"
+    },
+    "dates": [
+      "0729"
     ]
   },
   "2607367": {
@@ -434,6 +719,96 @@
       "0730"
     ]
   },
+  "2607534": {
+    "row": {
+      "rowIndex": 878,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607534",
+      "salesOrderNo": "SE2026072900630",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广东金喾汇酒店管理有限责任公司-中山石岐区孙文东路28号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2607544": {
+    "row": {
+      "rowIndex": 873,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607544",
+      "salesOrderNo": "SE2026072900631",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广东金喾汇酒店管理有限责任公司-中山石岐区孙文东路28号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2607550": {
+    "row": {
+      "rowIndex": 868,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607550",
+      "salesOrderNo": "SE2026072900632",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广东金喾汇酒店管理有限责任公司-中山石岐区孙文东路28号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2607557": {
+    "row": {
+      "rowIndex": 864,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607557",
+      "salesOrderNo": "SE2026072900633",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广东金喾汇酒店管理有限责任公司-中山石岐区孙文东路28号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2607589": {
+    "row": {
+      "rowIndex": 862,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607589",
+      "salesOrderNo": "SE2026072900634",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广东金喾汇酒店管理有限责任公司-中山石岐区孙文东路28号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2607595": {
+    "row": {
+      "rowIndex": 861,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607595",
+      "salesOrderNo": "SE2026072900635",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广东金喾汇酒店管理有限责任公司-中山石岐区孙文东路28号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
   "2607614": {
     "row": {
       "rowIndex": 771,
@@ -447,6 +822,21 @@
     },
     "dates": [
       "0730"
+    ]
+  },
+  "2607616": {
+    "row": {
+      "rowIndex": 1078,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607616",
+      "salesOrderNo": "SE2026072900517",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市京基智农酒店管理有限公司"
+    },
+    "dates": [
+      "0729"
     ]
   },
   "2607620": {
@@ -479,6 +869,21 @@
       "0730"
     ]
   },
+  "2607627": {
+    "row": {
+      "rowIndex": 1062,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607627",
+      "salesOrderNo": "SE2026072900518",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市京基智农酒店管理有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
   "2607630": {
     "row": {
       "rowIndex": 766,
@@ -492,6 +897,21 @@
     },
     "dates": [
       "0730"
+    ]
+  },
+  "2607638": {
+    "row": {
+      "rowIndex": 1120,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2607638",
+      "salesOrderNo": "SE2026072900516",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市京基智农酒店管理有限公司"
+    },
+    "dates": [
+      "0729"
     ]
   },
   "2607646": {
@@ -599,6 +1019,51 @@
       "0730"
     ]
   },
+  "2610144": {
+    "row": {
+      "rowIndex": 1137,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2610144",
+      "salesOrderNo": "SE2026072900629",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州滨奥酒店管理有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2610158": {
+    "row": {
+      "rowIndex": 1136,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2610158",
+      "salesOrderNo": "SE2026072900617",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州滨奥酒店管理有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2610172": {
+    "row": {
+      "rowIndex": 1133,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2610172",
+      "salesOrderNo": "SE2026072900618",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州滨奥酒店管理有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
   "2610219": {
     "row": {
       "rowIndex": 2102,
@@ -612,6 +1077,51 @@
     },
     "dates": [
       "0730"
+    ]
+  },
+  "2611543": {
+    "row": {
+      "rowIndex": 1069,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "2611543",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "珠海仁恒实业有限公司洲际酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2611561": {
+    "row": {
+      "rowIndex": 1079,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "2611561",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "珠海仁恒实业有限公司洲际酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2611566": {
+    "row": {
+      "rowIndex": 1086,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "2611566",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "珠海仁恒实业有限公司洲际酒店分公司"
+    },
+    "dates": [
+      "0729"
     ]
   },
   "2611604": {
@@ -672,6 +1182,96 @@
     },
     "dates": [
       "0730"
+    ]
+  },
+  "2611865": {
+    "row": {
+      "rowIndex": 1785,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2611865",
+      "salesOrderNo": "SE2026072900351",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州国际会议中心有限公司洲际酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2611878": {
+    "row": {
+      "rowIndex": 1775,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2611878",
+      "salesOrderNo": "SE2026072900352",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州国际会议中心有限公司洲际酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2612161": {
+    "row": {
+      "rowIndex": 1723,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2612161",
+      "salesOrderNo": "SE2026072900476",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "中晶-西安高新洲际酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2612178": {
+    "row": {
+      "rowIndex": 1721,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2612178",
+      "salesOrderNo": "SE2026072900477",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "中晶-西安高新洲际酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2612185": {
+    "row": {
+      "rowIndex": 1720,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2612185",
+      "salesOrderNo": "SE2026072900478",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "中晶-西安高新洲际酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2612219": {
+    "row": {
+      "rowIndex": 1691,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2612219",
+      "salesOrderNo": "SE2026072900479",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "中晶-西安高新洲际酒店"
+    },
+    "dates": [
+      "0729"
     ]
   },
   "2612263": {
@@ -824,6 +1424,81 @@
       "0730"
     ]
   },
+  "2613488": {
+    "row": {
+      "rowIndex": 2845,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2613488",
+      "salesOrderNo": "SE2026072900154",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海乐高乐园有限公司—乐缤路99弄仓库BH102"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2613499": {
+    "row": {
+      "rowIndex": 2582,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2613499",
+      "salesOrderNo": "SE2026072900169",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海乐高乐园有限公司—乐缤路99弄仓库BH102"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2613505": {
+    "row": {
+      "rowIndex": 2580,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2613505",
+      "salesOrderNo": "SE2026072900180",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海乐高乐园有限公司—乐缤路99弄仓库BH102"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2613517": {
+    "row": {
+      "rowIndex": 2581,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2613517",
+      "salesOrderNo": "SE2026072900173",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海乐高乐园有限公司—乐缤路99弄仓库BH102"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2613535": {
+    "row": {
+      "rowIndex": 2402,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2613535",
+      "salesOrderNo": "SE2026072900213",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海乐高乐园有限公司—乐缤路99弄仓库BH102"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
   "2613554": {
     "row": {
       "rowIndex": 3637,
@@ -869,6 +1544,81 @@
       "0730"
     ]
   },
+  "2615603": {
+    "row": {
+      "rowIndex": 1163,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2615603",
+      "salesOrderNo": "SE2026072900611",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南华淼酒店管理有限公司三亚亚龙湾星华华邑度假酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2615620": {
+    "row": {
+      "rowIndex": 1213,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2615620",
+      "salesOrderNo": "SE2026072900610",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南华淼酒店管理有限公司三亚亚龙湾星华华邑度假酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2615646": {
+    "row": {
+      "rowIndex": 1224,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2615646",
+      "salesOrderNo": "SE2026072900609",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南华淼酒店管理有限公司三亚亚龙湾星华华邑度假酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2615658": {
+    "row": {
+      "rowIndex": 1144,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2615658",
+      "salesOrderNo": "SE2026072900498",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南华淼酒店管理有限公司三亚亚龙湾星华华邑度假酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2615673": {
+    "row": {
+      "rowIndex": 1145,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2615673",
+      "salesOrderNo": "SE2026072900612",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南华淼酒店管理有限公司三亚亚龙湾星华华邑度假酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
   "2615705": {
     "row": {
       "rowIndex": 3103,
@@ -897,6 +1647,51 @@
     },
     "dates": [
       "0730"
+    ]
+  },
+  "2617634": {
+    "row": {
+      "rowIndex": 1478,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2617634",
+      "salesOrderNo": "SE2026072900428",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚信津酒店管理有限公司洲际度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2617666": {
+    "row": {
+      "rowIndex": 1477,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2617666",
+      "salesOrderNo": "SE2026072900429",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚信津酒店管理有限公司洲际度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2617682": {
+    "row": {
+      "rowIndex": 1474,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2617682",
+      "salesOrderNo": "SE2026072900430",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚信津酒店管理有限公司洲际度假酒店"
+    },
+    "dates": [
+      "0729"
     ]
   },
   "2617710": {
@@ -1019,6 +1814,66 @@
       "0730"
     ]
   },
+  "2620283": {
+    "row": {
+      "rowIndex": 1308,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2620283",
+      "salesOrderNo": "SE2026072900563",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "兴丰汇-经开洲际"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2620306": {
+    "row": {
+      "rowIndex": 1306,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2620306",
+      "salesOrderNo": "SE2026072900564",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "兴丰汇-经开洲际"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2620321": {
+    "row": {
+      "rowIndex": 1304,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2620321",
+      "salesOrderNo": "SE2026072900565",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "兴丰汇-经开洲际"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2620326": {
+    "row": {
+      "rowIndex": 1293,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2620326",
+      "salesOrderNo": "SE2026072900566",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "兴丰汇-经开洲际"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
   "2620363": {
     "row": {
       "rowIndex": 1517,
@@ -1077,6 +1932,96 @@
     },
     "dates": [
       "0730"
+    ]
+  },
+  "2620904": {
+    "row": {
+      "rowIndex": 939,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "2620904",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南臻博酒店管理有限公司金普顿分公司 -海南臻博酒店管理有限公司金普顿"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2620940": {
+    "row": {
+      "rowIndex": 948,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "2620940",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南臻博酒店管理有限公司金普顿分公司 -海南臻博酒店管理有限公司金普顿"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2620974": {
+    "row": {
+      "rowIndex": 966,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "2620974",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南臻博酒店管理有限公司金普顿分公司 -海南臻博酒店管理有限公司金普顿"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2620978": {
+    "row": {
+      "rowIndex": 959,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "2620978",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南臻博酒店管理有限公司金普顿分公司 -海南臻博酒店管理有限公司金普顿"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2620987": {
+    "row": {
+      "rowIndex": 969,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "2620987",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南臻博酒店管理有限公司金普顿分公司 -海南臻博酒店管理有限公司金普顿"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2620994": {
+    "row": {
+      "rowIndex": 1013,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "2620994",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南臻博酒店管理有限公司金普顿分公司 -海南臻博酒店管理有限公司金普顿"
+    },
+    "dates": [
+      "0729"
     ]
   },
   "2621029": {
@@ -1227,6 +2172,81 @@
     },
     "dates": [
       "0730"
+    ]
+  },
+  "2627779": {
+    "row": {
+      "rowIndex": 839,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2627779",
+      "salesOrderNo": "SE2026072900660",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚仁恒置业有限公司皇冠假日酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2627813": {
+    "row": {
+      "rowIndex": 836,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2627813",
+      "salesOrderNo": "SE2026072900661",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚仁恒置业有限公司皇冠假日酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2627830": {
+    "row": {
+      "rowIndex": 834,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2627830",
+      "salesOrderNo": "SE2026072900662",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚仁恒置业有限公司皇冠假日酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2627881": {
+    "row": {
+      "rowIndex": 833,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2627881",
+      "salesOrderNo": "SE2026072900663",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚仁恒置业有限公司皇冠假日酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "2627883": {
+    "row": {
+      "rowIndex": 832,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "2627883",
+      "salesOrderNo": "SE2026072900664",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚仁恒置业有限公司皇冠假日酒店"
+    },
+    "dates": [
+      "0729"
     ]
   },
   "2627932": {
@@ -9612,6 +10632,6801 @@
     },
     "dates": [
       "0730"
+    ]
+  },
+  "HJHZ02601756": {
+    "row": {
+      "rowIndex": 1,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "HJHZ02601756",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "殷隆置业（杭州）有限公司酒店分公司-JEN"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PUO202607290002": {
+    "row": {
+      "rowIndex": 8,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PUO202607290002",
+      "salesOrderNo": "SE2026072900811",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "明宇豪雅"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PUO202607290006": {
+    "row": {
+      "rowIndex": 16,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PUO202607290006",
+      "salesOrderNo": "SE2026072900810",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "尚雅"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SJ2607300108": {
+    "row": {
+      "rowIndex": 225,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SJ2607300108",
+      "salesOrderNo": "SE2026072900750",
+      "createdBy": "祖映丹",
+      "operationCompany": "深圳/丰厨(上海)供应链管理有限公司",
+      "hotelName": "味琪（荣德店）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SJ2607300194": {
+    "row": {
+      "rowIndex": 226,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SJ2607300194",
+      "salesOrderNo": "SE2026072900749",
+      "createdBy": "祖映丹",
+      "operationCompany": "深圳/丰厨(上海)供应链管理有限公司",
+      "hotelName": "小湘厨（玉翠店）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SJ2607300026": {
+    "row": {
+      "rowIndex": 227,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SJ2607300026",
+      "salesOrderNo": "SE2026072900748",
+      "createdBy": "祖映丹",
+      "operationCompany": "深圳/丰厨(上海)供应链管理有限公司",
+      "hotelName": "味琪（国际店）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SJ2607300091": {
+    "row": {
+      "rowIndex": 228,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SJ2607300091",
+      "salesOrderNo": "SE2026072900747",
+      "createdBy": "祖映丹",
+      "operationCompany": "深圳/丰厨(上海)供应链管理有限公司",
+      "hotelName": "味琪（海滨店）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SJ2607300017": {
+    "row": {
+      "rowIndex": 229,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SJ2607300017",
+      "salesOrderNo": "SE2026072900746",
+      "createdBy": "祖映丹",
+      "operationCompany": "深圳/丰厨(上海)供应链管理有限公司",
+      "hotelName": "味琪（水斗店）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZXDH00051069": {
+    "row": {
+      "rowIndex": 231,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "ZXDH00051069",
+      "salesOrderNo": "SE2026072900751",
+      "createdBy": "刘依婷",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "火烧云-太阳宫店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZXDH00051047": {
+    "row": {
+      "rowIndex": 233,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "ZXDH00051047",
+      "salesOrderNo": "SE2026072900752",
+      "createdBy": "刘依婷",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "火烧云-芮欧广场店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZXDH00051076": {
+    "row": {
+      "rowIndex": 235,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "ZXDH00051076",
+      "salesOrderNo": "SE2026072900753",
+      "createdBy": "刘依婷",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "火烧云-新天地店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZXDH00051082": {
+    "row": {
+      "rowIndex": 238,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "ZXDH00051082",
+      "salesOrderNo": "SE2026072900754",
+      "createdBy": "刘依婷",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "火烧云-合生汇店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PUO202607290013": {
+    "row": {
+      "rowIndex": 314,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PUO202607290013",
+      "salesOrderNo": "SE2026072900808",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "科华豪雅"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZXDH00051040": {
+    "row": {
+      "rowIndex": 319,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "ZXDH00051040",
+      "salesOrderNo": "SE2026072900741",
+      "createdBy": "张莹",
+      "operationCompany": "北京/丰厨(上海)供应链管理有限公司",
+      "hotelName": "火烧云-京广"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZXDH00051062": {
+    "row": {
+      "rowIndex": 324,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "ZXDH00051062",
+      "salesOrderNo": "SE2026072900740",
+      "createdBy": "张莹",
+      "operationCompany": "北京/丰厨(上海)供应链管理有限公司",
+      "hotelName": "火烧云-王府井"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XS26072946172373": {
+    "row": {
+      "rowIndex": 325,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XS26072946172373",
+      "salesOrderNo": "SE2026072900727",
+      "createdBy": "刘依婷",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "竹筷子-佘山店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XS26072946172166": {
+    "row": {
+      "rowIndex": 380,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XS26072946172166",
+      "salesOrderNo": "SE2026072900726",
+      "createdBy": "刘依婷",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "竹筷子-佘山店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HAKME2611015": {
+    "row": {
+      "rowIndex": 381,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "HAKME2611015",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南绿发投资有限公司海口绿发希尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HAKME2611014": {
+    "row": {
+      "rowIndex": 384,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "HAKME2611014",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南绿发投资有限公司海口绿发希尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HAKME2611013": {
+    "row": {
+      "rowIndex": 386,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "HAKME2611013",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南绿发投资有限公司海口绿发希尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HAKME2611012": {
+    "row": {
+      "rowIndex": 392,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "HAKME2611012",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南绿发投资有限公司海口绿发希尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HAKME2611011": {
+    "row": {
+      "rowIndex": 393,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "HAKME2611011",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南绿发投资有限公司海口绿发希尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "P31200134104": {
+    "row": {
+      "rowIndex": 400,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "P31200134104",
+      "salesOrderNo": "SE2026073000007",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南海尼旅业有限公司石梅湾威斯汀酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POAH797026015180": {
+    "row": {
+      "rowIndex": 401,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "POAH797026015180",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南锦颐酒店投资管理有限公司海口索菲特大酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1FSNL00045495": {
+    "row": {
+      "rowIndex": 403,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1FSNL00045495",
+      "salesOrderNo": "SE2026072900737",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "加福投资(深圳)有限公司福朋喜来登酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHHGH0000038030": {
+    "row": {
+      "rowIndex": 542,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHHGH0000038030",
+      "salesOrderNo": "SE2026073000006",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "中海鼎业（万宁）房地产有限公司神州半岛酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XS26072946171122": {
+    "row": {
+      "rowIndex": 563,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XS26072946171122",
+      "salesOrderNo": "SE2026072900704",
+      "createdBy": "刘依婷",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "竹筷子-佘山店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XS26072946168963": {
+    "row": {
+      "rowIndex": 586,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XS26072946168963",
+      "salesOrderNo": "SE2026072900703",
+      "createdBy": "刘依婷",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "竹筷子-谷水食堂"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "82dd5227-7fa7-41a6-9e62-b2b0dc9458f5": {
+    "row": {
+      "rowIndex": 589,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "82dd5227-7fa7-41a6-9e62-b2b0dc9458f5",
+      "salesOrderNo": "SE2026072900705",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安必霖奈尔餐饮管理有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XS26072946168228": {
+    "row": {
+      "rowIndex": 599,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XS26072946168228",
+      "salesOrderNo": "SE2026072900702",
+      "createdBy": "刘依婷",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "竹筷子-佘山店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XS26072946167845": {
+    "row": {
+      "rowIndex": 600,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XS26072946167845",
+      "salesOrderNo": "SE2026072900701",
+      "createdBy": "刘依婷",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "竹筷子-周星食堂"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XS26072946167633": {
+    "row": {
+      "rowIndex": 601,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XS26072946167633",
+      "salesOrderNo": "SE2026072900700",
+      "createdBy": "刘依婷",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "竹筷子-周星食堂"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XS26072946167622": {
+    "row": {
+      "rowIndex": 627,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XS26072946167622",
+      "salesOrderNo": "SE2026072900699",
+      "createdBy": "刘依婷",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "竹筷子-周星食堂"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XS26072946161023": {
+    "row": {
+      "rowIndex": 629,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XS26072946161023",
+      "salesOrderNo": "SE2026072900698",
+      "createdBy": "刘依婷",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "竹筷子-佘山店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "P31200134059": {
+    "row": {
+      "rowIndex": 653,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "P31200134059",
+      "salesOrderNo": "SE2026073000005",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南海尼旅业有限公司石梅湾威斯汀酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "P31200134094": {
+    "row": {
+      "rowIndex": 657,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "P31200134094",
+      "salesOrderNo": "SE2026073000004",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南海尼旅业有限公司石梅湾威斯汀酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "P31200134053": {
+    "row": {
+      "rowIndex": 658,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "P31200134053",
+      "salesOrderNo": "SE2026073000003",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南海尼旅业有限公司石梅湾威斯汀酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "P31200134086": {
+    "row": {
+      "rowIndex": 660,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "P31200134086",
+      "salesOrderNo": "SE2026073000002",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南海尼旅业有限公司石梅湾威斯汀酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-46253": {
+    "row": {
+      "rowIndex": 662,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-46253",
+      "salesOrderNo": "SE2026072900795",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州花园酒店有限公司-越秀区建设六马路"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-46234": {
+    "row": {
+      "rowIndex": 663,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-46234",
+      "salesOrderNo": "SE2026072900794",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州花园酒店有限公司-越秀区建设六马路"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-46207": {
+    "row": {
+      "rowIndex": 664,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-46207",
+      "salesOrderNo": "SE2026072900793",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州花园酒店有限公司-越秀区建设六马路"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POAHA5D726011415": {
+    "row": {
+      "rowIndex": 666,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "POAHA5D726011415",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "蒙东国际物流有限公司海南清水湾莱佛士酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POAHA5D726011403": {
+    "row": {
+      "rowIndex": 667,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "POAHA5D726011403",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "蒙东国际物流有限公司海南清水湾莱佛士酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "MFMRH0000103769": {
+    "row": {
+      "rowIndex": 668,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "MFMRH0000103769",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "珠海横琴丽新文创天地有限公司丽新酒店-珠海市横琴新区七色彩虹路"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POAHB8U626005153": {
+    "row": {
+      "rowIndex": 670,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POAHB8U626005153",
+      "salesOrderNo": "SE2026072900683",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安招广房地产有限公司港务分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZH0395810": {
+    "row": {
+      "rowIndex": 684,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "SZH0395810",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳卓越酒店管理有限公司四季酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "3914600148262": {
+    "row": {
+      "rowIndex": 696,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "3914600148262",
+      "salesOrderNo": "SE2026072900678",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚家化旅业有限公司三亚亚龙湾万豪度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HANGZ0000086824": {
+    "row": {
+      "rowIndex": 698,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HANGZ0000086824",
+      "salesOrderNo": "SE2026072900682",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州华溥实业有限公司君悦酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZH0395839": {
+    "row": {
+      "rowIndex": 699,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "SZH0395839",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳卓越酒店管理有限公司四季酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CKGJW-00211392": {
+    "row": {
+      "rowIndex": 700,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CKGJW-00211392",
+      "salesOrderNo": "SE2026072900732",
+      "createdBy": "供应链管理员",
+      "operationCompany": "重庆/丰厨（成都）供应链管理有限公司",
+      "hotelName": "重庆两江假日酒店管理有限公司金威万豪酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZH0395840": {
+    "row": {
+      "rowIndex": 701,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "SZH0395840",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳卓越酒店管理有限公司四季酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POAHB9N926006169": {
+    "row": {
+      "rowIndex": 709,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POAHB9N926006169",
+      "salesOrderNo": "SE2026072900676",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市龙祺商业运营管理有限公司美憬阁酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POAHB9N926006174": {
+    "row": {
+      "rowIndex": 717,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POAHB9N926006174",
+      "salesOrderNo": "SE2026072900675",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市龙祺商业运营管理有限公司美憬阁酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-10700": {
+    "row": {
+      "rowIndex": 794,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "PO202607-10700",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南绿城高地投资有限公司蓝湾绿城威斯汀度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-10714": {
+    "row": {
+      "rowIndex": 810,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "PO202607-10714",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南绿城高地投资有限公司蓝湾绿城威斯汀度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-10692": {
+    "row": {
+      "rowIndex": 815,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "PO202607-10692",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南绿城高地投资有限公司蓝湾绿城威斯汀度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PUO202607290018": {
+    "row": {
+      "rowIndex": 825,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PUO202607290018",
+      "salesOrderNo": "SE2026072900799",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "众合创"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-46163": {
+    "row": {
+      "rowIndex": 826,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-46163",
+      "salesOrderNo": "SE2026072900792",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州花园酒店有限公司-越秀区建设六马路"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CTUCT0000007701": {
+    "row": {
+      "rowIndex": 827,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CTUCT0000007701",
+      "salesOrderNo": "SE2026072900807",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "光环酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CTUCT0000007713": {
+    "row": {
+      "rowIndex": 829,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CTUCT0000007713",
+      "salesOrderNo": "SE2026072900806",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "光环酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO1050026006045": {
+    "row": {
+      "rowIndex": 844,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO1050026006045",
+      "salesOrderNo": "SE2026072900815",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "兰博中心A塔负二楼"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO1050026006021": {
+    "row": {
+      "rowIndex": 852,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO1050026006021",
+      "salesOrderNo": "SE2026072900801",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "兰博中心A塔负二楼"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO1050026006030": {
+    "row": {
+      "rowIndex": 856,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO1050026006030",
+      "salesOrderNo": "SE2026072900814",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "兰博中心A塔负二楼"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO1050026006016": {
+    "row": {
+      "rowIndex": 857,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO1050026006016",
+      "salesOrderNo": "SE2026072900813",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "兰博中心A塔负二楼"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SANPH0000064490": {
+    "row": {
+      "rowIndex": 881,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SANPH0000064490",
+      "salesOrderNo": "SE2026072900602",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚朝晟酒店管理有限公司吉阳区分公司 -太阳湾路5号B区A栋"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "0000215530": {
+    "row": {
+      "rowIndex": 882,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "0000215530",
+      "salesOrderNo": "SE2026072900585",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚天域实业有限公司天域度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZGNZD2603276": {
+    "row": {
+      "rowIndex": 888,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "ZGNZD2603276",
+      "salesOrderNo": "SE2026072900655",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "中山市利和酒店有限公司利和希尔顿酒店-中山市东区中山三路16号之二"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZGNZD2603278": {
+    "row": {
+      "rowIndex": 894,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "ZGNZD2603278",
+      "salesOrderNo": "SE2026072900654",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "中山市利和酒店有限公司利和希尔顿酒店-中山市东区中山三路16号之二"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CKGCI2610277": {
+    "row": {
+      "rowIndex": 895,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CKGCI2610277",
+      "salesOrderNo": "SE2026072900731",
+      "createdBy": "供应链管理员",
+      "operationCompany": "重庆/丰厨（成都）供应链管理有限公司",
+      "hotelName": "重庆嘉发投资管理有限公司康莱德酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZGNZD2603277": {
+    "row": {
+      "rowIndex": 898,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "ZGNZD2603277",
+      "salesOrderNo": "SE2026072900653",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "中山市利和酒店有限公司利和希尔顿酒店-中山市东区中山三路16号之二"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZGNZD2603275": {
+    "row": {
+      "rowIndex": 899,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "ZGNZD2603275",
+      "salesOrderNo": "SE2026072900652",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "中山市利和酒店有限公司利和希尔顿酒店-中山市东区中山三路16号之二"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXPH0000096782": {
+    "row": {
+      "rowIndex": 900,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXPH0000096782",
+      "salesOrderNo": "SE2026072900589",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳平安金融中心建设发展有限公司柏悦酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HANPH0000224803": {
+    "row": {
+      "rowIndex": 901,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HANPH0000224803",
+      "salesOrderNo": "SE2026072900616",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "华润新鸿基（杭州）有限公司柏悦酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HANPH0000224864": {
+    "row": {
+      "rowIndex": 912,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HANPH0000224864",
+      "salesOrderNo": "SE2026072900615",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "华润新鸿基（杭州）有限公司柏悦酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "MDPO20260728009": {
+    "row": {
+      "rowIndex": 929,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "MDPO20260728009",
+      "salesOrderNo": "SE2026072900559",
+      "createdBy": "曹钰莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "天津远洋船舶供应有限公司—铁山路155号7-3"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "F2607-10750": {
+    "row": {
+      "rowIndex": 931,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "F2607-10750",
+      "salesOrderNo": "SE2026072900552",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "华润置地（深圳）有限公司石梅湾艾美度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "F2607-10745": {
+    "row": {
+      "rowIndex": 933,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "F2607-10745",
+      "salesOrderNo": "SE2026072900551",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "华润置地（深圳）有限公司石梅湾艾美度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "F2607-10728": {
+    "row": {
+      "rowIndex": 938,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "F2607-10728",
+      "salesOrderNo": "SE2026072900550",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "华润置地（深圳）有限公司石梅湾艾美度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "F2607-10697": {
+    "row": {
+      "rowIndex": 944,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "F2607-10697",
+      "salesOrderNo": "SE2026072900549",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "华润置地（深圳）有限公司石梅湾艾美度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CKGNA2603824": {
+    "row": {
+      "rowIndex": 950,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CKGNA2603824",
+      "salesOrderNo": "SE2026072900728",
+      "createdBy": "供应链管理员",
+      "operationCompany": "重庆/丰厨（成都）供应链管理有限公司",
+      "hotelName": "重庆嘉发投资管理有限公司嘉发希尔顿逸林酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CD260729C4013000725": {
+    "row": {
+      "rowIndex": 951,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CD260729C4013000725",
+      "salesOrderNo": "SE2026072900541",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚万达大酒店有限公司万达瑞华度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CD260729C4014000730": {
+    "row": {
+      "rowIndex": 952,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CD260729C4014000730",
+      "salesOrderNo": "SE2026072900540",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚万达大酒店有限公司万达嘉华度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CKGNA2603822": {
+    "row": {
+      "rowIndex": 953,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CKGNA2603822",
+      "salesOrderNo": "SE2026072900665",
+      "createdBy": "供应链管理员",
+      "operationCompany": "重庆/丰厨（成都）供应链管理有限公司",
+      "hotelName": "重庆嘉发投资管理有限公司嘉发希尔顿逸林酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "F2607-10693": {
+    "row": {
+      "rowIndex": 954,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "F2607-10693",
+      "salesOrderNo": "SE2026072900548",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "华润置地（深圳）有限公司石梅湾艾美度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "P31200134050": {
+    "row": {
+      "rowIndex": 955,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "P31200134050",
+      "salesOrderNo": "SE2026072900658",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南海尼旅业有限公司石梅湾威斯汀酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CD260729C4014000741": {
+    "row": {
+      "rowIndex": 956,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CD260729C4014000741",
+      "salesOrderNo": "SE2026072900539",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚万达大酒店有限公司万达嘉华度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "OR-2026072351": {
+    "row": {
+      "rowIndex": 964,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "OR-2026072351",
+      "salesOrderNo": "SE2026072900568",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市特发小梅沙投资发展有限公司深圳美高梅酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CKGNA2603823": {
+    "row": {
+      "rowIndex": 968,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CKGNA2603823",
+      "salesOrderNo": "SE2026072900668",
+      "createdBy": "供应链管理员",
+      "operationCompany": "重庆/丰厨（成都）供应链管理有限公司",
+      "hotelName": "重庆嘉发投资管理有限公司嘉发希尔顿逸林酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "0000091448": {
+    "row": {
+      "rowIndex": 970,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "0000091448",
+      "salesOrderNo": "SE2026072900584",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚天域实业有限公司天域度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO2600004049": {
+    "row": {
+      "rowIndex": 976,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "PO2600004049",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "栀初-如意茵香茂御酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHAWS2611642": {
+    "row": {
+      "rowIndex": 979,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHAWS2611642",
+      "salesOrderNo": "SE2026072900596",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海世茂国际广场有限责任公司南京东路分公司-康莱德"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHAWS2611643": {
+    "row": {
+      "rowIndex": 980,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHAWS2611643",
+      "salesOrderNo": "SE2026072900574",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海世茂国际广场有限责任公司南京东路分公司-康莱德"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO2600004048": {
+    "row": {
+      "rowIndex": 982,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "PO2600004048",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "栀初-如意茵香茂御酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "OR-2026072415": {
+    "row": {
+      "rowIndex": 984,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "OR-2026072415",
+      "salesOrderNo": "SE2026072900599",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市特发小梅沙投资发展有限公司深圳美高梅酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CD260729C4013000727": {
+    "row": {
+      "rowIndex": 986,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CD260729C4013000727",
+      "salesOrderNo": "SE2026072900538",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚万达大酒店有限公司万达瑞华度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-15732": {
+    "row": {
+      "rowIndex": 987,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-15732",
+      "salesOrderNo": "SE2026072900804",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "居舍原餐"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "OR-2026072384": {
+    "row": {
+      "rowIndex": 988,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "OR-2026072384",
+      "salesOrderNo": "SE2026072900598",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市特发小梅沙投资发展有限公司深圳美高梅酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "OR-2026072392": {
+    "row": {
+      "rowIndex": 990,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "OR-2026072392",
+      "salesOrderNo": "SE2026072900597",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市特发小梅沙投资发展有限公司深圳美高梅酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XIYPY2604599": {
+    "row": {
+      "rowIndex": 993,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XIYPY2604599",
+      "salesOrderNo": "SE2026072900531",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安唐悦里商业运营管理有限责任公司酒店管理分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XIYPY2604597": {
+    "row": {
+      "rowIndex": 994,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XIYPY2604597",
+      "salesOrderNo": "SE2026072900530",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安唐悦里商业运营管理有限责任公司酒店管理分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XIYPY2604598": {
+    "row": {
+      "rowIndex": 995,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XIYPY2604598",
+      "salesOrderNo": "SE2026072900529",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安唐悦里商业运营管理有限责任公司酒店管理分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "OR-2026072395": {
+    "row": {
+      "rowIndex": 998,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "OR-2026072395",
+      "salesOrderNo": "SE2026072900567",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市特发小梅沙投资发展有限公司深圳美高梅酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "MOPO26024082": {
+    "row": {
+      "rowIndex": 999,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "MOPO26024082",
+      "salesOrderNo": "SE2026072900556",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市科之谷投资有限公司深业上城酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "MOPO26024081": {
+    "row": {
+      "rowIndex": 1000,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "MOPO26024081",
+      "salesOrderNo": "SE2026072900555",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市科之谷投资有限公司深业上城酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "MOPO26024080": {
+    "row": {
+      "rowIndex": 1001,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "MOPO26024080",
+      "salesOrderNo": "SE2026072900554",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市科之谷投资有限公司深业上城酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1KWLU00060139": {
+    "row": {
+      "rowIndex": 1002,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "1KWLU00060139",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "惠州润驰酒店管理有限公司艾美酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-15741": {
+    "row": {
+      "rowIndex": 1003,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-15741",
+      "salesOrderNo": "SE2026072900803",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "居舍原餐"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1KWLU00060105": {
+    "row": {
+      "rowIndex": 1004,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "1KWLU00060105",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "惠州润驰酒店管理有限公司艾美酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XIYRX0000012647": {
+    "row": {
+      "rowIndex": 1012,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XIYRX0000012647",
+      "salesOrderNo": "SE2026072900588",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安浐灞凯悦酒店-源创"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "TLSZ-PO202607-14463": {
+    "row": {
+      "rowIndex": 1018,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "TLSZ-PO202607-14463",
+      "salesOrderNo": "SE2026072900592",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市天麒房地产发展有限公司东海朗廷酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XIYPY2604596": {
+    "row": {
+      "rowIndex": 1019,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XIYPY2604596",
+      "salesOrderNo": "SE2026072900573",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安唐悦里商业运营管理有限责任公司酒店管理分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "0000091444": {
+    "row": {
+      "rowIndex": 1021,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "0000091444",
+      "salesOrderNo": "SE2026072900583",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚天域实业有限公司天域度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-05609": {
+    "row": {
+      "rowIndex": 1022,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-05609",
+      "salesOrderNo": "SE2026072900469",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海明天广场有限公司金威万豪酒店-明天广场JW万豪酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-20698": {
+    "row": {
+      "rowIndex": 1028,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-20698",
+      "salesOrderNo": "SE2026072900481",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚长岛旅业有限公司海棠湾喜来登度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SANPH0000064430": {
+    "row": {
+      "rowIndex": 1047,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SANPH0000064430",
+      "salesOrderNo": "SE2026072900547",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚朝晟酒店管理有限公司吉阳区分公司 -太阳湾路5号B区A栋"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-03904": {
+    "row": {
+      "rowIndex": 1048,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-03904",
+      "salesOrderNo": "SE2026072900499",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "裕年发展置业（上海）有限公司-浦西万怡酒店分公司—上海浦西万怡酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-21329": {
+    "row": {
+      "rowIndex": 1049,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-21329",
+      "salesOrderNo": "SE2026072900509",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "金茂（三亚）旅业有限公司金茂三亚亚龙湾丽思卡尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "TLSZ-PO202607-14437": {
+    "row": {
+      "rowIndex": 1053,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "TLSZ-PO202607-14437",
+      "salesOrderNo": "SE2026072900591",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市天麒房地产发展有限公司东海朗廷酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1NA5F00074338": {
+    "row": {
+      "rowIndex": 1055,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1NA5F00074338",
+      "salesOrderNo": "SE2026072900494",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚海泰投资管理有限公司泰康之家臻品之选酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SANPH0000064461": {
+    "row": {
+      "rowIndex": 1057,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "SANPH0000064461",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚朝晟酒店管理有限公司吉阳区分公司 -太阳湾路5号B区A栋"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "TLSZ-PO202607-14444": {
+    "row": {
+      "rowIndex": 1059,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "TLSZ-PO202607-14444",
+      "salesOrderNo": "SE2026072900590",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市天麒房地产发展有限公司东海朗廷酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-21319": {
+    "row": {
+      "rowIndex": 1061,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-21319",
+      "salesOrderNo": "SE2026072900508",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "金茂（三亚）旅业有限公司金茂三亚亚龙湾丽思卡尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CANHR0000068100": {
+    "row": {
+      "rowIndex": 1065,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CANHR0000068100",
+      "salesOrderNo": "SE2026072900718",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广东珠江新润实业投资有限公司增城酒店管理分公司-增城酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1NA5F00074316": {
+    "row": {
+      "rowIndex": 1066,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1NA5F00074316",
+      "salesOrderNo": "SE2026072900493",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚海泰投资管理有限公司泰康之家臻品之选酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZUHHI2606658": {
+    "row": {
+      "rowIndex": 1067,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "ZUHHI2606658",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "珠海熊谷房产发展有限公司希尔顿酒店分公司-珠海市香洲区南湾南路"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CANHR0000068074": {
+    "row": {
+      "rowIndex": 1077,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CANHR0000068074",
+      "salesOrderNo": "SE2026072900717",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广东珠江新润实业投资有限公司增城酒店管理分公司-增城酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXSD2605040": {
+    "row": {
+      "rowIndex": 1080,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXSD2605040",
+      "salesOrderNo": "SE2026072900527",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市南沣酒店管理有限公司南山希尔顿逸林公寓酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXSD2605038": {
+    "row": {
+      "rowIndex": 1082,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXSD2605038",
+      "salesOrderNo": "SE2026072900526",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市南沣酒店管理有限公司南山希尔顿逸林公寓酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "GZHPO2627728": {
+    "row": {
+      "rowIndex": 1083,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "GZHPO2627728",
+      "salesOrderNo": "SE2026072900697",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "太古汇（广州）发展有限公司文华东方酒店-文华酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXSD2605037": {
+    "row": {
+      "rowIndex": 1085,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXSD2605037",
+      "salesOrderNo": "SE2026072900525",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市南沣酒店管理有限公司南山希尔顿逸林公寓酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXSD2605039": {
+    "row": {
+      "rowIndex": 1087,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXSD2605039",
+      "salesOrderNo": "SE2026072900524",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市南沣酒店管理有限公司南山希尔顿逸林公寓酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXSD2605036": {
+    "row": {
+      "rowIndex": 1092,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXSD2605036",
+      "salesOrderNo": "SE2026072900523",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市南沣酒店管理有限公司南山希尔顿逸林公寓酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1NA5F00074308": {
+    "row": {
+      "rowIndex": 1095,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1NA5F00074308",
+      "salesOrderNo": "SE2026072900492",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚海泰投资管理有限公司泰康之家臻品之选酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-20682": {
+    "row": {
+      "rowIndex": 1097,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-20682",
+      "salesOrderNo": "SE2026072900454",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚长岛旅业有限公司海棠湾金威万豪度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-21309": {
+    "row": {
+      "rowIndex": 1100,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-21309",
+      "salesOrderNo": "SE2026072900504",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "金茂（三亚）旅业有限公司金茂三亚亚龙湾丽思卡尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "73N7900108884": {
+    "row": {
+      "rowIndex": 1110,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "73N7900108884",
+      "salesOrderNo": "SE2026072900594",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "中大中方信控股有限公司西安丽思卡尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CANHR0000068069": {
+    "row": {
+      "rowIndex": 1111,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CANHR0000068069",
+      "salesOrderNo": "SE2026072900716",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广东珠江新润实业投资有限公司增城酒店管理分公司-增城酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-15723": {
+    "row": {
+      "rowIndex": 1112,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-15723",
+      "salesOrderNo": "SE2026072900487",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "居舍原餐"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XIYGH0000157745": {
+    "row": {
+      "rowIndex": 1118,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XIYGH0000157745",
+      "salesOrderNo": "SE2026072900491",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安迈科商业中心有限公司君悦酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1FSNL00045491": {
+    "row": {
+      "rowIndex": 1122,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1FSNL00045491",
+      "salesOrderNo": "SE2026072900533",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "加福投资(深圳)有限公司福朋喜来登酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1BYD700058248": {
+    "row": {
+      "rowIndex": 1123,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1BYD700058248",
+      "salesOrderNo": "SE2026072900546",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安联声商业运营管理有限公司高新区喜来登酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HGHFR2614725": {
+    "row": {
+      "rowIndex": 1124,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HGHFR2614725",
+      "salesOrderNo": "SE2026072900614",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "来福士（杭州）房地产开发有限公司第二分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-21302": {
+    "row": {
+      "rowIndex": 1141,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-21302",
+      "salesOrderNo": "SE2026072900503",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "金茂（三亚）旅业有限公司金茂三亚亚龙湾丽思卡尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SYXHI2621390": {
+    "row": {
+      "rowIndex": 1154,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SYXHI2621390",
+      "salesOrderNo": "SE2026072900582",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "骊驰（三亚）度假酒店有限公司三亚亚龙湾希尔顿酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SYXHI2621389": {
+    "row": {
+      "rowIndex": 1157,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SYXHI2621389",
+      "salesOrderNo": "SE2026072900581",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "骊驰（三亚）度假酒店有限公司三亚亚龙湾希尔顿酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SYXHI2621395": {
+    "row": {
+      "rowIndex": 1164,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SYXHI2621395",
+      "salesOrderNo": "SE2026072900580",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "骊驰（三亚）度假酒店有限公司三亚亚龙湾希尔顿酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-21299": {
+    "row": {
+      "rowIndex": 1165,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-21299",
+      "salesOrderNo": "SE2026072900507",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "金茂（三亚）旅业有限公司金茂三亚亚龙湾丽思卡尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SYXHI2621388": {
+    "row": {
+      "rowIndex": 1166,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SYXHI2621388",
+      "salesOrderNo": "SE2026072900579",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "骊驰（三亚）度假酒店有限公司三亚亚龙湾希尔顿酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHHGH0000038048": {
+    "row": {
+      "rowIndex": 1183,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHHGH0000038048",
+      "salesOrderNo": "SE2026072900437",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "中海鼎业（万宁）房地产有限公司神州半岛酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SYXHI2621393": {
+    "row": {
+      "rowIndex": 1184,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SYXHI2621393",
+      "salesOrderNo": "SE2026072900578",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "骊驰（三亚）度假酒店有限公司三亚亚龙湾希尔顿酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SYXHI2621394": {
+    "row": {
+      "rowIndex": 1200,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SYXHI2621394",
+      "salesOrderNo": "SE2026072900577",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "骊驰（三亚）度假酒店有限公司三亚亚龙湾希尔顿酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SYXHI2621392": {
+    "row": {
+      "rowIndex": 1207,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SYXHI2621392",
+      "salesOrderNo": "SE2026072900586",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "骊驰（三亚）度假酒店有限公司三亚亚龙湾希尔顿酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SYXHI2621391": {
+    "row": {
+      "rowIndex": 1218,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SYXHI2621391",
+      "salesOrderNo": "SE2026072900587",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "骊驰（三亚）度假酒店有限公司三亚亚龙湾希尔顿酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-20650": {
+    "row": {
+      "rowIndex": 1223,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-20650",
+      "salesOrderNo": "SE2026072900432",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚长岛旅业有限公司海棠湾喜来登度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607290437": {
+    "row": {
+      "rowIndex": 1225,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607290437",
+      "salesOrderNo": "SE2026072900497",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚红树林旅业有限公司海棠湾红树林度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHAAL0000024929": {
+    "row": {
+      "rowIndex": 1226,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHAAL0000024929",
+      "salesOrderNo": "SE2026072900482",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海上实南洋大酒店有限公司阿丽拉丰悦酒店—阿丽拉酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1100479240-1": {
+    "row": {
+      "rowIndex": 1227,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1100479240-1",
+      "salesOrderNo": "SE2026072900468",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "华润(深圳)有限公司君悦酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "MGMPO2618503": {
+    "row": {
+      "rowIndex": 1232,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "MGMPO2618503",
+      "salesOrderNo": "SE2026072900444",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "中粮酒店（三亚）有限公司三亚美高梅度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1100479203-1": {
+    "row": {
+      "rowIndex": 1243,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1100479203-1",
+      "salesOrderNo": "SE2026072900467",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "华润(深圳)有限公司君悦酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "MGMPO2618504": {
+    "row": {
+      "rowIndex": 1244,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "MGMPO2618504",
+      "salesOrderNo": "SE2026072900443",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "中粮酒店（三亚）有限公司三亚美高梅度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1100479210-1": {
+    "row": {
+      "rowIndex": 1247,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1100479210-1",
+      "salesOrderNo": "SE2026072900466",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "华润(深圳)有限公司君悦酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1100479225-1": {
+    "row": {
+      "rowIndex": 1248,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1100479225-1",
+      "salesOrderNo": "SE2026072900465",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "华润(深圳)有限公司君悦酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1100479155-1": {
+    "row": {
+      "rowIndex": 1249,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1100479155-1",
+      "salesOrderNo": "SE2026072900464",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "华润(深圳)有限公司君悦酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1FSNL00045480": {
+    "row": {
+      "rowIndex": 1251,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1FSNL00045480",
+      "salesOrderNo": "SE2026072900474",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "加福投资(深圳)有限公司福朋喜来登酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1100479157-1": {
+    "row": {
+      "rowIndex": 1252,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1100479157-1",
+      "salesOrderNo": "SE2026072900463",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "华润(深圳)有限公司君悦酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-20647": {
+    "row": {
+      "rowIndex": 1257,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-20647",
+      "salesOrderNo": "SE2026072900431",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚长岛旅业有限公司海棠湾喜来登度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "9737700138420": {
+    "row": {
+      "rowIndex": 1258,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "9737700138420",
+      "salesOrderNo": "SE2026072900505",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "余彭年管理(深圳)有限公司彭年万丽酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607290383": {
+    "row": {
+      "rowIndex": 1260,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607290383",
+      "salesOrderNo": "SE2026072900496",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚红树林旅业有限公司海棠湾红树林度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZH0395741": {
+    "row": {
+      "rowIndex": 1261,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "SZH0395741",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳卓越酒店管理有限公司四季酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1FSNL00045464": {
+    "row": {
+      "rowIndex": 1263,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1FSNL00045464",
+      "salesOrderNo": "SE2026072900473",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "加福投资(深圳)有限公司福朋喜来登酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-21280": {
+    "row": {
+      "rowIndex": 1266,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-21280",
+      "salesOrderNo": "SE2026072900502",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "金茂（三亚）旅业有限公司金茂三亚亚龙湾丽思卡尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLH026008366": {
+    "row": {
+      "rowIndex": 1277,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLH026008366",
+      "salesOrderNo": "SE2026072900628",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州香格里拉饭店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLHQO2612473": {
+    "row": {
+      "rowIndex": 1279,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLHQO2612473",
+      "salesOrderNo": "SE2026072900456",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海虹桥香格里拉大酒店有限公司—虹桥香格里拉"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLH026008347": {
+    "row": {
+      "rowIndex": 1284,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLH026008347",
+      "salesOrderNo": "SE2026072900627",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州香格里拉饭店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLWZ02607584": {
+    "row": {
+      "rowIndex": 1288,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLWZ02607584",
+      "salesOrderNo": "SE2026072900626",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "香格里拉大酒店（温州）有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-15688": {
+    "row": {
+      "rowIndex": 1289,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-15688",
+      "salesOrderNo": "SE2026072900427",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "居舍原餐"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1FSNL00045472": {
+    "row": {
+      "rowIndex": 1292,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1FSNL00045472",
+      "salesOrderNo": "SE2026072900472",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "加福投资(深圳)有限公司福朋喜来登酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHEW02606358": {
+    "row": {
+      "rowIndex": 1302,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHEW02606358",
+      "salesOrderNo": "SE2026072900625",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州香格里拉饭店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POSYXFP26008871": {
+    "row": {
+      "rowIndex": 1311,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POSYXFP26008871",
+      "salesOrderNo": "SE2026072900442",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南中港诚实业有限公司三亚福朋喜来登酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-21264": {
+    "row": {
+      "rowIndex": 1320,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-21264",
+      "salesOrderNo": "SE2026072900501",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "金茂（三亚）旅业有限公司金茂三亚亚龙湾丽思卡尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1BYD700058420": {
+    "row": {
+      "rowIndex": 1321,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1BYD700058420",
+      "salesOrderNo": "SE2026072900545",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安联声商业运营管理有限公司高新区喜来登酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1BYD700058411": {
+    "row": {
+      "rowIndex": 1322,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1BYD700058411",
+      "salesOrderNo": "SE2026072900544",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安联声商业运营管理有限公司高新区喜来登酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "8500648353": {
+    "row": {
+      "rowIndex": 1326,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "8500648353",
+      "salesOrderNo": "SE2026072900414",
+      "createdBy": "供应链管理员",
+      "operationCompany": "浙江/丰厨(上海)供应链管理有限公司",
+      "hotelName": "益嘉丰厨（杭州）食品有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "8500648352": {
+    "row": {
+      "rowIndex": 1330,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "8500648352",
+      "salesOrderNo": "SE2026072900413",
+      "createdBy": "供应链管理员",
+      "operationCompany": "浙江/丰厨(上海)供应链管理有限公司",
+      "hotelName": "益嘉丰厨（杭州）食品有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHAPR0000171236": {
+    "row": {
+      "rowIndex": 1331,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHAPR0000171236",
+      "salesOrderNo": "SE2026072900434",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海月星环球家饰博览中心有限公司酒店管理分公司-环球港凯悦"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "GZHPO2627661": {
+    "row": {
+      "rowIndex": 1332,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "GZHPO2627661",
+      "salesOrderNo": "SE2026072900696",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "太古汇（广州）发展有限公司文华东方酒店-文华酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "GZHPO2627662": {
+    "row": {
+      "rowIndex": 1336,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "GZHPO2627662",
+      "salesOrderNo": "SE2026072900695",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "太古汇（广州）发展有限公司文华东方酒店-文华酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607290286": {
+    "row": {
+      "rowIndex": 1338,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607290286",
+      "salesOrderNo": "SE2026072900486",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚红树林旅业有限公司亚龙湾红树林度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHAAX0000009029": {
+    "row": {
+      "rowIndex": 1340,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHAAX0000009029",
+      "salesOrderNo": "SE2026072900407",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海威万酒店经营管理有限公司徐汇分公司-徐汇安达仕"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "39AXV00098443": {
+    "row": {
+      "rowIndex": 1347,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "39AXV00098443",
+      "salesOrderNo": "SE2026072900725",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州广云国际酒店管理有限公司第一分公司-（东区收货平台）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607290346": {
+    "row": {
+      "rowIndex": 1348,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607290346",
+      "salesOrderNo": "SE2026072900485",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚红树林旅业有限公司亚龙湾红树林度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZUHMC-00153027": {
+    "row": {
+      "rowIndex": 1350,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "ZUHMC-00153027",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "珠海市新骏景酒店有限公司新骏景万豪酒店-香洲区吉大景山路177号9栋"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "OR-2026071593": {
+    "row": {
+      "rowIndex": 1351,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "OR-2026071593",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "珠海正方酒店管理有限公司香山迎宾馆美高梅华府酒店分公司-广乐省珠海市香洲区健民路"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "39AXV00098456": {
+    "row": {
+      "rowIndex": 1352,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "39AXV00098456",
+      "salesOrderNo": "SE2026072900724",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州广云国际酒店管理有限公司第一分公司-（东区收货平台）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "39AXV00098423": {
+    "row": {
+      "rowIndex": 1353,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "39AXV00098423",
+      "salesOrderNo": "SE2026072900723",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州广云国际酒店管理有限公司第一分公司-（东区收货平台）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607290355": {
+    "row": {
+      "rowIndex": 1355,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607290355",
+      "salesOrderNo": "SE2026072900484",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚红树林旅业有限公司亚龙湾红树林度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1GWOU00154111": {
+    "row": {
+      "rowIndex": 1356,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1GWOU00154111",
+      "salesOrderNo": "SE2026072900489",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "合景W"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "39AXV00098470": {
+    "row": {
+      "rowIndex": 1357,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "39AXV00098470",
+      "salesOrderNo": "SE2026072900722",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州广云国际酒店管理有限公司第一分公司-（东区收货平台）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-21246": {
+    "row": {
+      "rowIndex": 1360,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-21246",
+      "salesOrderNo": "SE2026072900506",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "金茂（三亚）旅业有限公司金茂三亚亚龙湾丽思卡尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607290299": {
+    "row": {
+      "rowIndex": 1361,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607290299",
+      "salesOrderNo": "SE2026072900483",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚红树林旅业有限公司亚龙湾红树林度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POAH797026015124": {
+    "row": {
+      "rowIndex": 1363,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POAH797026015124",
+      "salesOrderNo": "SE2026072900433",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南锦颐酒店投资管理有限公司海口索菲特大酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "39AXV00098406": {
+    "row": {
+      "rowIndex": 1364,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "39AXV00098406",
+      "salesOrderNo": "SE2026072900721",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州广云国际酒店管理有限公司第一分公司-（东区收货平台）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLHNO2610487": {
+    "row": {
+      "rowIndex": 1368,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLHNO2610487",
+      "salesOrderNo": "SE2026072900424",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚香格里拉大酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLFTO2617753": {
+    "row": {
+      "rowIndex": 1418,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLFTO2617753",
+      "salesOrderNo": "SE2026072900410",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "香格里拉大酒店(深圳福田)有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXAZ0000110407": {
+    "row": {
+      "rowIndex": 1420,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXAZ0000110407",
+      "salesOrderNo": "SE2026072900571",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "华润(深圳)有限公司第十四分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLSG02609540": {
+    "row": {
+      "rowIndex": 1421,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLSG02609540",
+      "salesOrderNo": "SE2026072900411",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "北京首奥置业有限公司电厂酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "20227E": {
+    "row": {
+      "rowIndex": 1422,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "20227E",
+      "salesOrderNo": "SE2026072900436",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚大东海酒店有限公司 -三亚市吉阳区榆海路1号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-17294": {
+    "row": {
+      "rowIndex": 1480,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-17294",
+      "salesOrderNo": "SE2026072900441",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚皇圃大酒店有限公司三亚理文索菲特度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-17265": {
+    "row": {
+      "rowIndex": 1483,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-17265",
+      "salesOrderNo": "SE2026072900440",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚皇圃大酒店有限公司三亚理文索菲特度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-17256": {
+    "row": {
+      "rowIndex": 1495,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-17256",
+      "salesOrderNo": "SE2026072900439",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚皇圃大酒店有限公司三亚理文索菲特度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SYXEBP00241046": {
+    "row": {
+      "rowIndex": 1525,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SYXEBP00241046",
+      "salesOrderNo": "SE2026072900426",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚晋合置业有限公司艾迪逊酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-06011": {
+    "row": {
+      "rowIndex": 1526,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-06011",
+      "salesOrderNo": "SE2026072900480",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海金光外滩置地有限公司威斯汀大饭店—黄浦区河南中路88号上海威斯汀大饭店b1层 收货部"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-17304": {
+    "row": {
+      "rowIndex": 1528,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-17304",
+      "salesOrderNo": "SE2026072900438",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚皇圃大酒店有限公司三亚理文索菲特度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "3914600148239": {
+    "row": {
+      "rowIndex": 1530,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "3914600148239",
+      "salesOrderNo": "SE2026072900402",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚家化旅业有限公司三亚亚龙湾万豪度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "3914600148224": {
+    "row": {
+      "rowIndex": 1532,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "3914600148224",
+      "salesOrderNo": "SE2026072900401",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚家化旅业有限公司三亚亚龙湾万豪度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "3934600031305": {
+    "row": {
+      "rowIndex": 1533,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "3934600031305",
+      "salesOrderNo": "SE2026072900460",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "雅恒数字（上海）商业管理有限公司-雅居乐万豪酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POSYXPF26009366": {
+    "row": {
+      "rowIndex": 1540,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POSYXPF26009366",
+      "salesOrderNo": "SE2026072900418",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "万宁仁和发展有限公司神州半岛福朋酒店（喜来登集团管理）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POSYXPF26009372": {
+    "row": {
+      "rowIndex": 1541,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POSYXPF26009372",
+      "salesOrderNo": "SE2026072900417",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "万宁仁和发展有限公司神州半岛福朋酒店（喜来登集团管理）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HANGZ0000086798": {
+    "row": {
+      "rowIndex": 1545,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HANGZ0000086798",
+      "salesOrderNo": "SE2026072900359",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州华溥实业有限公司君悦酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POSYXPF26009360": {
+    "row": {
+      "rowIndex": 1549,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POSYXPF26009360",
+      "salesOrderNo": "SE2026072900416",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "万宁仁和发展有限公司神州半岛福朋酒店（喜来登集团管理）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HGHTM2605125": {
+    "row": {
+      "rowIndex": 1550,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HGHTM2605125",
+      "salesOrderNo": "SE2026072900358",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州临安天目留椿酒店管理有限公司於潜分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXDJ2608504": {
+    "row": {
+      "rowIndex": 1551,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "SZXDJ2608504",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市松兴网络科技有限公司龙华希尔顿逸林酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXRA0000103927": {
+    "row": {
+      "rowIndex": 1552,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXRA0000103927",
+      "salesOrderNo": "SE2026072900575",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳机场航空城发展有限公司空港世纪酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXAZ0000110452": {
+    "row": {
+      "rowIndex": 1554,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXAZ0000110452",
+      "salesOrderNo": "SE2026072900570",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "华润(深圳)有限公司第十四分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HGHTM2605124": {
+    "row": {
+      "rowIndex": 1556,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HGHTM2605124",
+      "salesOrderNo": "SE2026072900357",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州临安天目留椿酒店管理有限公司於潜分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HGHFR2614691": {
+    "row": {
+      "rowIndex": 1557,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HGHFR2614691",
+      "salesOrderNo": "SE2026072900356",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "来福士（杭州）房地产开发有限公司第二分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "3549f0be-6cb0-4977-acb1-a1d1f3e977c9": {
+    "row": {
+      "rowIndex": 1566,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "3549f0be-6cb0-4977-acb1-a1d1f3e977c9",
+      "salesOrderNo": "SE2026072900373",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚盈湾旅业有限公司喜来登度假酒店 -盈湾喜来登度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-13363": {
+    "row": {
+      "rowIndex": 1568,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-13363",
+      "salesOrderNo": "SE2026072900372",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚盈湾旅业有限公司喜来登度假酒店 -盈湾喜来登度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "126-196450": {
+    "row": {
+      "rowIndex": 1570,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "126-196450",
+      "salesOrderNo": "SE2026072900371",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚盈湾旅业有限公司喜来登度假酒店 -盈湾喜来登度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "0000091438": {
+    "row": {
+      "rowIndex": 1572,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "0000091438",
+      "salesOrderNo": "SE2026072900406",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚天域实业有限公司天域度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "0000091439": {
+    "row": {
+      "rowIndex": 1573,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "0000091439",
+      "salesOrderNo": "SE2026072900405",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚天域实业有限公司天域度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POSYXPF26009354": {
+    "row": {
+      "rowIndex": 1579,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POSYXPF26009354",
+      "salesOrderNo": "SE2026072900367",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "万宁仁和发展有限公司神州半岛福朋酒店（喜来登集团管理）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-04942": {
+    "row": {
+      "rowIndex": 1582,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-04942",
+      "salesOrderNo": "SE2026072900364",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚天恩实业有限公司铂尔曼度假酒店-亚龙湾"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLQTO2621356": {
+    "row": {
+      "rowIndex": 1583,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLQTO2621356",
+      "salesOrderNo": "SE2026072900331",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海前悦酒店管理有限公司前滩香格里拉酒店分公司—海阳西路551号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1GWOU00154049": {
+    "row": {
+      "rowIndex": 1584,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1GWOU00154049",
+      "salesOrderNo": "SE2026072900490",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "合景W"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POSYXPF26009349": {
+    "row": {
+      "rowIndex": 1586,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POSYXPF26009349",
+      "salesOrderNo": "SE2026072900366",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "万宁仁和发展有限公司神州半岛福朋酒店（喜来登集团管理）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POSYXPF26009343": {
+    "row": {
+      "rowIndex": 1592,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POSYXPF26009343",
+      "salesOrderNo": "SE2026072900365",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "万宁仁和发展有限公司神州半岛福朋酒店（喜来登集团管理）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHHZ02613194": {
+    "row": {
+      "rowIndex": 1604,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHHZ02613194",
+      "salesOrderNo": "SE2026072900377",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "嘉里置业（杭州）有限公司城中香格里拉大酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "0000226498-1": {
+    "row": {
+      "rowIndex": 1605,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "0000226498-1",
+      "salesOrderNo": "SE2026072900536",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚高胜发展有限公司海棠湾君悦酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "FB202607-10057": {
+    "row": {
+      "rowIndex": 1606,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "FB202607-10057",
+      "salesOrderNo": "SE2026072900385",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海商城有限公司波特曼丽思卡尔顿酒店-波特曼酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1GWOU00154069": {
+    "row": {
+      "rowIndex": 1609,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1GWOU00154069",
+      "salesOrderNo": "SE2026072900495",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "合景W"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-04952": {
+    "row": {
+      "rowIndex": 1610,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-04952",
+      "salesOrderNo": "SE2026072900363",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚天恩实业有限公司铂尔曼度假酒店-亚龙湾"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1GWOU00154090": {
+    "row": {
+      "rowIndex": 1611,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "1GWOU00154090",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "合景W"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HBKC02614393": {
+    "row": {
+      "rowIndex": 1613,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HBKC02614393",
+      "salesOrderNo": "SE2026072900334",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "北京嘉里大酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-09664": {
+    "row": {
+      "rowIndex": 1614,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-09664",
+      "salesOrderNo": "SE2026072900368",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚林海旅业有限公司三亚湾海居铂尔曼度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "3914600148185": {
+    "row": {
+      "rowIndex": 1619,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "3914600148185",
+      "salesOrderNo": "SE2026072900380",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚家化旅业有限公司三亚亚龙湾万豪度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SIATZ2602208": {
+    "row": {
+      "rowIndex": 1620,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SIATZ2602208",
+      "salesOrderNo": "SE2026072900404",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安国中星城置业有限公司高新旭日酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "3914600148173": {
+    "row": {
+      "rowIndex": 1621,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "3914600148173",
+      "salesOrderNo": "SE2026072900379",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚家化旅业有限公司三亚亚龙湾万豪度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XMXNG00232913": {
+    "row": {
+      "rowIndex": 1622,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XMXNG00232913",
+      "salesOrderNo": "SE2026072900522",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "陕西万众控股集团有限公司西安达博酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLNSO2608133": {
+    "row": {
+      "rowIndex": 1635,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLNSO2608133",
+      "salesOrderNo": "SE2026072900510",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市深湾汇云投资发展有限公司南山香格里拉酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXAP2612333": {
+    "row": {
+      "rowIndex": 1636,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXAP2612333",
+      "salesOrderNo": "SE2026072900453",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳机场航空城发展有限公司空港领航酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLXN02607007": {
+    "row": {
+      "rowIndex": 1637,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLXN02607007",
+      "salesOrderNo": "SE2026072900392",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "香格里拉大酒店（西安）有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXAP2612332": {
+    "row": {
+      "rowIndex": 1638,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXAP2612332",
+      "salesOrderNo": "SE2026072900452",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳机场航空城发展有限公司空港领航酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLXN02607006": {
+    "row": {
+      "rowIndex": 1657,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLXN02607006",
+      "salesOrderNo": "SE2026072900391",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "香格里拉大酒店（西安）有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXAP2612335": {
+    "row": {
+      "rowIndex": 1659,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXAP2612335",
+      "salesOrderNo": "SE2026072900451",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳机场航空城发展有限公司空港领航酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XIYCYP-00130858": {
+    "row": {
+      "rowIndex": 1662,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XIYCYP-00130858",
+      "salesOrderNo": "SE2026072900606",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "陕西蓝海风投资管理有限公司西安蓝海风万怡酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXAP2612334": {
+    "row": {
+      "rowIndex": 1669,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXAP2612334",
+      "salesOrderNo": "SE2026072900450",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳机场航空城发展有限公司空港领航酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XIYCYP-00130837": {
+    "row": {
+      "rowIndex": 1671,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XIYCYP-00130837",
+      "salesOrderNo": "SE2026072900608",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "陕西蓝海风投资管理有限公司西安蓝海风万怡酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXAP2612336": {
+    "row": {
+      "rowIndex": 1674,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXAP2612336",
+      "salesOrderNo": "SE2026072900449",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳机场航空城发展有限公司空港领航酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XIYGH0000157723": {
+    "row": {
+      "rowIndex": 1675,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XIYGH0000157723",
+      "salesOrderNo": "SE2026072900488",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安迈科商业中心有限公司君悦酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-09651": {
+    "row": {
+      "rowIndex": 1677,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-09651",
+      "salesOrderNo": "SE2026072900387",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚林海旅业有限公司三亚湾海居铂尔曼度假酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-04934": {
+    "row": {
+      "rowIndex": 1680,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-04934",
+      "salesOrderNo": "SE2026072900336",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚天恩实业有限公司铂尔曼度假酒店-亚龙湾"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXAP2612337": {
+    "row": {
+      "rowIndex": 1682,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXAP2612337",
+      "salesOrderNo": "SE2026072900448",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳机场航空城发展有限公司空港领航酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHAMS2604728": {
+    "row": {
+      "rowIndex": 1685,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHAMS2604728",
+      "salesOrderNo": "SE2026072900362",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海裕昌房产发展有限公司—上海城中希尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZUHAL0000009569": {
+    "row": {
+      "rowIndex": 1693,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "ZUHAL0000009569",
+      "salesOrderNo": "SE2026072900512",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "珠海海辰文旅有限公司阿丽拉东澳岛酒店分公司-万山镇东澳岛长角路100号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHAAX0000009004": {
+    "row": {
+      "rowIndex": 1694,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHAAX0000009004",
+      "salesOrderNo": "SE2026072900369",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海威万酒店经营管理有限公司徐汇分公司-徐汇安达仕"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "FB202607-10047": {
+    "row": {
+      "rowIndex": 1695,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "FB202607-10047",
+      "salesOrderNo": "SE2026072900383",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海商城有限公司波特曼丽思卡尔顿酒店-波特曼酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLPGO2621696": {
+    "row": {
+      "rowIndex": 1699,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLPGO2621696",
+      "salesOrderNo": "SE2026072900692",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "香格里拉大酒店（广州琶洲）有限公司-会展东路1号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R02PO2633720": {
+    "row": {
+      "rowIndex": 1700,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R02PO2633720",
+      "salesOrderNo": "SE2026072900325",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "北京京广中心有限公司瑰丽酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXAP2612331": {
+    "row": {
+      "rowIndex": 1707,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXAP2612331",
+      "salesOrderNo": "SE2026072900447",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳机场航空城发展有限公司空港领航酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLHNO2610475": {
+    "row": {
+      "rowIndex": 1710,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLHNO2610475",
+      "salesOrderNo": "SE2026072900349",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚香格里拉大酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO2026-0004927": {
+    "row": {
+      "rowIndex": 1713,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO2026-0004927",
+      "salesOrderNo": "SE2026072900319",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南三亚国宾馆有限责任公司三亚悦榕庄"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "39P8500017981": {
+    "row": {
+      "rowIndex": 1714,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "39P8500017981",
+      "salesOrderNo": "SE2026072900341",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南天利度假酒店有限公司海口万豪酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HGHHE2606430": {
+    "row": {
+      "rowIndex": 1715,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HGHHE2606430",
+      "salesOrderNo": "SE2026072900354",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州万国酒店管理有限公司第一分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HGHHE2606429": {
+    "row": {
+      "rowIndex": 1716,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HGHHE2606429",
+      "salesOrderNo": "SE2026072900353",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州万国酒店管理有限公司第一分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POAHA7Z726018583": {
+    "row": {
+      "rowIndex": 1718,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POAHA7Z726018583",
+      "salesOrderNo": "SE2026072900361",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市鹏瑞发展控股集团有限公司莱佛士酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POAHA7Z726018571": {
+    "row": {
+      "rowIndex": 1722,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POAHA7Z726018571",
+      "salesOrderNo": "SE2026072900360",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市鹏瑞发展控股集团有限公司莱佛士酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "7b2b435d-411a-4d8a-a70b-4aa825d82c64": {
+    "row": {
+      "rowIndex": 1724,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "7b2b435d-411a-4d8a-a70b-4aa825d82c64",
+      "salesOrderNo": "SE2026072900500",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚胜意贸易发展有限公司三亚胜意海景酒店 -三亚胜意海景酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "B202607-0003630": {
+    "row": {
+      "rowIndex": 1741,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "B202607-0003630",
+      "salesOrderNo": "SE2026072900318",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳市森森海实业有限公司深圳凯宾斯基酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607290114": {
+    "row": {
+      "rowIndex": 1742,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607290114",
+      "salesOrderNo": "SE2026072900382",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚红树林度假酒店经营有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHACAP-00393186": {
+    "row": {
+      "rowIndex": 1743,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHACAP-00393186",
+      "salesOrderNo": "SE2026072900332",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海漕河泾开发区华港实业有限公司-漕河泾万丽"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHAAZ0000148293": {
+    "row": {
+      "rowIndex": 1744,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHAAZ0000148293",
+      "salesOrderNo": "SE2026072900337",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海礼仕酒店有限公司-新天地安达仕"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PUO202607290057": {
+    "row": {
+      "rowIndex": 1747,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PUO202607290057",
+      "salesOrderNo": "SE2026072900314",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "天府融德酒店(北京)有限公司建国门分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PUO202607290062": {
+    "row": {
+      "rowIndex": 1748,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PUO202607290062",
+      "salesOrderNo": "SE2026072900313",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "天府融德酒店(北京)有限公司建国门分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLPUO2620658": {
+    "row": {
+      "rowIndex": 1764,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLPUO2620658",
+      "salesOrderNo": "SE2026072900412",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海浦东新区香格里拉酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHAZHP-00192807": {
+    "row": {
+      "rowIndex": 1765,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHAZHP-00192807",
+      "salesOrderNo": "SE2026072900326",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海百禄实业有限公司-康桥万豪"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CGD202607290107": {
+    "row": {
+      "rowIndex": 1772,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CGD202607290107",
+      "salesOrderNo": "SE2026072900276",
+      "createdBy": "周碧韵",
+      "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+      "hotelName": "巴斯夫"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHAZHP-00192796": {
+    "row": {
+      "rowIndex": 1773,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHAZHP-00192796",
+      "salesOrderNo": "SE2026072900317",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海百禄实业有限公司-康桥万豪"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLQTO2621327": {
+    "row": {
+      "rowIndex": 1774,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLQTO2621327",
+      "salesOrderNo": "SE2026072900330",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海前悦酒店管理有限公司前滩香格里拉酒店分公司—海阳西路551号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "0000221114-1": {
+    "row": {
+      "rowIndex": 1776,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "0000221114-1",
+      "salesOrderNo": "SE2026072900800",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州圣景房地产开发有限公司柏悦酒店分公司-广州市天河区华夏路"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R19260047315": {
+    "row": {
+      "rowIndex": 1778,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R19260047315",
+      "salesOrderNo": "SE2026072900710",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州市新御运营管理有限公司-广州市天河区珠江东路6号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R19260047316": {
+    "row": {
+      "rowIndex": 1781,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R19260047316",
+      "salesOrderNo": "SE2026072900709",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州市新御运营管理有限公司-广州市天河区珠江东路6号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R19260047317": {
+    "row": {
+      "rowIndex": 1782,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R19260047317",
+      "salesOrderNo": "SE2026072900708",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州市新御运营管理有限公司-广州市天河区珠江东路6号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "1BSOF00064980": {
+    "row": {
+      "rowIndex": 1798,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "1BSOF00064980",
+      "salesOrderNo": "SE2026072900290",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "华能供应链（海南）有限责任公司海口喜来登酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "974N700112402": {
+    "row": {
+      "rowIndex": 1803,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "974N700112402",
+      "salesOrderNo": "SE2026072900350",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州万霖置业有限公司临平万丽酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R19260047313": {
+    "row": {
+      "rowIndex": 1812,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R19260047313",
+      "salesOrderNo": "SE2026072900707",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州市新御运营管理有限公司-广州市天河区珠江东路6号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R19260047314": {
+    "row": {
+      "rowIndex": 1813,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R19260047314",
+      "salesOrderNo": "SE2026072900706",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州市新御运营管理有限公司-广州市天河区珠江东路6号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SIATZ2602195": {
+    "row": {
+      "rowIndex": 1815,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SIATZ2602195",
+      "salesOrderNo": "SE2026072900403",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安国中星城置业有限公司高新旭日酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R19260047312": {
+    "row": {
+      "rowIndex": 1816,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R19260047312",
+      "salesOrderNo": "SE2026072900711",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "广州市新御运营管理有限公司-广州市天河区珠江东路6号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "NAYRW0000162254": {
+    "row": {
+      "rowIndex": 1818,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "NAYRW0000162254",
+      "salesOrderNo": "SE2026072900307",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "北京利星行酒店有限公司望京分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "974N700112406": {
+    "row": {
+      "rowIndex": 1819,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "974N700112406",
+      "salesOrderNo": "SE2026072900348",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州万霖置业有限公司临平万丽酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "974N700112379": {
+    "row": {
+      "rowIndex": 1820,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "974N700112379",
+      "salesOrderNo": "SE2026072900347",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州万霖置业有限公司临平万丽酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLH026008332": {
+    "row": {
+      "rowIndex": 1821,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLH026008332",
+      "salesOrderNo": "SE2026072900346",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州香格里拉饭店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POAH797026015112": {
+    "row": {
+      "rowIndex": 1922,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POAH797026015112",
+      "salesOrderNo": "SE2026072900272",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南锦颐酒店投资管理有限公司海口索菲特大酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLCDO2608830": {
+    "row": {
+      "rowIndex": 1939,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLCDO2608830",
+      "salesOrderNo": "SE2026072900805",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "香格里拉大酒店(成都)有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLHNO2610457": {
+    "row": {
+      "rowIndex": 1945,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLHNO2610457",
+      "salesOrderNo": "SE2026072900270",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚香格里拉大酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R07260003303": {
+    "row": {
+      "rowIndex": 1946,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R07260003303",
+      "salesOrderNo": "SE2026072900289",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚论坛中心建设有限公司海棠区保利瑰丽酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R07260003305": {
+    "row": {
+      "rowIndex": 1947,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R07260003305",
+      "salesOrderNo": "SE2026072900288",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚论坛中心建设有限公司海棠区保利瑰丽酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R07260003304": {
+    "row": {
+      "rowIndex": 1949,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R07260003304",
+      "salesOrderNo": "SE2026072900287",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚论坛中心建设有限公司海棠区保利瑰丽酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R07260003300": {
+    "row": {
+      "rowIndex": 1950,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R07260003300",
+      "salesOrderNo": "SE2026072900286",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚论坛中心建设有限公司海棠区保利瑰丽酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R07260003299": {
+    "row": {
+      "rowIndex": 1951,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R07260003299",
+      "salesOrderNo": "SE2026072900285",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚论坛中心建设有限公司海棠区保利瑰丽酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R07260003301": {
+    "row": {
+      "rowIndex": 1952,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R07260003301",
+      "salesOrderNo": "SE2026072900284",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚论坛中心建设有限公司海棠区保利瑰丽酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607297020": {
+    "row": {
+      "rowIndex": 1954,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607297020",
+      "salesOrderNo": "SE2026072900256",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "平顶山市恒昇泰酒店管理有限公司—桔子平顶山凌云路白鹭洲酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607292708": {
+    "row": {
+      "rowIndex": 1956,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607292708",
+      "salesOrderNo": "SE2026072900255",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "桔子威海山东大学火炬八街酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607283498": {
+    "row": {
+      "rowIndex": 1958,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607283498",
+      "salesOrderNo": "SE2026072900254",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "桔子徐州云龙万达医科大学酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607282107": {
+    "row": {
+      "rowIndex": 1960,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607282107",
+      "salesOrderNo": "SE2026072900253",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "洛阳志旺酒店管理有限公司—桔子洛阳洛邑古城应天门酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607271492": {
+    "row": {
+      "rowIndex": 1961,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607271492",
+      "salesOrderNo": "SE2026072900252",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "黑龙江汇融酒店管理有限公司—哈尔滨西站西广场漫心酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607229669": {
+    "row": {
+      "rowIndex": 1962,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607229669",
+      "salesOrderNo": "SE2026072900251",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "长沙领发酒店管理有限公司—全季长沙芙蓉中路华尔街酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R07260003302": {
+    "row": {
+      "rowIndex": 1965,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R07260003302",
+      "salesOrderNo": "SE2026072900283",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚论坛中心建设有限公司海棠区保利瑰丽酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLPGO2621672": {
+    "row": {
+      "rowIndex": 1972,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLPGO2621672",
+      "salesOrderNo": "SE2026072900691",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "香格里拉大酒店（广州琶洲）有限公司-会展东路1号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POAH797026015105": {
+    "row": {
+      "rowIndex": 1973,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POAH797026015105",
+      "salesOrderNo": "SE2026072900271",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南锦颐酒店投资管理有限公司海口索菲特大酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLFTO2617729": {
+    "row": {
+      "rowIndex": 1981,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLFTO2617729",
+      "salesOrderNo": "SE2026072900409",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "香格里拉大酒店(深圳福田)有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLZO26012210": {
+    "row": {
+      "rowIndex": 1986,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLZO26012210",
+      "salesOrderNo": "SE2026072900340",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳香格里拉大酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "R07260003298": {
+    "row": {
+      "rowIndex": 1988,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "R07260003298",
+      "salesOrderNo": "SE2026072900282",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚论坛中心建设有限公司海棠区保利瑰丽酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CG20260729259": {
+    "row": {
+      "rowIndex": 1998,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "CG20260729259",
+      "salesOrderNo": "",
+      "createdBy": "赵启星",
+      "operationCompany": "成都/丰厨(上海)供应链管理有限公司",
+      "hotelName": "成都餐厅"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CG20260729644": {
+    "row": {
+      "rowIndex": 2007,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "CG20260729644",
+      "salesOrderNo": "",
+      "createdBy": "赵启星",
+      "operationCompany": "成都/丰厨(上海)供应链管理有限公司",
+      "hotelName": "成都餐厅"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CG20260729256": {
+    "row": {
+      "rowIndex": 2013,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "CG20260729256",
+      "salesOrderNo": "",
+      "createdBy": "赵启星",
+      "operationCompany": "成都/丰厨(上海)供应链管理有限公司",
+      "hotelName": "成都餐厅"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "0000191509-1": {
+    "row": {
+      "rowIndex": 2014,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "0000191509-1",
+      "salesOrderNo": "SE2026072900471",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安悦来酒店管理有限公司曲江新区分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "8a13f3f2-e3b3-4132-b856-1698bf0d551d": {
+    "row": {
+      "rowIndex": 2018,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "8a13f3f2-e3b3-4132-b856-1698bf0d551d",
+      "salesOrderNo": "SE2026072900247",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南食全食美食品配送有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "0000191493-1": {
+    "row": {
+      "rowIndex": 2019,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "0000191493-1",
+      "salesOrderNo": "SE2026072900470",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安悦来酒店管理有限公司曲江新区分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "0000191486-1": {
+    "row": {
+      "rowIndex": 2020,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "0000191486-1",
+      "salesOrderNo": "SE2026072900462",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安悦来酒店管理有限公司曲江新区分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "0000191485-1": {
+    "row": {
+      "rowIndex": 2022,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "0000191485-1",
+      "salesOrderNo": "SE2026072900459",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安悦来酒店管理有限公司曲江新区分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "0000191469-1": {
+    "row": {
+      "rowIndex": 2023,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "0000191469-1",
+      "salesOrderNo": "SE2026072900458",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安悦来酒店管理有限公司曲江新区分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "0000191477-1": {
+    "row": {
+      "rowIndex": 2024,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "0000191477-1",
+      "salesOrderNo": "SE2026072900457",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安悦来酒店管理有限公司曲江新区分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "MFMHQ2601088": {
+    "row": {
+      "rowIndex": 2026,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "MFMHQ2601088",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "益海嘉里（广州）食品工业有限公司-广州市黄埔区东江大道2号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "MFMHQ2601092": {
+    "row": {
+      "rowIndex": 2028,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "MFMHQ2601092",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "益海嘉里（广州）食品工业有限公司-广州市黄埔区东江大道2号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "26412063750": {
+    "row": {
+      "rowIndex": 2032,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "26412063750",
+      "salesOrderNo": "SE2026072900244",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南亚特兰蒂斯商旅发展有限公司亚特兰蒂斯酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "26412063716": {
+    "row": {
+      "rowIndex": 2035,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "26412063716",
+      "salesOrderNo": "SE2026072900238",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南亚特兰蒂斯商旅发展有限公司亚特兰蒂斯酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "26412063726": {
+    "row": {
+      "rowIndex": 2036,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "26412063726",
+      "salesOrderNo": "SE2026072900245",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南亚特兰蒂斯商旅发展有限公司亚特兰蒂斯酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HGHZH0000027446": {
+    "row": {
+      "rowIndex": 2037,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HGHZH0000027446",
+      "salesOrderNo": "SE2026072900345",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "浙江航空港经济发展有限公司第二分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-03913": {
+    "row": {
+      "rowIndex": 2039,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-03913",
+      "salesOrderNo": "SE2026072900239",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "裕年发展置业（上海）有限公司-浦西万怡酒店分公司—上海浦西万怡酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLJNO2619912": {
+    "row": {
+      "rowIndex": 2040,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLJNO2619912",
+      "salesOrderNo": "SE2026072900376",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海吉祥房地产有限公司静安香格里拉大酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLJNO2619876": {
+    "row": {
+      "rowIndex": 2049,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLJNO2619876",
+      "salesOrderNo": "SE2026072900375",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海吉祥房地产有限公司静安香格里拉大酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "KHPUO2615591": {
+    "row": {
+      "rowIndex": 2055,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "KHPUO2615591",
+      "salesOrderNo": "SE2026072900394",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海浦东嘉里城房地产有限公司（浦东嘉里大酒店）—嘉里"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLHQ02612444": {
+    "row": {
+      "rowIndex": 2057,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLHQ02612444",
+      "salesOrderNo": "SE2026072900274",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海虹桥香格里拉大酒店有限公司—虹桥香格里拉"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "26412063691": {
+    "row": {
+      "rowIndex": 2058,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "26412063691",
+      "salesOrderNo": "SE2026072900237",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南亚特兰蒂斯商旅发展有限公司亚特兰蒂斯酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLFTO2617703": {
+    "row": {
+      "rowIndex": 2074,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLFTO2617703",
+      "salesOrderNo": "SE2026072900408",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "香格里拉大酒店(深圳福田)有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "028fb3fc-d2e3-4b39-8e22-902206193d53": {
+    "row": {
+      "rowIndex": 2075,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "028fb3fc-d2e3-4b39-8e22-902206193d53",
+      "salesOrderNo": "SE2026072900236",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚国光豪生度假酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POCKGMC26008291": {
+    "row": {
+      "rowIndex": 2080,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POCKGMC26008291",
+      "salesOrderNo": "SE2026072900670",
+      "createdBy": "供应链管理员",
+      "operationCompany": "重庆/丰厨（成都）供应链管理有限公司",
+      "hotelName": "重庆国瑞酒店管理有限公司万豪酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "39Q2K00068963": {
+    "row": {
+      "rowIndex": 2082,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "39Q2K00068963",
+      "salesOrderNo": "SE2026072900420",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安海荣国金酒店有限公司金威万豪酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "39Q2K00068949": {
+    "row": {
+      "rowIndex": 2083,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "39Q2K00068949",
+      "salesOrderNo": "SE2026072900419",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安海荣国金酒店有限公司金威万豪酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "39Q2K00068923": {
+    "row": {
+      "rowIndex": 2084,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "39Q2K00068923",
+      "salesOrderNo": "SE2026072900422",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "西安海荣国金酒店有限公司金威万豪酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLPGO2621655": {
+    "row": {
+      "rowIndex": 2085,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLPGO2621655",
+      "salesOrderNo": "SE2026072900690",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "香格里拉大酒店（广州琶洲）有限公司-会展东路1号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "65fc238a-e86d-43df-b596-68c659d2dfc5": {
+    "row": {
+      "rowIndex": 2086,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "65fc238a-e86d-43df-b596-68c659d2dfc5",
+      "salesOrderNo": "SE2026072900229",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚胜意贸易发展有限公司三亚胜意海景酒店 -三亚胜意海景酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-06876": {
+    "row": {
+      "rowIndex": 2090,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-06876",
+      "salesOrderNo": "SE2026072900243",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海冠辕投资管理有限公司喜来登香伦酒店—上海嘉定喜来登酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-06881": {
+    "row": {
+      "rowIndex": 2091,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-06881",
+      "salesOrderNo": "SE2026072900241",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海冠辕投资管理有限公司喜来登香伦酒店—上海嘉定喜来登酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "26412063636": {
+    "row": {
+      "rowIndex": 2094,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "26412063636",
+      "salesOrderNo": "SE2026072900227",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南亚特兰蒂斯商旅发展有限公司亚特兰蒂斯酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "26412063584": {
+    "row": {
+      "rowIndex": 2095,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "26412063584",
+      "salesOrderNo": "SE2026072900262",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南亚特兰蒂斯商旅发展有限公司亚特兰蒂斯酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "26412063652": {
+    "row": {
+      "rowIndex": 2096,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "26412063652",
+      "salesOrderNo": "SE2026072900261",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南亚特兰蒂斯商旅发展有限公司亚特兰蒂斯酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "26412063612": {
+    "row": {
+      "rowIndex": 2101,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "26412063612",
+      "salesOrderNo": "SE2026072900260",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南亚特兰蒂斯商旅发展有限公司亚特兰蒂斯酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "4601686302": {
+    "row": {
+      "rowIndex": 2103,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "4601686302",
+      "salesOrderNo": "SE2026072900293",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "中国国际贸易中心股份有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "26412063538": {
+    "row": {
+      "rowIndex": 2104,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "26412063538",
+      "salesOrderNo": "SE2026072900226",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南亚特兰蒂斯商旅发展有限公司亚特兰蒂斯酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "4601686261": {
+    "row": {
+      "rowIndex": 2105,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "4601686261",
+      "salesOrderNo": "SE2026072900292",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "中国国际贸易中心股份有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "26412063518": {
+    "row": {
+      "rowIndex": 2106,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "26412063518",
+      "salesOrderNo": "SE2026072900225",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南亚特兰蒂斯商旅发展有限公司亚特兰蒂斯酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "4601686186": {
+    "row": {
+      "rowIndex": 2107,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "4601686186",
+      "salesOrderNo": "SE2026072900267",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "中国国际贸易中心有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "26412063490": {
+    "row": {
+      "rowIndex": 2109,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "26412063490",
+      "salesOrderNo": "SE2026072900264",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南亚特兰蒂斯商旅发展有限公司亚特兰蒂斯酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLB026011771": {
+    "row": {
+      "rowIndex": 2110,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLB026011771",
+      "salesOrderNo": "SE2026072900246",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "北京香格里拉饭店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "26412063481": {
+    "row": {
+      "rowIndex": 2111,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "26412063481",
+      "salesOrderNo": "SE2026072900224",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南亚特兰蒂斯商旅发展有限公司亚特兰蒂斯酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CG2026072913608682(广东东莞）": {
+    "row": {
+      "rowIndex": 2112,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CG2026072913608682(广东东莞）",
+      "salesOrderNo": "SE2026072900202",
+      "createdBy": "李江婷",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "珠海极物思维供应链管理有限公司-琴朗道88号1748办公1单元"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CG2026072913782956(上海松江）": {
+    "row": {
+      "rowIndex": 2113,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CG2026072913782956(上海松江）",
+      "salesOrderNo": "SE2026072900201",
+      "createdBy": "李江婷",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "珠海极物思维供应链管理有限公司-琴朗道88号1748办公1单元"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-06851": {
+    "row": {
+      "rowIndex": 2116,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-06851",
+      "salesOrderNo": "SE2026072900228",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海冠辕投资管理有限公司喜来登香伦酒店—上海嘉定喜来登酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHAMP00378452": {
+    "row": {
+      "rowIndex": 2155,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHAMP00378452",
+      "salesOrderNo": "SE2026072900199",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海恒勋资产管理有限公司宝华万豪酒店分公司-宝华万豪酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607290072": {
+    "row": {
+      "rowIndex": 2158,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607290072",
+      "salesOrderNo": "SE2026072900269",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚红树林度假酒店经营有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XI2600006447": {
+    "row": {
+      "rowIndex": 2159,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XI2600006447",
+      "salesOrderNo": "SE2026072900399",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "天力企业集团有限公司西安高新希尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XI2600006448": {
+    "row": {
+      "rowIndex": 2161,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XI2600006448",
+      "salesOrderNo": "SE2026072900398",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "天力企业集团有限公司西安高新希尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XI2600006446": {
+    "row": {
+      "rowIndex": 2162,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XI2600006446",
+      "salesOrderNo": "SE2026072900397",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "天力企业集团有限公司西安高新希尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXPH0000096650": {
+    "row": {
+      "rowIndex": 2166,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXPH0000096650",
+      "salesOrderNo": "SE2026072900206",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳平安金融中心建设发展有限公司柏悦酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607290044": {
+    "row": {
+      "rowIndex": 2167,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607290044",
+      "salesOrderNo": "SE2026072900268",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚红树林度假酒店经营有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XI2600006445": {
+    "row": {
+      "rowIndex": 2199,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XI2600006445",
+      "salesOrderNo": "SE2026072900396",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "天力企业集团有限公司西安高新希尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "26412063416": {
+    "row": {
+      "rowIndex": 2200,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "26412063416",
+      "salesOrderNo": "SE2026072900263",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南亚特兰蒂斯商旅发展有限公司亚特兰蒂斯酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XI2600006420": {
+    "row": {
+      "rowIndex": 2201,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XI2600006420",
+      "salesOrderNo": "SE2026072900395",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "天力企业集团有限公司西安高新希尔顿酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607295181": {
+    "row": {
+      "rowIndex": 2202,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607295181",
+      "salesOrderNo": "SE2026072900197",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "徐州鑫聚源酒店管理有限公司—全季徐州奥体中心酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607289623": {
+    "row": {
+      "rowIndex": 2203,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607289623",
+      "salesOrderNo": "SE2026072900196",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "全季上海漕河泾虹漕路酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607287430": {
+    "row": {
+      "rowIndex": 2205,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607287430",
+      "salesOrderNo": "SE2026072900195",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "桔子绵阳火车站涪城万达酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607286890": {
+    "row": {
+      "rowIndex": 2207,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607286890",
+      "salesOrderNo": "SE2026072900194",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "嘉善金桔酒店管理有限公司—桔子嘉善开发区酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607280572": {
+    "row": {
+      "rowIndex": 2209,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607280572",
+      "salesOrderNo": "SE2026072900193",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "全季上海中山公园江苏路酒店（原江苏路地铁站店）"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM2026072714678": {
+    "row": {
+      "rowIndex": 2212,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM2026072714678",
+      "salesOrderNo": "SE2026072900192",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "桔子绍兴鲁迅故里酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLPGO2621634": {
+    "row": {
+      "rowIndex": 2265,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLPGO2621634",
+      "salesOrderNo": "SE2026072900689",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "香格里拉大酒店（广州琶洲）有限公司-会展东路1号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HJQSO2606434": {
+    "row": {
+      "rowIndex": 2274,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HJQSO2606434",
+      "salesOrderNo": "SE2026072900388",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "寰裕置业(深圳)有限公司前海今旅酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLZO26012192": {
+    "row": {
+      "rowIndex": 2281,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLZO26012192",
+      "salesOrderNo": "SE2026072900339",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳香格里拉大酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HGHAJ-00096124": {
+    "row": {
+      "rowIndex": 2284,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HGHAJ-00096124",
+      "salesOrderNo": "SE2026072900344",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "浙江凤凰国际置业有限公司金威万豪酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO202607-08643": {
+    "row": {
+      "rowIndex": 2323,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "PO202607-08643",
+      "salesOrderNo": "SE2026072900203",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海由由国际广场有限公司喜来登由由酒店-上海浦东喜来登由由酒店及公寓"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXLM2607342": {
+    "row": {
+      "rowIndex": 2352,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXLM2607342",
+      "salesOrderNo": "SE2026072900210",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "富苑置地(深圳)有限公司富苑皇冠假日套房酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXLM2607341": {
+    "row": {
+      "rowIndex": 2353,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXLM2607341",
+      "salesOrderNo": "SE2026072900209",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "富苑置地(深圳)有限公司富苑皇冠假日套房酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXLM2607340": {
+    "row": {
+      "rowIndex": 2354,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXLM2607340",
+      "salesOrderNo": "SE2026072900208",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "富苑置地(深圳)有限公司富苑皇冠假日套房酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SZXLM2607343": {
+    "row": {
+      "rowIndex": 2356,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SZXLM2607343",
+      "salesOrderNo": "SE2026072900207",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "富苑置地(深圳)有限公司富苑皇冠假日套房酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "39AHY00007046": {
+    "row": {
+      "rowIndex": 2358,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "39AHY00007046",
+      "salesOrderNo": "SE2026072900343",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "浙江凤栖湖文化发展有限公司德清万豪酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "APO260003619": {
+    "row": {
+      "rowIndex": 2387,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "APO260003619",
+      "salesOrderNo": "SE2026072900212",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "信德置业（上海）有限公司雅辰悦居酒店分公司—上海虹桥雅辰悦居酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLQTO2621297": {
+    "row": {
+      "rowIndex": 2389,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLQTO2621297",
+      "salesOrderNo": "SE2026072900329",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海前悦酒店管理有限公司前滩香格里拉酒店分公司—海阳西路551号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "9a4dd45c-2bfd-4c44-bbca-cc7ada6a448e": {
+    "row": {
+      "rowIndex": 2392,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "9a4dd45c-2bfd-4c44-bbca-cc7ada6a448e",
+      "salesOrderNo": "SE2026072900204",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "成都/VIP档口"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLQTO2621296": {
+    "row": {
+      "rowIndex": 2397,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLQTO2621296",
+      "salesOrderNo": "SE2026072900328",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海前悦酒店管理有限公司前滩香格里拉酒店分公司—海阳西路551号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "13bb5445-cc12-4275-80a1-a12e37488253": {
+    "row": {
+      "rowIndex": 2398,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "13bb5445-cc12-4275-80a1-a12e37488253",
+      "salesOrderNo": "SE2026072900205",
+      "createdBy": "供应链管理员",
+      "operationCompany": "成都/丰厨（成都）供应链管理有限公司",
+      "hotelName": "成都/VIP早餐"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "KHPU02615557": {
+    "row": {
+      "rowIndex": 2401,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "KHPU02615557",
+      "salesOrderNo": "SE2026072900214",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海浦东嘉里城房地产有限公司（浦东嘉里大酒店）—嘉里"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "75a6c54c-c9e4-45bd-babf-87fc5da1fea7": {
+    "row": {
+      "rowIndex": 2403,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "75a6c54c-c9e4-45bd-babf-87fc5da1fea7",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "太古汇（广州）发展有限公司文华东方酒店-文华酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HGHWL2603210": {
+    "row": {
+      "rowIndex": 2404,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HGHWL2603210",
+      "salesOrderNo": "SE2026072900342",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "浙江兴财投资有限公司杭州希尔顿嘉悦里酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLXN02606982": {
+    "row": {
+      "rowIndex": 2406,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLXN02606982",
+      "salesOrderNo": "SE2026072900381",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "香格里拉大酒店（西安）有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO1051326002679": {
+    "row": {
+      "rowIndex": 2407,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "PO1051326002679",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "珠海海湾大酒店-广东省珠海市拱北水湾路245号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLZO26012160": {
+    "row": {
+      "rowIndex": 2585,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLZO26012160",
+      "salesOrderNo": "SE2026072900338",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳香格里拉大酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "4601686143": {
+    "row": {
+      "rowIndex": 2834,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "4601686143",
+      "salesOrderNo": "SE2026072900266",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "中国国际贸易中心有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "39P7700006554": {
+    "row": {
+      "rowIndex": 2844,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "39P7700006554",
+      "salesOrderNo": "SE2026072900230",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "海南纳旭源实业有限责任公司香水湾万豪度假酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO1051326002659": {
+    "row": {
+      "rowIndex": 2883,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "PO1051326002659",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "珠海海湾大酒店-广东省珠海市拱北水湾路245号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POCKGMC26008284": {
+    "row": {
+      "rowIndex": 2884,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POCKGMC26008284",
+      "salesOrderNo": "SE2026072900644",
+      "createdBy": "供应链管理员",
+      "operationCompany": "重庆/丰厨（成都）供应链管理有限公司",
+      "hotelName": "重庆国瑞酒店管理有限公司万豪酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "PO1051326002658": {
+    "row": {
+      "rowIndex": 2885,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "PO1051326002658",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "珠海海湾大酒店-广东省珠海市拱北水湾路245号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM2026072810164": {
+    "row": {
+      "rowIndex": 3127,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM2026072810164",
+      "salesOrderNo": "SE2026072900129",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "芜湖华鼎商务酒店有限责任公司—桔子芜湖高新区大学城酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM2026072714123": {
+    "row": {
+      "rowIndex": 3128,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM2026072714123",
+      "salesOrderNo": "SE2026072900128",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "桔子兰州省气象局地铁站酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM2026072712439": {
+    "row": {
+      "rowIndex": 3130,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM2026072712439",
+      "salesOrderNo": "SE2026072900127",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "济南万诺酒店管理有限公司—桔子济南华山风景区环宇城酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607242949": {
+    "row": {
+      "rowIndex": 3131,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607242949",
+      "salesOrderNo": "SE2026072900126",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "厦门市坤昌酒店管理有限公司—桔子厦门国际会展中心高雄路酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607192178": {
+    "row": {
+      "rowIndex": 3135,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607192178",
+      "salesOrderNo": "SE2026072900125",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "睿泊雅酒店管理（河北）有限公司—桔子石家庄裕华万达广场酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607292513": {
+    "row": {
+      "rowIndex": 3137,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607292513",
+      "salesOrderNo": "SE2026072900124",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "桔子景德镇人民广场陶阳里酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607291466": {
+    "row": {
+      "rowIndex": 3138,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607291466",
+      "salesOrderNo": "SE2026072900123",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "全季哈尔滨中央大街索菲亚广场酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607291463": {
+    "row": {
+      "rowIndex": 3141,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607291463",
+      "salesOrderNo": "SE2026072900122",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "忻州桔子水晶酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607290878": {
+    "row": {
+      "rowIndex": 3144,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607290878",
+      "salesOrderNo": "SE2026072900121",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "桔子武汉客厅极地海洋世界酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607290272": {
+    "row": {
+      "rowIndex": 3146,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607290272",
+      "salesOrderNo": "SE2026072900120",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "南昌永百泰酒店有限公司—桔子南昌紫荆夜市财经大学酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM2026072810708": {
+    "row": {
+      "rowIndex": 3148,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM2026072810708",
+      "salesOrderNo": "SE2026072900119",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "桔子西宁城东万达广场酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM2026072810504": {
+    "row": {
+      "rowIndex": 3149,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM2026072810504",
+      "salesOrderNo": "SE2026072900118",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "厦门火车站万象城美仑酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607289808": {
+    "row": {
+      "rowIndex": 3151,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607289808",
+      "salesOrderNo": "SE2026072900117",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "桔子天津滨海新区于家堡酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607288910": {
+    "row": {
+      "rowIndex": 3153,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607288910",
+      "salesOrderNo": "SE2026072900116",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "麻城市王朝大酒店有限公司—全季麻城市政府酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607287817": {
+    "row": {
+      "rowIndex": 3155,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607287817",
+      "salesOrderNo": "SE2026072900115",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "桔子佛山顺德清晖园华盖路酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607286343": {
+    "row": {
+      "rowIndex": 3158,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607286343",
+      "salesOrderNo": "SE2026072900114",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "舟山同辉酒店有限公司—桔子舟山岱山酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM2026072710497": {
+    "row": {
+      "rowIndex": 3163,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM2026072710497",
+      "salesOrderNo": "SE2026072900113",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "桔子延安新区吾悦广场酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607276110": {
+    "row": {
+      "rowIndex": 3164,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607276110",
+      "salesOrderNo": "SE2026072900112",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "全季宁德霞浦世贸广场酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607264620": {
+    "row": {
+      "rowIndex": 3170,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607264620",
+      "salesOrderNo": "SE2026072900111",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "丽水市华昇酒店管理有限责任公司—桔子丽水银泰城酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607252161": {
+    "row": {
+      "rowIndex": 3171,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607252161",
+      "salesOrderNo": "SE2026072900110",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "全季锦州北镇市政府酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607245604": {
+    "row": {
+      "rowIndex": 3173,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607245604",
+      "salesOrderNo": "SE2026072900109",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "潍坊立骏餐饮管理有限公司—全季潍坊高密人民大街酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM202607238900": {
+    "row": {
+      "rowIndex": 3175,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM202607238900",
+      "salesOrderNo": "SE2026072900108",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海昊嘉婧酒店有限责任公司—桔子上海淀山湖大道地铁站酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HM2026062913812": {
+    "row": {
+      "rowIndex": 3177,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HM2026062913812",
+      "salesOrderNo": "SE2026072900107",
+      "createdBy": "张莹",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "全季景德镇乐平洪皓公园酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SHAZH0000044442": {
+    "row": {
+      "rowIndex": 3430,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SHAZH0000044442",
+      "salesOrderNo": "SE2026072900139",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+      "hotelName": "上海侨德酒店管理有限公司—上海侨德酒店管理有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CGDD2607290605": {
+    "row": {
+      "rowIndex": 3431,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CGDD2607290605",
+      "salesOrderNo": "SE2026072900093",
+      "createdBy": "李莎",
+      "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
+      "hotelName": "宇通二厂沁园餐厅"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CGDD2607290521": {
+    "row": {
+      "rowIndex": 3432,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CGDD2607290521",
+      "salesOrderNo": "SE2026072900092",
+      "createdBy": "李莎",
+      "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
+      "hotelName": "宇通二厂新能源怡园/面包房"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CGDD2607290398": {
+    "row": {
+      "rowIndex": 3434,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CGDD2607290398",
+      "salesOrderNo": "SE2026072900091",
+      "createdBy": "李莎",
+      "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
+      "hotelName": "宇通二厂研发餐厅"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CGDD2607290308": {
+    "row": {
+      "rowIndex": 3436,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CGDD2607290308",
+      "salesOrderNo": "SE2026072900090",
+      "createdBy": "李莎",
+      "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
+      "hotelName": "宇通二厂馨园餐厅"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "CGDD2607290239": {
+    "row": {
+      "rowIndex": 3438,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "CGDD2607290239",
+      "salesOrderNo": "SE2026072900089",
+      "createdBy": "李莎",
+      "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
+      "hotelName": "宇通二厂新能源佳园"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "HGHTM2605115": {
+    "row": {
+      "rowIndex": 3611,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "HGHTM2605115",
+      "salesOrderNo": "SE2026072900083",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益海嘉里德立安(杭州)食品有限公司",
+      "hotelName": "杭州临安天目留椿酒店管理有限公司於潜分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POCKGMC26008279": {
+    "row": {
+      "rowIndex": 3612,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POCKGMC26008279",
+      "salesOrderNo": "SE2026072900669",
+      "createdBy": "供应链管理员",
+      "operationCompany": "重庆/丰厨（成都）供应链管理有限公司",
+      "hotelName": "重庆国瑞酒店管理有限公司万豪酒店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "SLPGO2621616": {
+    "row": {
+      "rowIndex": 3613,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "SLPGO2621616",
+      "salesOrderNo": "SE2026072900688",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "香格里拉大酒店（广州琶洲）有限公司-会展东路1号"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "XILIO2609010": {
+    "row": {
+      "rowIndex": 3620,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "XILIO2609010",
+      "salesOrderNo": "SE2026072900333",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "深圳西丽高尔夫球俱乐部有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "941401645987": {
+    "row": {
+      "rowIndex": 3829,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "941401645987",
+      "salesOrderNo": "SE2026072900048",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "美心食品（广州）有限公司-5314广州东方宝泰店"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "BEIPH0000163987": {
+    "row": {
+      "rowIndex": 3830,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "BEIPH0000163987",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "北京银泰置业有限公司北京柏悦酒店分公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "941401645933": {
+    "row": {
+      "rowIndex": 3832,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "941401645933",
+      "salesOrderNo": "SE2026072900046",
+      "createdBy": "供应链管理员",
+      "operationCompany": "深圳市德立安食品有限公司",
+      "hotelName": "美心食品(广州)有限公司 -深圳万象天地1389星美乐"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "ZH2600006296": {
+    "row": {
+      "rowIndex": 3833,
+      "transferStatus": "未转单",
+      "isTransferred": false,
+      "customerOrderNo": "ZH2600006296",
+      "salesOrderNo": "",
+      "createdBy": "供应链管理员",
+      "operationCompany": "广州益嘉德立安食品有限公司",
+      "hotelName": "珠海粤财实业有限公司皇冠假日酒店-香洲区吉大景山路188号1楼"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "POWD57260728023598": {
+    "row": {
+      "rowIndex": 3835,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "POWD57260728023598",
+      "salesOrderNo": "SE2026072900059",
+      "createdBy": "供应链管理员",
+      "operationCompany": "益彩（上海）供应链管理有限公司",
+      "hotelName": "彩食鲜北京大兴物流仓"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "b6e7e4c9-61f7-4849-b392-41d76cabe660": {
+    "row": {
+      "rowIndex": 3836,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "b6e7e4c9-61f7-4849-b392-41d76cabe660",
+      "salesOrderNo": "SE2026072900003",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚国光豪生度假酒店有限公司"
+    },
+    "dates": [
+      "0729"
+    ]
+  },
+  "fc6ef31f-623b-4e46-8fb9-cb3bbe208ca0": {
+    "row": {
+      "rowIndex": 3837,
+      "transferStatus": "已转单",
+      "isTransferred": true,
+      "customerOrderNo": "fc6ef31f-623b-4e46-8fb9-cb3bbe208ca0",
+      "salesOrderNo": "SE2026072900002",
+      "createdBy": "供应链管理员",
+      "operationCompany": "三亚德立安食品有限公司",
+      "hotelName": "三亚凯杰食品有限公司 -"
+    },
+    "dates": [
+      "0729"
     ]
   }
 }

@@ -2536,14 +2536,14 @@
   },
   "2612270": {
     "row": {
-      "rowIndex": 728,
+      "rowIndex": 1459,
       "transferStatus": "已转单",
       "isTransferred": true,
       "customerOrderNo": "2612270",
-      "salesOrderNo": "SE2026072701272",
+      "salesOrderNo": "SE2026073000715",
       "createdBy": "供应链管理员",
-      "operationCompany": "深圳市德立安食品有限公司",
-      "hotelName": "深圳市招华国际会展发展有限公司深圳国际会展中心洲际酒店 -会展湾中港广场6栋A座"
+      "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+      "hotelName": "中晶-西安高新洲际酒店"
     },
     "dates": [
       "0730",

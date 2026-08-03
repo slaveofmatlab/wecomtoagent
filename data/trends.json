@@ -2189,8 +2189,8 @@
     "itOk": 200,
     "configRate": 1,
     "orderTotal": 825,
-    "orderAi": 206,
-    "aiRate": 0.2496969696969697,
+    "orderAi": 204,
+    "aiRate": 0.24727272727272728,
     "companies": [
       {
         "operationCompany": "三亚德立安食品有限公司",
@@ -2213,8 +2213,8 @@
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
         "orderTotal": 94,
-        "orderAiCount": 2,
-        "aiRate": 0.02127659574468085
+        "orderAiCount": 0,
+        "aiRate": 0
       },
       {
         "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
@@ -2295,6 +2295,6 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-03T01:52:17.848Z"
+    "ts": "2026-08-03T08:28:10.566Z"
   }
 }

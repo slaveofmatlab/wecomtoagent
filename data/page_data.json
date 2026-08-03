@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-03T01:52:17.848Z",
+  "generatedAt": "2026-08-03T08:28:10.565Z",
   "cutoffDate": "0731",
   "sources": {
     "salesPath": null,
@@ -59,10 +59,10 @@
         "itConfiguredCount": 38,
         "configRate": 1,
         "orderTotal": 94,
-        "orderAiCount": 2,
-        "orderAiTotal": 2,
-        "aiRate": 0.02127659574468085,
-        "aiRateTotal": 0.02127659574468085,
+        "orderAiCount": 0,
+        "orderAiTotal": 0,
+        "aiRate": 0,
+        "aiRateTotal": 0,
         "orderMethod": ""
       },
       {
@@ -239,11 +239,11 @@
       "registeredCount": 200,
       "itConfiguredCount": 200,
       "orderTotal": 825,
-      "orderAiCount": 206,
-      "orderAiTotal": 206,
+      "orderAiCount": 204,
+      "orderAiTotal": 204,
       "configRate": 1,
-      "aiRate": 0.2496969696969697,
-      "aiRateTotal": 0.2496969696969697
+      "aiRate": 0.24727272727272728,
+      "aiRateTotal": 0.24727272727272728
     }
   },
   "groupSummary": {
@@ -631,10 +631,10 @@
         "operationCompanyKey": "上海/丰厨(上海)供应链管理有限公司",
         "itConfigured": true,
         "orderTotal": 2,
-        "orderAiCount": 2,
-        "orderAiTotal": 2,
-        "aiRate": 1,
-        "aiRateTotal": 1,
+        "orderAiCount": 0,
+        "orderAiTotal": 0,
+        "aiRate": 0,
+        "aiRateTotal": 0,
         "orderMethod": "",
         "hotelCodeCount": 3
       },

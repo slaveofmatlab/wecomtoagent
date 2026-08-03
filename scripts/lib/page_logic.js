@@ -210,11 +210,8 @@ function parseWecomProgress(workbook, cutoffDate = DEFAULT_CUTOFF_DATE) {
     .filter((row) => row.operationCompany || row.hotelCode);
 }
 
-// 小程序下单的项目点：这些项目点已转小程序，订单不存在失败，统计时算100% AI成功
+// 小程序下单的项目点：订单不存在失败，统计时算100% AI成功
 const MINI_PROGRAM_CODES = new Set([
-  "KHXMD10195", // 工行-仓库（工行内部沟通群）
-  "KHXMD10196", // 工行-小卖部（工行内部沟通群）
-  "KHXMD10144", // 工行-大厨房（工行内部沟通群）
   "KHXMD10235", // 大兴工厂（北京丰厨转单群）
 ]);
 

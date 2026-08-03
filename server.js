@@ -658,13 +658,12 @@ async function handleExportOrderMethod(req, res) {
           else if (m.indexOf("图片下单") === 0) { cat = "图片下单"; }
           else if (m.indexOf("图文混发") === 0 || /\d+%/.test(m)) { cat = "混合"; }
           else if (["Excel下单","PDF下单","文本消息"].indexOf(m) >= 0) { cat = m; }
-          else { cat = "其他"; }
+          else { cat = "混合"; }
         }
 
-        // 机器人 → 根据订单量分配到 Excel/PDF/图片（按群备注粗略判断）
+        // 机器人 → Excel；其他分类直接映射
         var method;
         if (cat === "机器人") { method = "Excel下单"; }
-        else if (cat === "其他") { method = "混合"; }
         else { method = cat; }
 
         if (!companyMethods[ck]) companyMethods[ck] = {};

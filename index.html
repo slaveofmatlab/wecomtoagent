@@ -1593,7 +1593,7 @@
     if (m.indexOf("图文混发") === 0 || /\d+%/.test(m)) return "混合";
     var known = ["Excel下单", "PDF下单", "文本消息"];
     if (known.indexOf(m) >= 0) return m;
-    return "其他";
+    return "混合";
   }
 
   function togglePriorityFilter(value) {

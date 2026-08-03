@@ -15,15 +15,28 @@
     },
     "上海-【人寿堂】机器人接单群": {
       "tag": "标准",
-      "mainMethod": "Excel下单"
+      "mainMethod": "Excel下单",
+      "note": "需要沟通人工处理的规则"
     },
     "上海-【竹筷子】机器人接单群": {
       "tag": "标准",
-      "mainMethod": "Excel下单"
+      "mainMethod": "Excel下单",
+      "note": "开始使用AI转单，试运行ing"
     },
     "上海-【荷特宝】机器人接单群": {
       "tag": "标准",
-      "mainMethod": "PDF下单 48%"
+      "mainMethod": "PDF下单 48%",
+      "note": "开始使用AI转单，试运行ing"
+    },
+    "上海-长城汽车机器人接单群": {
+      "tag": "标准",
+      "mainMethod": "Excel下单",
+      "note": "模板不一致，暂未配置"
+    },
+    "成都-长城汽车机器人接单群": {
+      "tag": "标准",
+      "mainMethod": "Excel下单",
+      "note": "模板不一致，暂未配置"
     },
     "中兴-丰厨沟通群": {
       "tag": "标准",

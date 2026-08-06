@@ -343,6 +343,7 @@ async function handleUpload(req, res) {
   if (!currentTrends) currentTrends = {};
 
   // ---- 存储销售快照 + 进度信息（用于后续日期重算） ----
+  try {
   const allItOkCodes = [];
   const codeToCompany = {};
   let registeredCount = 0;
@@ -396,6 +397,7 @@ async function handleUpload(req, res) {
   for (var di = 0; di < dateKeys.length; di++) {
     var dk = dateKeys[di];
     var stored = storedSalesByDate[dk];
+    if (!stored || !stored.allItOkCodes || !stored.sales) { console.log("  跳过 " + dk + ": 数据格式不兼容"); continue; }
     var aitOk = {};
     for (var ai = 0; ai < stored.allItOkCodes.length; ai++) {
       aitOk[stored.allItOkCodes[ai]] = true;
@@ -435,6 +437,10 @@ async function handleUpload(req, res) {
     currentTrends[trendKey].ts = new Date().toISOString();
   }
   console.log("  已刷新 " + dateKeys.length + " 个日期的趋势数据");
+
+  } catch (snapshotErr) {
+    console.error("销售快照/重算失败（不影响当前上传）:", snapshotErr.message);
+  }
 
   // 写磁盘
   const dataDir = path.join(ROOT, "data");

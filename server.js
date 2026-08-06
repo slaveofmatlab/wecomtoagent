@@ -3,7 +3,7 @@ const https = require("https");
 const fs = require("fs");
 const path = require("path");
 const XLSX = require("xlsx");
-const { buildPageData, findFile, buildOrderMethodReport, parsePendingWecom, normalizeText } = require("./scripts/lib/page_logic");
+const { buildPageData, findFile, buildOrderMethodReport, parsePendingWecom, parseWecomProgress, parseSalesFull, normalizeText } = require("./scripts/lib/page_logic");
 const ExcelJS = require("exceljs");
 
 const ROOT = __dirname;
@@ -279,11 +279,15 @@ async function handleUpload(req, res) {
 
   if (!progressWb) throw new Error("缺少推进表文件");
 
+  // 预解析（供快照存储 + 重算使用）
+  const salesRows = parseSalesFull(salesWb);
+  const pendingRows = parsePendingWecom(pendingWb);
+  const progressRows = parseWecomProgress(progressWb, cutoff);
+
   // 解析当天待转单，合并入累积 Map（紧凑格式：{s: salesOrderNo, t: transferStatus, d: [dates]}）
   // key = customerOrderNo（如果非空），否则 '_' + salesOrderNo（兜底匹配用）
-  const todayPendingRows = parsePendingWecom(pendingWb);
   const todayDate = cutoff;
-  for (const row of todayPendingRows) {
+  for (const row of pendingRows) {
     if (row.createdBy !== '供应链管理员') continue;
     var custKey = normalizeText(row.customerOrderNo);
     var salesKey = normalizeText(row.salesOrderNo);

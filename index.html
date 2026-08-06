@@ -1567,7 +1567,7 @@
     return fetch("/basicData/priority_groups.json?_=" + Date.now())
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (cfg) { _priorityConfig = cfg; renderPriorityGroups(); })
-      .catch(function () {});
+      .catch(function (e) { console.error("loadPriorityConfig 失败:", e); });
   }
 
   // 给一个群定分类（每个群只属于一类）：
@@ -1622,6 +1622,7 @@
     var cfg = _priorityConfig;
     var groupRows = window._groupData ? window._groupData.rows : [];
     if (!cfg || !groupRows.length) {
+      console.log("renderPriorityGroups 隐藏面板: cfg=" + !!cfg + " groupRows=" + groupRows.length);
       document.getElementById("priorityPanel").hidden = true;
       return;
     }

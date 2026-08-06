@@ -478,7 +478,18 @@ async function handleUpload(req, res) {
     }
   }
 
-  return { success: true, data, trends: currentTrends, warning: githubWarning };
+  // 返回瘦身版数据（去掉 salesRows/pendingRows/progressRows 大数组），避免响应过大
+  const slimResult = {
+    generatedAt: data.generatedAt,
+    cutoffDate: data.cutoffDate,
+    sources: data.sources,
+    pendingTotals: data.pendingTotals,
+    companySummary: data.companySummary,
+    groupSummary: data.groupSummary,
+    logStats: data.logStats,
+    logSummary: data.logSummary || {},
+  };
+  return { success: true, data: slimResult, trends: currentTrends, warning: githubWarning };
 }
 
 function loadFallbackWorkbook(dir, keyword) {

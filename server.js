@@ -26,6 +26,7 @@ const MIME_TYPES = {
 // ====== 内存状态 ======
 let currentPageData = null;  // 最新一次上传/加载的 page_data
 let currentTrends = null;    // trends.json 内容（日期 → 汇总）
+let storedSalesByDate = {};  // { "0804": { salesRows, allItOkCodes, codeToCompany }, ... } 历史销售快照
 let githubShas = {};         // { filename: sha } 用于 GitHub PUT
 
 // ====== GitHub 工具 ======
@@ -119,6 +120,8 @@ async function init() {
       if (tr && tr.data) { currentTrends = tr.data; console.log("  trends.json 已加载"); }
       const cp = await githubGetFile("pending_cumulative.json");
       if (cp && cp.data) { currentCumulativePending = cp.data; console.log("  pending_cumulative.json 已加载"); }
+      const ss = await githubGetFile("sales_snapshots.json");
+      if (ss && ss.data) { storedSalesByDate = ss.data; console.log("  sales_snapshots.json 已加载 (" + Object.keys(storedSalesByDate).length + " 天)"); }
     } catch (e) {
       console.error("GitHub 加载失败，回退到磁盘:", e.message);
     }
@@ -136,6 +139,11 @@ async function init() {
   if (!Object.keys(currentCumulativePending).length) {
     currentCumulativePending = loadCumulativePending();
     if (Object.keys(currentCumulativePending).length) console.log("  pending_cumulative.json 从磁盘加载");
+  }
+  // 销售快照从磁盘加载
+  if (!Object.keys(storedSalesByDate).length) {
+    storedSalesByDate = loadSalesSnapshots();
+    if (Object.keys(storedSalesByDate).length) console.log("  sales_snapshots.json 从磁盘加载 (" + Object.keys(storedSalesByDate).length + " 天)");
   }
 }
 
@@ -195,6 +203,21 @@ function saveCumulativePending(map) {
   // 紧凑格式（无缩进），减少磁盘 I/O 和 GitHub push 体积
   fs.writeFileSync(
     path.join(ROOT, "data", "pending_cumulative.json"),
+    JSON.stringify(map)
+  );
+}
+
+function loadSalesSnapshots() {
+  const p = path.join(ROOT, "data", "sales_snapshots.json");
+  if (fs.existsSync(p)) {
+    try { return JSON.parse(fs.readFileSync(p, "utf8")); } catch (e) {}
+  }
+  return {};
+}
+
+function saveSalesSnapshots(map) {
+  fs.writeFileSync(
+    path.join(ROOT, "data", "sales_snapshots.json"),
     JSON.stringify(map)
   );
 }
@@ -282,26 +305,6 @@ async function handleUpload(req, res) {
   }
   saveCumulativePending(currentCumulativePending);
 
-  // 累积待转单用于 AI 匹配（从紧凑格式展开为 buildCompanySummary 需要的行格式）
-  var mergedRows = [];
-  for (var entryKey in currentCumulativePending) {
-    var entry = currentCumulativePending[entryKey];
-    // 兼容旧格式 {row, dates}
-    if (entry.row) { mergedRows.push(entry.row); continue; }
-    var entryS = entry.s || '';
-    var entryT = entry.t || '';
-    // 兼容旧格式：entry 本身可能是 row 对象
-    if (!entryS && !entryT && entry.transferStatus) { mergedRows.push(entry); continue; }
-    // _ 前缀的 entryKey → customerOrderNo 为空，salesOrderNo 从 entryKey 或 entry.s 取
-    var isSalesKey = entryKey.charAt(0) === '_';
-    mergedRows.push({
-      customerOrderNo: isSalesKey ? '' : entryKey,
-      salesOrderNo: isSalesKey ? (entryS || entryKey.slice(1)) : entryS,
-      transferStatus: typeof entryT === 'string' ? entryT : (entry.transferStatus || ''),
-      createdBy: '供应链管理员',
-    });
-  }
-
   const data = buildPageData({
     salesWorkbook: salesWb,
     pendingWorkbook: pendingWb,
@@ -309,7 +312,6 @@ async function handleUpload(req, res) {
     logWorkbook: logWb,
     cutoffDate: cutoff,
     sources: { salesPath: null, pendingPath: null, progressPath: null },
-    pendingRowsForMatching: mergedRows,
   });
 
   // 没有上传日志时，保留上一次的备注和下单方式分布（用于按下单形式导出）
@@ -335,30 +337,107 @@ async function handleUpload(req, res) {
   // 更新内存
   currentPageData = data;
   if (!currentTrends) currentTrends = {};
-  const key = cutoff.slice(0, 2) + "-" + cutoff.slice(2, 4);
-  const t = data.companySummary.totals;
-  currentTrends[key] = {
-    cutoff,
-    registered: t.registeredCount,
-    itOk: t.itConfiguredCount,
-    configRate: t.configRate,
-    orderTotal: t.orderTotal,
-    orderAi: t.orderAiCount,
-    aiRate: t.aiRate,
-    companies: data.companySummary.rows.map((r) => ({
+
+  // ---- 存储销售快照 + 进度信息（用于后续日期重算） ----
+  const allItOkCodes = [];
+  const codeToCompany = {};
+  let registeredCount = 0;
+  const registeredSet = new Set();
+  for (const pr of progressRows) {
+    if (!pr.operationCompanyKey || !pr.hotelCode) continue;
+    registeredSet.add(pr.hotelCode);
+    if (pr.itConfigured) {
+      allItOkCodes.push(pr.hotelCode);
+      codeToCompany[pr.hotelCode] = { key: pr.operationCompanyKey, name: pr.operationCompany };
+    }
+  }
+  registeredCount = registeredSet.size;
+
+  storedSalesByDate[cutoff] = {
+    sales: salesRows.map(function (sr) { return {
+      h: sr.hotelCode,
+      c: normalizeText(sr.customerOrderNo),
+      o: normalizeText(sr.orderNo),
+      k: sr.operationCompanyKey,
+    }; }),
+    allItOkCodes: allItOkCodes,
+    codeToCompany: codeToCompany,
+    registeredCount: registeredCount,
+    itOkCount: allItOkCodes.length,
+    companies: data.companySummary.rows.map(function (r) { return {
       operationCompany: r.operationCompany,
       orderTotal: r.orderTotal,
       orderAiCount: r.orderAiCount,
       aiRate: r.aiRate,
-    })),
-    ts: new Date().toISOString(),
+    }; }),
   };
+
+  // ---- 用最新待转单重算所有历史日期 ----
+  var MINI_PROGRAM = {};
+  MINI_PROGRAM["KHXMD10235"] = true;
+
+  // 构建匹配索引（从当天上传的待转单）
+  var matchByCust = new Map();
+  var matchBySales = new Map();
+  for (var pi = 0; pi < pendingRows.length; pi++) {
+    var pr = pendingRows[pi];
+    if (normalizeText(pr.createdBy || "") !== "供应链管理员") continue;
+    var cn = normalizeText(pr.customerOrderNo);
+    var sn = normalizeText(pr.salesOrderNo);
+    if (cn && !matchByCust.has(cn)) matchByCust.set(cn, pr.transferStatus);
+    if (sn && !matchBySales.has(sn)) matchBySales.set(sn, pr.transferStatus);
+  }
+
+  var dateKeys = Object.keys(storedSalesByDate).sort();
+  for (var di = 0; di < dateKeys.length; di++) {
+    var dk = dateKeys[di];
+    var stored = storedSalesByDate[dk];
+    var aitOk = {};
+    for (var ai = 0; ai < stored.allItOkCodes.length; ai++) {
+      aitOk[stored.allItOkCodes[ai]] = true;
+    }
+
+    var total = 0, aiDone = 0, aiTotal = 0;
+    for (var si = 0; si < stored.sales.length; si++) {
+      var sr = stored.sales[si];
+      if (!sr.h || !aitOk[sr.h]) continue;
+      total++;
+      if (MINI_PROGRAM[sr.h]) { aiTotal++; aiDone++; }
+      else {
+        var ps = matchByCust.get(sr.c) || matchBySales.get(sr.o);
+        if (ps) { aiTotal++; if (ps.indexOf("已转") >= 0) aiDone++; }
+      }
+    }
+
+    var trendKey = dk.slice(0, 2) + "-" + dk.slice(2, 4);
+    if (!currentTrends[trendKey]) {
+      currentTrends[trendKey] = {
+        cutoff: dk,
+        registered: stored.registeredCount,
+        itOk: stored.itOkCount,
+        configRate: stored.registeredCount > 0 ? stored.itOkCount / stored.registeredCount : null,
+        orderTotal: total,
+        orderAi: aiDone,
+        aiRate: total > 0 ? aiDone / total : null,
+        companies: stored.companies || [],
+        ts: new Date().toISOString(),
+      };
+    } else {
+      // 保留首次写入的 registered/itOk/configRate/companies，只更新匹配相关字段
+      currentTrends[trendKey].orderTotal = total;
+      currentTrends[trendKey].orderAi = aiDone;
+      currentTrends[trendKey].aiRate = total > 0 ? aiDone / total : null;
+    }
+    currentTrends[trendKey].ts = new Date().toISOString();
+  }
+  console.log("  已刷新 " + dateKeys.length + " 个日期的趋势数据");
 
   // 写磁盘
   const dataDir = path.join(ROOT, "data");
   fs.mkdirSync(dataDir, { recursive: true });
   fs.writeFileSync(path.join(dataDir, "page_data.json"), JSON.stringify(data, null, 2));
   fs.writeFileSync(path.join(dataDir, "trends.json"), JSON.stringify(currentTrends, null, 2));
+  saveSalesSnapshots(storedSalesByDate);
 
   // 同步推 GitHub（等待完成，确保 Render 重启后数据不丢失）
   // 只推渲染所需字段，去掉 salesRows/pendingRows/progressRows 大数组，避免超 GitHub 1MB 限制
@@ -375,14 +454,16 @@ async function handleUpload(req, res) {
       logSummary: data.logSummary || {},
     };
     let ghErrors = [];
-    // 顺序写入：先 page_data，再 trends，避免并发 PUT 造成 SHA 冲突（409）
+    // 顺序写入：先 page_data，再 trends，再 snapshots，避免并发 PUT 造成 SHA 冲突（409）
     const pdSha = await githubPutFile("page_data.json", slimData)
       .catch((e) => { ghErrors.push("page_data: " + e.message); console.error("GitHub push page_data.json:", e.message); return null; });
     const trSha = await githubPutFile("trends.json", currentTrends)
       .catch((e) => { ghErrors.push("trends: " + e.message); console.error("GitHub push trends.json:", e.message); return null; });
+    const ssSha = await githubPutFile("sales_snapshots.json", storedSalesByDate)
+      .catch((e) => { ghErrors.push("sales_snapshots: " + e.message); console.error("GitHub push sales_snapshots.json:", e.message); return null; });
     const cpSha = await githubPutFile("pending_cumulative.json", currentCumulativePending)
       .catch((e) => { ghErrors.push("pending_cumulative: " + e.message); console.error("GitHub push pending_cumulative.json:", e.message); return null; });
-    if (!pdSha || !trSha || !cpSha) {
+    if (!pdSha || !trSha || !ssSha || !cpSha) {
       githubWarning = "GitHub 备份失败（" + ghErrors.join("；") + "）";
     }
   }
@@ -682,23 +763,8 @@ async function handleExportOrderMethod(req, res) {
       for (var ck4 in built) { syntheticLogSummary[ck4] = built[ck4]; }
     }
 
-    // 用累积待转单做匹配（与看板同口径）
-    var exportMatchingRows = pendingRows;
-    if (Object.keys(currentCumulativePending).length > 0) {
-      exportMatchingRows = [];
-      for (var ek in currentCumulativePending) {
-        var e = currentCumulativePending[ek];
-        if (e.row) { exportMatchingRows.push(e.row); continue; }
-        var isSales = ek.charAt(0) === '_';
-        exportMatchingRows.push({
-          customerOrderNo: isSales ? '' : ek,
-          salesOrderNo: isSales ? (e.s || ek.slice(1)) : (e.s || ''),
-          transferStatus: e.t || '',
-          createdBy: '供应链管理员',
-        });
-      }
-    }
-    const report = buildOrderMethodReport(salesRows, exportMatchingRows, progressRows, syntheticLogSummary);
+    // 直接用看板计算时的 pendingRows，不再从累积池重建（确保导出和看板同口径）
+    const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, syntheticLogSummary);
 
     // --- 创建 Excel 工作簿 ---
     const wb = new ExcelJS.Workbook();

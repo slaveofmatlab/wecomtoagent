@@ -2189,8 +2189,8 @@
     "itOk": 200,
     "configRate": 1,
     "orderTotal": 825,
-    "orderAi": 204,
-    "aiRate": 0.24727272727272728,
+    "orderAi": 225,
+    "aiRate": 0.2727272727272727,
     "companies": [
       {
         "operationCompany": "三亚德立安食品有限公司",
@@ -2225,8 +2225,8 @@
       {
         "operationCompany": "广州益嘉德立安食品有限公司",
         "orderTotal": 50,
-        "orderAiCount": 29,
-        "aiRate": 0.58
+        "orderAiCount": 50,
+        "aiRate": 1
       },
       {
         "operationCompany": "益海嘉里食品营销有限公司上海分公司",
@@ -2295,7 +2295,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-04T05:39:04.355Z"
+    "ts": "2026-08-06T06:53:03.275Z"
   },
   "08-03": {
     "cutoff": "0803",

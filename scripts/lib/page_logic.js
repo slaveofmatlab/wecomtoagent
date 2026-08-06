@@ -611,34 +611,7 @@ function findFile(dir, pattern) {
   return best;
 }
 
-/**
- * 合并多天的待转单数据，按 customerOrderNo 去重（后面的覆盖前面的，保留最新状态）。
- * 没有 customerOrderNo 的行按 salesOrderNo 去重。
- * @param {Array<Array<Object>>} pendingRowsList - 按日期从早到晚排列的待转单行数组
- * @returns {Array<Object>} 合并去重后的待转单行
- */
-function mergePendingRows(pendingRowsList) {
-  const byCust = new Map();   // customerOrderNo → row
-  const bySales = new Map();  // salesOrderNo → row（没有 customerOrderNo 的行）
-
-  for (const batch of pendingRowsList) {
-    if (!batch || batch.length === 0) continue;
-    for (const row of batch) {
-      const custKey = normalizeText(row.customerOrderNo);
-      if (custKey) {
-        byCust.set(custKey, row);       // 后写的覆盖先写的 → 保留最新状态
-      } else {
-        const salesKey = normalizeText(row.salesOrderNo);
-        if (salesKey) bySales.set(salesKey, row);
-      }
-    }
-  }
-
-  return [...byCust.values(), ...bySales.values()];
-}
-
-function loadDefaultData(rootDir, cutoffDate, lookbackDays) {
-  lookbackDays = lookbackDays || 0;
+function loadDefaultData(rootDir, cutoffDate) {
   const root = rootDir || path.join(__dirname, "..", "..");
   const basicDir = path.join(root, "basicData");
   const sampleDir = path.join(root, "示例数据");
@@ -665,7 +638,6 @@ function loadDefaultData(rootDir, cutoffDate, lookbackDays) {
     pendingWorkbook: null,
     progressWorkbook: null,
     logWorkbook: null,
-    mergedPendingRowsForMatching: null,
   };
 
   if (salesPath && fs.existsSync(salesPath)) result.salesWorkbook = readWorkbookFromPath(salesPath);
@@ -673,44 +645,17 @@ function loadDefaultData(rootDir, cutoffDate, lookbackDays) {
   if (progressPath && fs.existsSync(progressPath)) result.progressWorkbook = readWorkbookFromPath(progressPath);
   if (logPath && fs.existsSync(logPath)) result.logWorkbook = readWorkbookFromPath(logPath);
 
-  // 回溯 N 天累积待转单，解决"待转单在前、销售订单在后"的时差误判
-  if (lookbackDays > 0) {
-    const pendingRowsList = [];
-    for (let i = 0; i < lookbackDays; i++) {
-      const d = new Date(2026, month - 1, day - i);
-      const dirName = `${d.getMonth() + 1}月${d.getDate()}日`;
-      const dir = path.join(sampleDir, dirName);
-      if (!fs.existsSync(dir)) continue;
-      const pf = findFile(dir, "待转单");
-      if (!pf) continue;
-      try {
-        const wb = readWorkbookFromPath(pf);
-        pendingRowsList.push(parsePendingWecom(wb));
-      } catch (e) {
-        // 某一天的文件损坏或格式不对，跳过
-      }
-    }
-    // 只在确实有多天数据时才启用合并（只有当天数据的话没必要）
-    if (pendingRowsList.length > 1) {
-      result.mergedPendingRowsForMatching = mergePendingRows(pendingRowsList);
-    }
-  }
-
   return result;
 }
 
-function buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, logWorkbook, cutoffDate = DEFAULT_CUTOFF_DATE, sources = {}, pendingRowsForMatching = null }) {
+function buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, logWorkbook, cutoffDate = DEFAULT_CUTOFF_DATE, sources = {} }) {
   const salesRows = salesWorkbook ? parseSalesFull(salesWorkbook) : [];
   const pendingRows = pendingWorkbook ? parsePendingWecom(pendingWorkbook) : [];
   const progressRows = progressWorkbook ? parseWecomProgress(progressWorkbook, cutoffDate) : [];
 
-  // 如果外部传入了累积合并后的待转单（跨天去重），用于 AI 匹配；
-  // 否则退化到用当天的待转单（向后兼容）
-  const matchingRows = pendingRowsForMatching !== null ? pendingRowsForMatching : pendingRows;
-
   const logSummary = parseWecomLogForSummary(logWorkbook || null, progressRows);
-  const companySummary = buildCompanySummary(salesRows, matchingRows, progressRows, logSummary);
-  const groupSummary = buildGroupSummary(salesRows, matchingRows, progressRows, logSummary);
+  const companySummary = buildCompanySummary(salesRows, pendingRows, progressRows, logSummary);
+  const groupSummary = buildGroupSummary(salesRows, pendingRows, progressRows, logSummary);
 
   // 日志统计（含完整 methodStats，供导出 Excel 用）
   const logStats = logSummary ? buildLogStats(logSummary, progressRows) : null;
@@ -1056,5 +1001,4 @@ module.exports = {
   buildPageData,
   buildOrderMethodReport,
   buildLogStats,
-  mergePendingRows,
 };

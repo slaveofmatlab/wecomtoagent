@@ -254,7 +254,7 @@ function unauthorized(res) {
 async function handleUpload(req, res) {
   let body = Buffer.alloc(0);
   let size = 0;
-  const MAX = 25 * 1024 * 1024; // 25MB
+  const MAX = 100 * 1024 * 1024; // 100MB
 
   await new Promise((resolve, reject) => {
     req.on("data", (chunk) => {
@@ -266,7 +266,14 @@ async function handleUpload(req, res) {
     req.on("error", reject);
   });
 
-  const { sales, pending, progress, log, cutoff } = JSON.parse(body.toString("utf8"));
+  let reqData;
+  try {
+    reqData = JSON.parse(body.toString("utf8"));
+  } catch (e) {
+    console.error("请求体 JSON 解析失败 (size=" + (body.length/1024/1024).toFixed(1) + "MB):", e.message);
+    throw new Error("请求数据解析失败，可能是文件过大导致传输截断。请尝试用更小的待转单文件。");
+  }
+  const { sales, pending, progress, log, cutoff } = reqData;
   if (!sales || !pending) throw new Error("缺少销售订单或待转单文件");
   if (!cutoff || cutoff.length !== 4) throw new Error("截止日期格式错误，应为 4 位 MMDD");
 

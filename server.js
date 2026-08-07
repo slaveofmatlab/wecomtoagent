@@ -449,8 +449,7 @@ async function handleUpload(req, res) {
   fs.writeFileSync(path.join(dataDir, "trends.json"), JSON.stringify(currentTrends, null, 2));
   saveSalesSnapshots(storedSalesByDate);
 
-  // 同步推 GitHub（等待完成，确保 Render 重启后数据不丢失）
-  // 只推渲染所需字段，去掉 salesRows/pendingRows/progressRows 大数组，避免超 GitHub 1MB 限制
+  // 异步推 GitHub（不阻塞响应，避免 Render 超时）
   let githubWarning = null;
   if (GITHUB_TOKEN) {
     const slimData = {
@@ -463,19 +462,22 @@ async function handleUpload(req, res) {
       logStats: data.logStats,
       logSummary: data.logSummary || {},
     };
-    let ghErrors = [];
-    // 顺序写入：先 page_data，再 trends，再 snapshots，避免并发 PUT 造成 SHA 冲突（409）
-    const pdSha = await githubPutFile("page_data.json", slimData)
-      .catch((e) => { ghErrors.push("page_data: " + e.message); console.error("GitHub push page_data.json:", e.message); return null; });
-    const trSha = await githubPutFile("trends.json", currentTrends)
-      .catch((e) => { ghErrors.push("trends: " + e.message); console.error("GitHub push trends.json:", e.message); return null; });
-    const ssSha = await githubPutFile("sales_snapshots.json", storedSalesByDate)
-      .catch((e) => { ghErrors.push("sales_snapshots: " + e.message); console.error("GitHub push sales_snapshots.json:", e.message); return null; });
-    const cpSha = await githubPutFile("pending_cumulative.json", currentCumulativePending)
-      .catch((e) => { ghErrors.push("pending_cumulative: " + e.message); console.error("GitHub push pending_cumulative.json:", e.message); return null; });
-    if (!pdSha || !trSha || !ssSha || !cpSha) {
-      githubWarning = "GitHub 备份失败（" + ghErrors.join("；") + "）";
-    }
+    const trendsCopy = JSON.parse(JSON.stringify(currentTrends));
+    const snapshotsCopy = JSON.parse(JSON.stringify(storedSalesByDate));
+    const pendingCopy = JSON.parse(JSON.stringify(currentCumulativePending));
+    // 不 await，让 GitHub push 在后台执行
+    (async function () {
+      let ghErrors = [];
+      await githubPutFile("page_data.json", slimData)
+        .catch((e) => { ghErrors.push("page_data: " + e.message); console.error("GitHub push page_data.json:", e.message); });
+      await githubPutFile("trends.json", trendsCopy)
+        .catch((e) => { ghErrors.push("trends: " + e.message); console.error("GitHub push trends.json:", e.message); });
+      await githubPutFile("sales_snapshots.json", snapshotsCopy)
+        .catch((e) => { ghErrors.push("sales_snapshots: " + e.message); console.error("GitHub push sales_snapshots.json:", e.message); });
+      await githubPutFile("pending_cumulative.json", pendingCopy)
+        .catch((e) => { ghErrors.push("pending_cumulative: " + e.message); console.error("GitHub push pending_cumulative.json:", e.message); });
+      if (ghErrors.length) console.error("GitHub 后台同步失败: " + ghErrors.join("；"));
+    })();
   }
 
   // 返回瘦身版数据（去掉 salesRows/pendingRows/progressRows 大数组），避免响应过大

@@ -3,6 +3,7 @@ const https = require("https");
 const fs = require("fs");
 const path = require("path");
 const XLSX = require("xlsx");
+const Busboy = require("busboy");
 const { buildPageData, findFile, buildOrderMethodReport, parsePendingWecom, parseWecomProgress, parseSalesFull, normalizeText } = require("./scripts/lib/page_logic");
 const ExcelJS = require("exceljs");
 
@@ -252,37 +253,33 @@ function unauthorized(res) {
 
 // ====== 上传处理 ======
 async function handleUpload(req, res) {
-  let body = Buffer.alloc(0);
-  let size = 0;
-  const MAX = 100 * 1024 * 1024; // 100MB
-
-  await new Promise((resolve, reject) => {
-    req.on("data", (chunk) => {
-      size += chunk.length;
-      if (size > MAX) { req.destroy(); reject(new Error("文件过大（上限 25MB）")); return; }
-      body = Buffer.concat([body, chunk]);
+  // 使用 busboy 解析 multipart/form-data（支持大文件二进制上传，无 base64 膨胀）
+  const { files, fields } = await new Promise((resolve, reject) => {
+    const busboy = Busboy({ headers: req.headers, limits: { fileSize: 100 * 1024 * 1024, files: 4 } });
+    const files = {};
+    const fields = {};
+    busboy.on("file", (fieldname, stream, info) => {
+      const chunks = [];
+      stream.on("data", (chunk) => chunks.push(chunk));
+      stream.on("end", () => { files[fieldname] = Buffer.concat(chunks); });
+      stream.on("error", reject);
     });
-    req.on("end", resolve);
-    req.on("error", reject);
+    busboy.on("field", (fieldname, val) => { fields[fieldname] = val; });
+    busboy.on("finish", () => resolve({ files, fields }));
+    busboy.on("error", reject);
+    req.pipe(busboy);
   });
 
-  let reqData;
-  try {
-    reqData = JSON.parse(body.toString("utf8"));
-  } catch (e) {
-    console.error("请求体 JSON 解析失败 (size=" + (body.length/1024/1024).toFixed(1) + "MB):", e.message);
-    throw new Error("请求数据解析失败，可能是文件过大导致传输截断。请尝试用更小的待转单文件。");
-  }
-  const { sales, pending, progress, log, cutoff } = reqData;
-  if (!sales || !pending) throw new Error("缺少销售订单或待转单文件");
+  const cutoff = fields.cutoff;
+  if (!files.sales || !files.pending) throw new Error("缺少销售订单或待转单文件");
   if (!cutoff || cutoff.length !== 4) throw new Error("截止日期格式错误，应为 4 位 MMDD");
 
-  const salesWb = XLSX.read(Buffer.from(sales, "base64"), { type: "buffer" });
-  const pendingWb = XLSX.read(Buffer.from(pending, "base64"), { type: "buffer" });
-  const progressWb = progress
-    ? XLSX.read(Buffer.from(progress, "base64"), { type: "buffer" })
+  const salesWb = XLSX.read(files.sales, { type: "buffer" });
+  const pendingWb = XLSX.read(files.pending, { type: "buffer" });
+  const progressWb = files.progress
+    ? XLSX.read(files.progress, { type: "buffer" })
     : loadFallbackWorkbook("basicData", "企业微信AI转单推进表");
-  const logWb = log ? XLSX.read(Buffer.from(log, "base64"), { type: "buffer" }) : null;
+  const logWb = files.log ? XLSX.read(files.log, { type: "buffer" }) : null;
 
   if (!progressWb) throw new Error("缺少推进表文件");
 

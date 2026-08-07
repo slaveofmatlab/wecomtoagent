@@ -2476,24 +2476,15 @@
     setStatus("正在上传并处理 Excel …", "loading");
     document.getElementById("recalcBtn").disabled = true;
 
-    Promise.all([
-      fileToBase64(salesFile),
-      fileToBase64(pendingFile),
-      progressFile ? fileToBase64(progressFile) : Promise.resolve(null),
-      logFile ? fileToBase64(logFile) : Promise.resolve(null),
-    ]).then(function(b64s) {
-      return fetch("/api/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sales: b64s[0],
-          pending: b64s[1],
-          progress: b64s[2],
-          log: b64s[3],
-          cutoff: cutoffDate,
-        }),
-      });
-    }).then(function(resp) {
+    var formData = new FormData();
+    formData.append("sales", salesFile);
+    formData.append("pending", pendingFile);
+    if (progressFile) formData.append("progress", progressFile);
+    if (logFile) formData.append("log", logFile);
+    formData.append("cutoff", cutoffDate);
+
+    fetch("/api/upload", { method: "POST", body: formData })
+    .then(function(resp) {
       return resp.json().then(function(json) {
         if (!resp.ok) throw new Error(json.error || "服务器错误");
         return json;

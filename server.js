@@ -835,6 +835,56 @@ async function handleExportOrderMethod(req, res) {
     // 直接用看板计算时的 pendingRows，不再从累积池重建（确保导出和看板同口径）
     const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, syntheticLogSummary, null, companyMethodAi);
 
+    // 用群级别真实 AI 数据强制覆盖比例分配结果（防止 page_logic.js 未同步时回退）
+    if (companyMethodAi && Object.keys(companyMethodAi).length > 0) {
+      var ALL_M = ["图片下单", "PDF下单", "文本消息", "Excel下单", "混合", "手写"];
+      // 各方法 AI 汇总
+      var methodAiSum = {};
+      ALL_M.forEach(function(m) { methodAiSum[m] = 0; });
+      for (var ck in companyMethodAi) {
+        for (var m in companyMethodAi[ck]) {
+          methodAiSum[m] = (methodAiSum[m] || 0) + companyMethodAi[ck][m];
+        }
+      }
+      // 左表
+      report.leftRows.forEach(function(lr) {
+        if (typeof methodAiSum[lr.method] === 'number') {
+          lr.aiLines = methodAiSum[lr.method];
+          lr.aiRate = lr.orderLines > 0 ? Math.round(lr.aiLines / lr.orderLines * 100) + '%' : '0%';
+        }
+      });
+      // 右表各公司
+      report.rightCompanies.forEach(function(rc) {
+        var aiMap = companyMethodAi[rc.companyKey];
+        if (aiMap) {
+          ALL_M.forEach(function(m) {
+            if (typeof aiMap[m] === 'number') {
+              rc.methods[m].aiLines = aiMap[m];
+              rc.methods[m].aiRate = rc.methods[m].orderLines > 0 ? Math.round(aiMap[m] / rc.methods[m].orderLines * 100) + '%' : '0%';
+            }
+          });
+        }
+      });
+      // 重新汇总
+      var lo = 0, la = 0;
+      report.leftRows.forEach(function(lr) { lo += lr.orderLines; la += lr.aiLines; });
+      report.leftTotal.orderLines = lo; report.leftTotal.aiLines = la;
+      report.leftTotal.aiRate = lo > 0 ? Math.round(la / lo * 100) + '%' : '0%';
+      var rso = 0, rsa = 0, rmo = {}, rma = {};
+      ALL_M.forEach(function(m) { rmo[m] = 0; rma[m] = 0; });
+      report.rightCompanies.forEach(function(rc) {
+        rso += rc.summary.orderLines; rsa += rc.summary.aiLines;
+        ALL_M.forEach(function(m) { rmo[m] += rc.methods[m].orderLines; rma[m] += rc.methods[m].aiLines; });
+      });
+      report.rightTotals.summary.orderLines = rso; report.rightTotals.summary.aiLines = rsa;
+      report.rightTotals.summary.aiRate = rso > 0 ? Math.round(rsa / rso * 100) + '%' : '0%';
+      ALL_M.forEach(function(m) {
+        report.rightTotals.methods[m].orderLines = rmo[m];
+        report.rightTotals.methods[m].aiLines = rma[m];
+        report.rightTotals.methods[m].aiRate = rmo[m] > 0 ? Math.round(rma[m] / rmo[m] * 100) + '%' : '0%';
+      });
+    }
+
     // --- 创建 Excel 工作簿 ---
     const wb = new ExcelJS.Workbook();
     const ws = wb.addWorksheet("按下单形式统计");

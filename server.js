@@ -835,55 +835,93 @@ async function handleExportOrderMethod(req, res) {
     // 直接用看板计算时的 pendingRows，不再从累积池重建（确保导出和看板同口径）
     const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, syntheticLogSummary, null, companyMethodAi);
 
-    // 用群级别真实 AI 数据强制覆盖比例分配结果（防止 page_logic.js 未同步时回退）
-    if (companyMethodAi && Object.keys(companyMethodAi).length > 0) {
-      var ALL_M = ["图片下单", "PDF下单", "文本消息", "Excel下单", "混合", "手写"];
-      // 各方法 AI 汇总
-      var methodAiSum = {};
-      ALL_M.forEach(function(m) { methodAiSum[m] = 0; });
-      for (var ck in companyMethodAi) {
-        for (var m in companyMethodAi[ck]) {
-          methodAiSum[m] = (methodAiSum[m] || 0) + companyMethodAi[ck][m];
+    // ==== AI patch：直接从看板的"下单方式"列（orderMethod）提取分类，和看板完全一致 ====
+    (function patchAiFromGroups() {
+      try {
+        var gRows = (currentPageData.groupSummary && currentPageData.groupSummary.rows) || [];
+        if (!gRows.length) return;
+
+        var METHOD_LIST = ["图片下单", "PDF下单", "文本消息", "Excel下单", "混合", "手写"];
+        var aiByCoMethod = {};
+
+        // 从 orderMethod 字符串提取简化方法名（和看板显示的分类一致）
+        function simplifyMethod(om) {
+          if (!om) return null;
+          var m = om.trim();
+          if (m === "机器人") return "Excel下单";
+          if (m === "小程序" || m === "-") return null;
+          if (m.indexOf("图片下单") === 0) return "图片下单";
+          if (m.indexOf("PDF下单") === 0) return "PDF下单";
+          if (m.indexOf("文本消息") === 0) return "文本消息";
+          if (m.indexOf("Excel下单") === 0) return "Excel下单";
+          if (m.indexOf("混合") === 0) return "混合";
+          if (m.indexOf("手写") === 0) return "手写";
+          return null;
         }
-      }
-      // 左表
-      report.leftRows.forEach(function(lr) {
-        if (typeof methodAiSum[lr.method] === 'number') {
-          lr.aiLines = methodAiSum[lr.method];
-          lr.aiRate = lr.orderLines > 0 ? Math.round(lr.aiLines / lr.orderLines * 100) + '%' : '0%';
+
+        for (var i = 0; i < gRows.length; i++) {
+          var gr2 = gRows[i];
+          var ck2 = gr2.operationCompanyKey;
+          var method2 = simplifyMethod(gr2.orderMethod);
+          if (!ck2 || !method2 || !gr2.orderTotal) continue;
+
+          if (!aiByCoMethod[ck2]) aiByCoMethod[ck2] = {};
+          aiByCoMethod[ck2][method2] = (aiByCoMethod[ck2][method2] || 0) + gr2.orderAiCount;
         }
-      });
-      // 右表各公司
-      report.rightCompanies.forEach(function(rc) {
-        var aiMap = companyMethodAi[rc.companyKey];
-        if (aiMap) {
-          ALL_M.forEach(function(m) {
-            if (typeof aiMap[m] === 'number') {
-              rc.methods[m].aiLines = aiMap[m];
-              rc.methods[m].aiRate = rc.methods[m].orderLines > 0 ? Math.round(aiMap[m] / rc.methods[m].orderLines * 100) + '%' : '0%';
-            }
+
+        // 逐公司修正：已分类方法的 AI 用真实值覆盖，差额补回避免丢失未分类群 AI
+        report.rightCompanies.forEach(function(rc) {
+          var map = aiByCoMethod[rc.companyKey];
+          if (!map) return;
+          // 覆盖已分类方法
+          METHOD_LIST.forEach(function(m) {
+            if (typeof map[m] === "number") rc.methods[m].aiLines = map[m];
           });
-        }
-      });
-      // 重新汇总
-      var lo = 0, la = 0;
-      report.leftRows.forEach(function(lr) { lo += lr.orderLines; la += lr.aiLines; });
-      report.leftTotal.orderLines = lo; report.leftTotal.aiLines = la;
-      report.leftTotal.aiRate = lo > 0 ? Math.round(la / lo * 100) + '%' : '0%';
-      var rso = 0, rsa = 0, rmo = {}, rma = {};
-      ALL_M.forEach(function(m) { rmo[m] = 0; rma[m] = 0; });
-      report.rightCompanies.forEach(function(rc) {
-        rso += rc.summary.orderLines; rsa += rc.summary.aiLines;
-        ALL_M.forEach(function(m) { rmo[m] += rc.methods[m].orderLines; rma[m] += rc.methods[m].aiLines; });
-      });
-      report.rightTotals.summary.orderLines = rso; report.rightTotals.summary.aiLines = rsa;
-      report.rightTotals.summary.aiRate = rso > 0 ? Math.round(rsa / rso * 100) + '%' : '0%';
-      ALL_M.forEach(function(m) {
-        report.rightTotals.methods[m].orderLines = rmo[m];
-        report.rightTotals.methods[m].aiLines = rma[m];
-        report.rightTotals.methods[m].aiRate = rmo[m] > 0 ? Math.round(rma[m] / rmo[m] * 100) + '%' : '0%';
-      });
-    }
+          // 补差额：公司总 AI - 覆盖后各方法 AI 之和 → 全放入"混合"兜底
+          var newTotal = 0;
+          METHOD_LIST.forEach(function(m) { newTotal += rc.methods[m].aiLines; });
+          var gap = rc.summary.aiLines - newTotal;
+          if (gap !== 0) {
+            rc.methods["混合"].aiLines = (rc.methods["混合"].aiLines || 0) + gap;
+          }
+          // 重新算各方法 AI 率
+          METHOD_LIST.forEach(function(m) {
+            rc.methods[m].aiRate = rc.methods[m].orderLines > 0
+              ? Math.round(rc.methods[m].aiLines / rc.methods[m].orderLines * 100) + "%" : "0%";
+          });
+        });
+
+        // 左表：从修正后的右表重新汇总
+        var sumAi = {}; METHOD_LIST.forEach(function(m) { sumAi[m] = 0; });
+        report.rightCompanies.forEach(function(rc) {
+          METHOD_LIST.forEach(function(m) { sumAi[m] += rc.methods[m].aiLines; });
+        });
+        report.leftRows.forEach(function(lr) {
+          lr.aiLines = sumAi[lr.method];
+          lr.aiRate = lr.orderLines > 0 ? Math.round(lr.aiLines / lr.orderLines * 100) + "%" : "0%";
+        });
+
+        // 重算左表总计
+        var lo2 = 0, la2 = 0;
+        report.leftRows.forEach(function(lr) { lo2 += lr.orderLines; la2 += lr.aiLines; });
+        report.leftTotal.aiLines = la2;
+        report.leftTotal.aiRate = lo2 > 0 ? Math.round(la2 / lo2 * 100) + "%" : "0%";
+
+        // 重算右表总计
+        var rso2 = 0, rsa2 = 0, rmo2 = {}, rma2 = {};
+        METHOD_LIST.forEach(function(m) { rmo2[m] = 0; rma2[m] = 0; });
+        report.rightCompanies.forEach(function(rc) {
+          rso2 += rc.summary.orderLines; rsa2 += rc.summary.aiLines;
+          METHOD_LIST.forEach(function(m) { rmo2[m] += rc.methods[m].orderLines; rma2[m] += rc.methods[m].aiLines; });
+        });
+        report.rightTotals.summary.aiLines = rsa2;
+        report.rightTotals.summary.aiRate = rso2 > 0 ? Math.round(rsa2 / rso2 * 100) + "%" : "0%";
+        METHOD_LIST.forEach(function(m) {
+          report.rightTotals.methods[m].aiLines = rma2[m];
+          report.rightTotals.methods[m].aiRate = rmo2[m] > 0 ? Math.round(rma2[m] / rmo2[m] * 100) + "%" : "0%";
+        });
+      } catch(e) { console.error("patchAiFromGroups error:", e.message); }
+    })();
 
     // --- 创建 Excel 工作簿 ---
     const wb = new ExcelJS.Workbook();

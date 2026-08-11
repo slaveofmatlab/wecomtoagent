@@ -835,35 +835,41 @@ async function handleExportOrderMethod(req, res) {
     // 直接用看板计算时的 pendingRows，不再从累积池重建（确保导出和看板同口径）
     const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, syntheticLogSummary, null, companyMethodAi);
 
-    // ==== AI patch：直接从看板的"下单方式"列（orderMethod）提取分类，和看板完全一致 ====
+    // ==== AI patch：用 priority_groups.json per-group 分类（与看板同源），未登记群归入"混合" ====
     (function patchAiFromGroups() {
       try {
         var gRows = (currentPageData.groupSummary && currentPageData.groupSummary.rows) || [];
         if (!gRows.length) return;
+        var pgPath2 = path.join(ROOT, "basicData", "priority_groups.json");
+        if (!fs.existsSync(pgPath2)) return;
+        var pg2 = JSON.parse(fs.readFileSync(pgPath2, "utf8")).groups || {};
 
         var METHOD_LIST = ["图片下单", "PDF下单", "文本消息", "Excel下单", "混合", "手写"];
         var aiByCoMethod = {};
 
-        // 从 orderMethod 字符串提取简化方法名（和看板显示的分类一致）
-        function simplifyMethod(om) {
-          if (!om) return null;
-          var m = om.trim();
-          if (m === "机器人") return "Excel下单";
-          if (m === "小程序" || m === "-") return null;
-          if (m.indexOf("图片下单") === 0) return "图片下单";
-          if (m.indexOf("PDF下单") === 0) return "PDF下单";
-          if (m.indexOf("文本消息") === 0) return "文本消息";
-          if (m.indexOf("Excel下单") === 0) return "Excel下单";
-          if (m.indexOf("混合") === 0) return "混合";
-          if (m.indexOf("手写") === 0) return "手写";
-          return null;
-        }
-
         for (var i = 0; i < gRows.length; i++) {
           var gr2 = gRows[i];
           var ck2 = gr2.operationCompanyKey;
-          var method2 = simplifyMethod(gr2.orderMethod);
-          if (!ck2 || !method2 || !gr2.orderTotal) continue;
+          if (!ck2 || !gr2.orderTotal) continue;
+          var cfg = pg2[gr2.groupName];
+
+          var cat2;
+          if ((gr2.groupName || "").indexOf("机器人接单群") >= 0) cat2 = "机器人";
+          else if (!cfg || !Object.keys(cfg).length) cat2 = "混合";  // 未登记群 → 混合兜底
+          else if (cfg.category) cat2 = cfg.category;
+          else if (cfg.tag === "非标准") cat2 = "手写";
+          else if (cfg.tag !== "标准") { cat2 = "混合"; }
+          else {
+            var mm = cfg.mainMethod || "";
+            if (!mm) cat2 = "混合";
+            else if (mm.indexOf("图片下单") === 0) cat2 = "图片下单";
+            else if (mm.indexOf("图文混发") === 0 || /\d+%/.test(mm)) cat2 = "混合";
+            else if (["Excel下单", "PDF下单", "文本消息"].indexOf(mm) >= 0) cat2 = mm;
+            else cat2 = "混合";
+          }
+          var method2 = cat2 === "机器人" ? "Excel下单" : cat2;
+          // 小程序等不在 6 方法里的，归入混合
+          if (METHOD_LIST.indexOf(method2) < 0) method2 = "混合";
 
           if (!aiByCoMethod[ck2]) aiByCoMethod[ck2] = {};
           aiByCoMethod[ck2][method2] = (aiByCoMethod[ck2][method2] || 0) + gr2.orderAiCount;

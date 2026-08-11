@@ -793,6 +793,110 @@ async function handleExportOrderMethod(req, res) {
     // 直接用看板计算时的 pendingRows，不再从累积池重建（确保导出和看板同口径）
     const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, syntheticLogSummary);
 
+    // ==== patch: 用群级别真实订单数 + AI 覆盖比例分配，确保与看板一致 ====
+    (function patchFromGroups() {
+      try {
+        var gRows = (currentPageData.groupSummary && currentPageData.groupSummary.rows) || [];
+        if (!gRows.length) return;
+        var pgPath = path.join(ROOT, "basicData", "priority_groups.json");
+        if (!fs.existsSync(pgPath)) return;
+        var pg = (JSON.parse(fs.readFileSync(pgPath, "utf8")).groups) || {};
+
+        var METHOD_LIST = report.methods;
+        var orderByCoMethod = {};
+        var aiByCoMethod = {};
+
+        for (var i = 0; i < gRows.length; i++) {
+          var gr = gRows[i];
+          var ck = gr.operationCompanyKey;
+          if (!ck || !gr.orderTotal) continue;
+          var cfg = pg[gr.groupName];
+
+          var cat;
+          if ((gr.groupName || "").indexOf("机器人接单群") >= 0) cat = "机器人";
+          else if (!cfg || !Object.keys(cfg).length) cat = "混合";
+          else if (cfg.category) cat = cfg.category;
+          else if (cfg.tag === "非标准") cat = "手写";
+          else if (cfg.tag !== "标准") cat = "混合";
+          else {
+            var mm = cfg.mainMethod || "";
+            if (!mm) cat = "混合";
+            else if (mm.indexOf("图片下单") === 0) cat = "图片下单";
+            else if (mm.indexOf("图文混发") === 0 || /\d+%/.test(mm)) cat = "混合";
+            else if (["Excel下单", "PDF下单", "文本消息"].indexOf(mm) >= 0) cat = mm;
+            else cat = "混合";
+          }
+          var method = cat === "机器人" ? "Excel下单" : cat;
+          if (METHOD_LIST.indexOf(method) < 0) method = "混合";
+
+          if (!aiByCoMethod[ck]) aiByCoMethod[ck] = {};
+          aiByCoMethod[ck][method] = (aiByCoMethod[ck][method] || 0) + gr.orderAiCount;
+          if (!orderByCoMethod[ck]) orderByCoMethod[ck] = {};
+          orderByCoMethod[ck][method] = (orderByCoMethod[ck][method] || 0) + gr.orderTotal;
+        }
+
+        // 逐公司覆盖订单行数和 AI 数
+        report.rightCompanies.forEach(function(rc) {
+          var aiMap = aiByCoMethod[rc.companyKey];
+          var ordMap = orderByCoMethod[rc.companyKey];
+
+          if (ordMap) {
+            METHOD_LIST.forEach(function(m) { if (typeof ordMap[m] === "number") rc.methods[m].orderLines = ordMap[m]; });
+            var ordTotal = 0; METHOD_LIST.forEach(function(m) { ordTotal += rc.methods[m].orderLines; });
+            var ordGap = rc.summary.orderLines - ordTotal;
+            if (ordGap !== 0) rc.methods["混合"].orderLines = (rc.methods["混合"].orderLines || 0) + ordGap;
+          }
+          if (aiMap) {
+            METHOD_LIST.forEach(function(m) { if (typeof aiMap[m] === "number") rc.methods[m].aiLines = aiMap[m]; });
+            var aiTotal = 0; METHOD_LIST.forEach(function(m) { aiTotal += rc.methods[m].aiLines; });
+            var aiGap = rc.summary.aiLines - aiTotal;
+            if (aiGap !== 0) rc.methods["混合"].aiLines = (rc.methods["混合"].aiLines || 0) + aiGap;
+          }
+
+          METHOD_LIST.forEach(function(m) {
+            rc.methods[m].aiRate = rc.methods[m].orderLines > 0
+              ? Math.round(rc.methods[m].aiLines / rc.methods[m].orderLines * 100) + "%" : "0%";
+          });
+        });
+
+        // 左表从右表重新汇总
+        var sumOrd = {}; var sumAi = {};
+        METHOD_LIST.forEach(function(m) { sumOrd[m] = 0; sumAi[m] = 0; });
+        report.rightCompanies.forEach(function(rc) {
+          METHOD_LIST.forEach(function(m) {
+            sumOrd[m] += rc.methods[m].orderLines;
+            sumAi[m] += rc.methods[m].aiLines;
+          });
+        });
+        report.leftRows.forEach(function(lr) {
+          lr.orderLines = sumOrd[lr.method];
+          lr.aiLines = sumAi[lr.method];
+          lr.aiRate = lr.orderLines > 0 ? Math.round(lr.aiLines / lr.orderLines * 100) + "%" : "0%";
+        });
+
+        // 左表总计重算
+        var lo = 0, la = 0;
+        report.leftRows.forEach(function(lr) { lo += lr.orderLines; la += lr.aiLines; });
+        report.leftTotal.orderLines = lo;
+        report.leftTotal.aiLines = la;
+        report.leftTotal.aiRate = lo > 0 ? Math.round(la / lo * 100) + "%" : "0%";
+
+        // 右表总计重算
+        var rso = 0, rsa = 0, rmo = {}, rma = {};
+        METHOD_LIST.forEach(function(m) { rmo[m] = 0; rma[m] = 0; });
+        report.rightCompanies.forEach(function(rc) {
+          rso += rc.summary.orderLines; rsa += rc.summary.aiLines;
+          METHOD_LIST.forEach(function(m) { rmo[m] += rc.methods[m].orderLines; rma[m] += rc.methods[m].aiLines; });
+        });
+        report.rightTotals.summary.aiLines = rsa;
+        report.rightTotals.summary.aiRate = rso > 0 ? Math.round(rsa / rso * 100) + "%" : "0%";
+        METHOD_LIST.forEach(function(m) {
+          report.rightTotals.methods[m].aiLines = rma[m];
+          report.rightTotals.methods[m].aiRate = rmo[m] > 0 ? Math.round(rma[m] / rmo[m] * 100) + "%" : "0%";
+        });
+      } catch(e) { console.error("patchFromGroups error:", e.message); }
+    })();
+
     // --- 创建 Excel 工作簿 ---
     const wb = new ExcelJS.Workbook();
     const ws = wb.addWorksheet("按下单形式统计");

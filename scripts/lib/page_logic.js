@@ -680,7 +680,7 @@ function buildPageData({ salesWorkbook, pendingWorkbook, progressWorkbook, logWo
  * 数据来源：微信日志（消息类型分布）+ 销售订单（订单行数/AI转单）。
  * 订单行数按各公司消息类型比例分配到各下单方式。
  */
-function buildOrderMethodReport(salesRows, pendingRows, progressRows, logSummary, companySummaryRows, methodAiMap) {
+function buildOrderMethodReport(salesRows, pendingRows, progressRows, logSummary, companySummaryRows) {
   // 所有下单方式（固定顺序，与参考模板一致）
   var ALL_METHODS = ["图片下单", "PDF下单", "文本消息", "Excel下单", "混合", "手写"];
 
@@ -847,13 +847,7 @@ function buildOrderMethodReport(salesRows, pendingRows, progressRows, logSummary
       var msgCount = msgs[method] || 0;
       var proportion = totalMsgs > 0 ? msgCount / totalMsgs : 0;
       var orderLines = Math.round(ord.total * proportion);
-      // AI 按真实群级别分布，不按消息比例分配（AI集中在特定方法，比例分配会导致泄漏）
-      var aiLines;
-      if (methodAiMap && methodAiMap[ck3] && typeof methodAiMap[ck3][method] === 'number') {
-        aiLines = methodAiMap[ck3][method];
-      } else {
-        aiLines = Math.round(ord.ai * proportion);
-      }
+      var aiLines = Math.round(ord.ai * proportion);
 
       companyMethodOrders[ck3][method] = { orderLines: orderLines, aiLines: aiLines };
       methodTotals[method].orderLines += orderLines;

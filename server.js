@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const XLSX = require("xlsx");
 const Busboy = require("busboy");
-const { buildPageData, findFile, buildOrderMethodReport, parsePendingWecom, parseWecomProgress, parseSalesFull, normalizeText, buildCompanySummary, buildGroupSummary, calcPendingTotals, parseWecomLogForSummary, buildLogStats } = require("./scripts/lib/page_logic");
+const { buildPageData, findFile, buildOrderMethodReport, parsePendingWecom, parseWecomProgress, parseSalesFull, normalizeText } = require("./scripts/lib/page_logic");
 const ExcelJS = require("exceljs");
 
 const ROOT = __dirname;
@@ -274,13 +274,12 @@ async function handleUpload(req, res) {
   if (!files.sales || !files.pending) throw new Error("缺少销售订单或待转单文件");
   if (!cutoff || cutoff.length !== 4) throw new Error("截止日期格式错误，应为 4 位 MMDD");
 
-  let salesWb = XLSX.read(files.sales, { type: "buffer", dense: true });
-  let pendingWb = XLSX.read(files.pending, { type: "buffer", dense: true });
-  let progressWb = files.progress
-    ? XLSX.read(files.progress, { type: "buffer", dense: true })
+  const salesWb = XLSX.read(files.sales, { type: "buffer" });
+  const pendingWb = XLSX.read(files.pending, { type: "buffer" });
+  const progressWb = files.progress
+    ? XLSX.read(files.progress, { type: "buffer" })
     : loadFallbackWorkbook("basicData", "企业微信AI转单推进表");
-  let logWb = files.log ? XLSX.read(files.log, { type: "buffer", dense: true }) : null;
-  const hasLog = !!logWb;
+  const logWb = files.log ? XLSX.read(files.log, { type: "buffer" }) : null;
 
   if (!progressWb) throw new Error("缺少推进表文件");
 
@@ -288,14 +287,6 @@ async function handleUpload(req, res) {
   const salesRows = parseSalesFull(salesWb);
   const pendingRows = parsePendingWecom(pendingWb);
   const progressRows = parseWecomProgress(progressWb, cutoff);
-
-  // 尽早释放 workbook 引用和原始文件 Buffer，让 GC 在后续阶段前回收（单个大文件 XLSX 内部结构可达 200-300MB）
-  salesWb = null;
-  pendingWb = null;
-  progressWb = null;
-  if (files.sales) files.sales = null;
-  if (files.pending) files.pending = null;
-  if (files.progress) files.progress = null;
 
   // 解析当天待转单，合并入累积 Map（紧凑格式：{s: salesOrderNo, t: transferStatus, d: [dates]}）
   // key = customerOrderNo（如果非空），否则 '_' + salesOrderNo（兜底匹配用）
@@ -322,43 +313,17 @@ async function handleUpload(req, res) {
   }
   saveCumulativePending(currentCumulativePending);
 
-  // 直接用已解析的行数据构建汇总，避免 buildPageData 内部重复解析三份 Excel
-  const logSummary = logWb ? parseWecomLogForSummary(logWb, progressRows) : null;
-  // 释放日志 workbook 和文件 Buffer
-  if (logWb) { logWb = null; if (files.log) files.log = null; }
-
-  const companySummary = buildCompanySummary(salesRows, pendingRows, progressRows, logSummary);
-  const groupSummary = buildGroupSummary(salesRows, pendingRows, progressRows, logSummary);
-  const logStats = logSummary ? buildLogStats(logSummary, progressRows) : null;
-
-  const data = {
-    generatedAt: new Date().toISOString(),
+  const data = buildPageData({
+    salesWorkbook: salesWb,
+    pendingWorkbook: pendingWb,
+    progressWorkbook: progressWb,
+    logWorkbook: logWb,
     cutoffDate: cutoff,
     sources: { salesPath: null, pendingPath: null, progressPath: null },
-    salesRows,
-    pendingRows,
-    progressRows,
-    pendingTotals: calcPendingTotals(pendingRows),
-    companySummary,
-    groupSummary,
-    logStats,
-    logSummary: logSummary || {},
-  };
-
-  // 瘦身版数据（去掉大数组），用于内存常驻和 API 返回
-  const slimResult = {
-    generatedAt: data.generatedAt,
-    cutoffDate: data.cutoffDate,
-    sources: data.sources,
-    pendingTotals: data.pendingTotals,
-    companySummary: data.companySummary,
-    groupSummary: data.groupSummary,
-    logStats: data.logStats,
-    logSummary: data.logSummary || {},
-  };
+  });
 
   // 没有上传日志时，保留上一次的备注和下单方式分布（用于按下单形式导出）
-  if (!hasLog && currentPageData) {
+  if (!logWb && currentPageData) {
     // 保留 orderMethod 备注
     if (currentPageData.companySummary) {
       const oldRemarks = {};
@@ -377,8 +342,8 @@ async function handleUpload(req, res) {
     }
   }
 
-  // 更新内存（存瘦身版，去掉 salesRows/pendingRows/progressRows 大数组，避免常驻内存）
-  currentPageData = slimResult;
+  // 更新内存
+  currentPageData = data;
   if (!currentTrends) currentTrends = {};
 
   // ---- 存储销售快照 + 进度信息（用于后续日期重算） ----
@@ -420,19 +385,16 @@ async function handleUpload(req, res) {
   var MINI_PROGRAM = {};
   MINI_PROGRAM["KHXMD10235"] = true;
 
-  // 构建匹配索引（从累积待转单，跨天不丢历史订单，解决待转单滚动窗口导致的匹配遗漏）
+  // 构建匹配索引（从当天上传的待转单）
   var matchByCust = new Map();
   var matchBySales = new Map();
-  for (var key in currentCumulativePending) {
-    var entry = currentCumulativePending[key];
-    // key 不以 '_' 开头 = 有客户订单号，用于主匹配
-    if (key[0] !== '_') {
-      matchByCust.set(key, entry.t);
-    }
-    // 销售订单号兜底匹配
-    if (entry.s) {
-      matchBySales.set(normalizeText(entry.s), entry.t);
-    }
+  for (var pi = 0; pi < pendingRows.length; pi++) {
+    var pr = pendingRows[pi];
+    if (normalizeText(pr.createdBy || "") !== "供应链管理员") continue;
+    var cn = normalizeText(pr.customerOrderNo);
+    var sn = normalizeText(pr.salesOrderNo);
+    if (cn && !matchByCust.has(cn)) matchByCust.set(cn, pr.transferStatus);
+    if (sn && !matchBySales.has(sn)) matchBySales.set(sn, pr.transferStatus);
   }
 
   var dateKeys = Object.keys(storedSalesByDate).sort();
@@ -504,22 +466,35 @@ async function handleUpload(req, res) {
       logStats: data.logStats,
       logSummary: data.logSummary || {},
     };
-    // 直接传引用（githubPutFile 内部会 JSON.stringify，无需预先深拷贝）
+    const trendsCopy = JSON.parse(JSON.stringify(currentTrends));
+    const snapshotsCopy = JSON.parse(JSON.stringify(storedSalesByDate));
+    const pendingCopy = JSON.parse(JSON.stringify(currentCumulativePending));
     // 不 await，让 GitHub push 在后台执行
     (async function () {
       let ghErrors = [];
       await githubPutFile("page_data.json", slimData)
         .catch((e) => { ghErrors.push("page_data: " + e.message); console.error("GitHub push page_data.json:", e.message); });
-      await githubPutFile("trends.json", currentTrends)
+      await githubPutFile("trends.json", trendsCopy)
         .catch((e) => { ghErrors.push("trends: " + e.message); console.error("GitHub push trends.json:", e.message); });
-      await githubPutFile("sales_snapshots.json", storedSalesByDate)
+      await githubPutFile("sales_snapshots.json", snapshotsCopy)
         .catch((e) => { ghErrors.push("sales_snapshots: " + e.message); console.error("GitHub push sales_snapshots.json:", e.message); });
-      await githubPutFile("pending_cumulative.json", currentCumulativePending)
+      await githubPutFile("pending_cumulative.json", pendingCopy)
         .catch((e) => { ghErrors.push("pending_cumulative: " + e.message); console.error("GitHub push pending_cumulative.json:", e.message); });
       if (ghErrors.length) console.error("GitHub 后台同步失败: " + ghErrors.join("；"));
     })();
   }
 
+  // 返回瘦身版数据（去掉 salesRows/pendingRows/progressRows 大数组），避免响应过大
+  const slimResult = {
+    generatedAt: data.generatedAt,
+    cutoffDate: data.cutoffDate,
+    sources: data.sources,
+    pendingTotals: data.pendingTotals,
+    companySummary: data.companySummary,
+    groupSummary: data.groupSummary,
+    logStats: data.logStats,
+    logSummary: data.logSummary || {},
+  };
   return { success: true, data: slimResult, trends: currentTrends, warning: githubWarning };
 }
 
@@ -746,20 +721,7 @@ async function handleExportOrderMethod(req, res) {
       return;
     }
 
-    let { salesRows, pendingRows, progressRows, logSummary, cutoffDate, companySummary } = currentPageData;
-
-    // 内存中 currentPageData 是瘦身版（不含大数组），从磁盘读取完整数据
-    if (!salesRows || !pendingRows || !progressRows) {
-      const diskPath = path.join(ROOT, "data", "page_data.json");
-      if (fs.existsSync(diskPath)) {
-        try {
-          const fullData = JSON.parse(fs.readFileSync(diskPath, "utf8"));
-          salesRows = fullData.salesRows;
-          pendingRows = fullData.pendingRows;
-          progressRows = fullData.progressRows;
-        } catch (e) { console.error("读取磁盘 page_data.json 失败:", e.message); }
-      }
-    }
+    const { salesRows, pendingRows, progressRows, logSummary, cutoffDate, companySummary } = currentPageData;
 
     if (!salesRows || !pendingRows || !progressRows) {
       res.writeHead(400, { "Content-Type": "application/json" });
@@ -780,7 +742,6 @@ async function handleExportOrderMethod(req, res) {
       } catch(e) {}
 
       var companyMethods = {};
-      var companyMethodAi = {};  // 群级别真实 AI 分布，替代比例分配
       for (var gi = 0; gi < gsRows.length; gi++) {
         var gr = gsRows[gi];
         var ck = gr.operationCompanyKey;
@@ -815,9 +776,6 @@ async function handleExportOrderMethod(req, res) {
 
         if (!companyMethods[ck]) companyMethods[ck] = {};
         companyMethods[ck][method] = (companyMethods[ck][method] || 0) + gr.orderTotal;
-        // 同时累加 AI 转单数（群级别真实数据，不做比例分配）
-        if (!companyMethodAi[ck]) companyMethodAi[ck] = {};
-        companyMethodAi[ck][method] = (companyMethodAi[ck][method] || 0) + gr.orderAiCount;
       }
       var built = {};
       for (var ck2 in companyMethods) {
@@ -833,116 +791,7 @@ async function handleExportOrderMethod(req, res) {
     }
 
     // 直接用看板计算时的 pendingRows，不再从累积池重建（确保导出和看板同口径）
-    const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, syntheticLogSummary, null, companyMethodAi);
-
-    // ==== AI patch：用 priority_groups.json per-group 分类（与看板同源），未登记群归入"混合" ====
-    (function patchAiFromGroups() {
-      try {
-        var gRows = (currentPageData.groupSummary && currentPageData.groupSummary.rows) || [];
-        if (!gRows.length) return;
-        var pgPath2 = path.join(ROOT, "basicData", "priority_groups.json");
-        if (!fs.existsSync(pgPath2)) return;
-        var pg2 = JSON.parse(fs.readFileSync(pgPath2, "utf8")).groups || {};
-
-        var METHOD_LIST = ["图片下单", "PDF下单", "文本消息", "Excel下单", "混合", "手写"];
-        var orderByCoMethod = {};  // { companyKey: { method: orderCount } }
-        var aiByCoMethod = {};
-
-        for (var i = 0; i < gRows.length; i++) {
-          var gr2 = gRows[i];
-          var ck2 = gr2.operationCompanyKey;
-          if (!ck2 || !gr2.orderTotal) continue;
-          var cfg = pg2[gr2.groupName];
-
-          var cat2;
-          if ((gr2.groupName || "").indexOf("机器人接单群") >= 0) cat2 = "机器人";
-          else if (!cfg || !Object.keys(cfg).length) cat2 = "混合";  // 未登记群 → 混合兜底
-          else if (cfg.category) cat2 = cfg.category;
-          else if (cfg.tag === "非标准") cat2 = "手写";
-          else if (cfg.tag !== "标准") { cat2 = "混合"; }
-          else {
-            var mm = cfg.mainMethod || "";
-            if (!mm) cat2 = "混合";
-            else if (mm.indexOf("图片下单") === 0) cat2 = "图片下单";
-            else if (mm.indexOf("图文混发") === 0 || /\d+%/.test(mm)) cat2 = "混合";
-            else if (["Excel下单", "PDF下单", "文本消息"].indexOf(mm) >= 0) cat2 = mm;
-            else cat2 = "混合";
-          }
-          var method2 = cat2 === "机器人" ? "Excel下单" : cat2;
-          // 小程序等不在 6 方法里的，归入混合
-          if (METHOD_LIST.indexOf(method2) < 0) method2 = "混合";
-
-          if (!aiByCoMethod[ck2]) aiByCoMethod[ck2] = {};
-          aiByCoMethod[ck2][method2] = (aiByCoMethod[ck2][method2] || 0) + gr2.orderAiCount;
-          if (!orderByCoMethod[ck2]) orderByCoMethod[ck2] = {};
-          orderByCoMethod[ck2][method2] = (orderByCoMethod[ck2][method2] || 0) + gr2.orderTotal;
-        }
-
-        // 逐公司修正：用群级别真实订单数 + AI 覆盖比例分配结果
-        report.rightCompanies.forEach(function(rc) {
-          var aiMap = aiByCoMethod[rc.companyKey];
-          var ordMap = orderByCoMethod[rc.companyKey];
-
-          // 覆盖订单数
-          if (ordMap) {
-            METHOD_LIST.forEach(function(m) { if (typeof ordMap[m] === "number") rc.methods[m].orderLines = ordMap[m]; });
-            var ordTotal = 0; METHOD_LIST.forEach(function(m) { ordTotal += rc.methods[m].orderLines; });
-            var ordGap = rc.summary.orderLines - ordTotal;
-            if (ordGap !== 0) rc.methods["混合"].orderLines = (rc.methods["混合"].orderLines || 0) + ordGap;
-          }
-
-          // 覆盖 AI 数
-          if (aiMap) {
-            METHOD_LIST.forEach(function(m) { if (typeof aiMap[m] === "number") rc.methods[m].aiLines = aiMap[m]; });
-            var aiTotal = 0; METHOD_LIST.forEach(function(m) { aiTotal += rc.methods[m].aiLines; });
-            var aiGap = rc.summary.aiLines - aiTotal;
-            if (aiGap !== 0) rc.methods["混合"].aiLines = (rc.methods["混合"].aiLines || 0) + aiGap;
-          }
-
-          // 重新算各方法 AI 率
-          METHOD_LIST.forEach(function(m) {
-            rc.methods[m].aiRate = rc.methods[m].orderLines > 0
-              ? Math.round(rc.methods[m].aiLines / rc.methods[m].orderLines * 100) + "%" : "0%";
-          });
-        });
-
-        // 左表：从修正后的右表重新汇总（订单 + AI）
-        var sumOrd = {}; var sumAi = {};
-        METHOD_LIST.forEach(function(m) { sumOrd[m] = 0; sumAi[m] = 0; });
-        report.rightCompanies.forEach(function(rc) {
-          METHOD_LIST.forEach(function(m) {
-            sumOrd[m] += rc.methods[m].orderLines;
-            sumAi[m] += rc.methods[m].aiLines;
-          });
-        });
-        report.leftRows.forEach(function(lr) {
-          lr.orderLines = sumOrd[lr.method];
-          lr.aiLines = sumAi[lr.method];
-          lr.aiRate = lr.orderLines > 0 ? Math.round(lr.aiLines / lr.orderLines * 100) + "%" : "0%";
-        });
-
-        // 重算左表总计
-        var lo2 = 0, la2 = 0;
-        report.leftRows.forEach(function(lr) { lo2 += lr.orderLines; la2 += lr.aiLines; });
-        report.leftTotal.orderLines = lo2;
-        report.leftTotal.aiLines = la2;
-        report.leftTotal.aiRate = lo2 > 0 ? Math.round(la2 / lo2 * 100) + "%" : "0%";
-
-        // 重算右表总计
-        var rso2 = 0, rsa2 = 0, rmo2 = {}, rma2 = {};
-        METHOD_LIST.forEach(function(m) { rmo2[m] = 0; rma2[m] = 0; });
-        report.rightCompanies.forEach(function(rc) {
-          rso2 += rc.summary.orderLines; rsa2 += rc.summary.aiLines;
-          METHOD_LIST.forEach(function(m) { rmo2[m] += rc.methods[m].orderLines; rma2[m] += rc.methods[m].aiLines; });
-        });
-        report.rightTotals.summary.aiLines = rsa2;
-        report.rightTotals.summary.aiRate = rso2 > 0 ? Math.round(rsa2 / rso2 * 100) + "%" : "0%";
-        METHOD_LIST.forEach(function(m) {
-          report.rightTotals.methods[m].aiLines = rma2[m];
-          report.rightTotals.methods[m].aiRate = rmo2[m] > 0 ? Math.round(rma2[m] / rmo2[m] * 100) + "%" : "0%";
-        });
-      } catch(e) { console.error("patchAiFromGroups error:", e.message); }
-    })();
+    const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, syntheticLogSummary);
 
     // --- 创建 Excel 工作簿 ---
     const wb = new ExcelJS.Workbook();

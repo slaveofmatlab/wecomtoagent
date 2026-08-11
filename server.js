@@ -845,6 +845,7 @@ async function handleExportOrderMethod(req, res) {
         var pg2 = JSON.parse(fs.readFileSync(pgPath2, "utf8")).groups || {};
 
         var METHOD_LIST = ["图片下单", "PDF下单", "文本消息", "Excel下单", "混合", "手写"];
+        var orderByCoMethod = {};  // { companyKey: { method: orderCount } }
         var aiByCoMethod = {};
 
         for (var i = 0; i < gRows.length; i++) {
@@ -873,23 +874,31 @@ async function handleExportOrderMethod(req, res) {
 
           if (!aiByCoMethod[ck2]) aiByCoMethod[ck2] = {};
           aiByCoMethod[ck2][method2] = (aiByCoMethod[ck2][method2] || 0) + gr2.orderAiCount;
+          if (!orderByCoMethod[ck2]) orderByCoMethod[ck2] = {};
+          orderByCoMethod[ck2][method2] = (orderByCoMethod[ck2][method2] || 0) + gr2.orderTotal;
         }
 
-        // 逐公司修正：已分类方法的 AI 用真实值覆盖，差额补回避免丢失未分类群 AI
+        // 逐公司修正：用群级别真实订单数 + AI 覆盖比例分配结果
         report.rightCompanies.forEach(function(rc) {
-          var map = aiByCoMethod[rc.companyKey];
-          if (!map) return;
-          // 覆盖已分类方法
-          METHOD_LIST.forEach(function(m) {
-            if (typeof map[m] === "number") rc.methods[m].aiLines = map[m];
-          });
-          // 补差额：公司总 AI - 覆盖后各方法 AI 之和 → 全放入"混合"兜底
-          var newTotal = 0;
-          METHOD_LIST.forEach(function(m) { newTotal += rc.methods[m].aiLines; });
-          var gap = rc.summary.aiLines - newTotal;
-          if (gap !== 0) {
-            rc.methods["混合"].aiLines = (rc.methods["混合"].aiLines || 0) + gap;
+          var aiMap = aiByCoMethod[rc.companyKey];
+          var ordMap = orderByCoMethod[rc.companyKey];
+
+          // 覆盖订单数
+          if (ordMap) {
+            METHOD_LIST.forEach(function(m) { if (typeof ordMap[m] === "number") rc.methods[m].orderLines = ordMap[m]; });
+            var ordTotal = 0; METHOD_LIST.forEach(function(m) { ordTotal += rc.methods[m].orderLines; });
+            var ordGap = rc.summary.orderLines - ordTotal;
+            if (ordGap !== 0) rc.methods["混合"].orderLines = (rc.methods["混合"].orderLines || 0) + ordGap;
           }
+
+          // 覆盖 AI 数
+          if (aiMap) {
+            METHOD_LIST.forEach(function(m) { if (typeof aiMap[m] === "number") rc.methods[m].aiLines = aiMap[m]; });
+            var aiTotal = 0; METHOD_LIST.forEach(function(m) { aiTotal += rc.methods[m].aiLines; });
+            var aiGap = rc.summary.aiLines - aiTotal;
+            if (aiGap !== 0) rc.methods["混合"].aiLines = (rc.methods["混合"].aiLines || 0) + aiGap;
+          }
+
           // 重新算各方法 AI 率
           METHOD_LIST.forEach(function(m) {
             rc.methods[m].aiRate = rc.methods[m].orderLines > 0
@@ -897,12 +906,17 @@ async function handleExportOrderMethod(req, res) {
           });
         });
 
-        // 左表：从修正后的右表重新汇总
-        var sumAi = {}; METHOD_LIST.forEach(function(m) { sumAi[m] = 0; });
+        // 左表：从修正后的右表重新汇总（订单 + AI）
+        var sumOrd = {}; var sumAi = {};
+        METHOD_LIST.forEach(function(m) { sumOrd[m] = 0; sumAi[m] = 0; });
         report.rightCompanies.forEach(function(rc) {
-          METHOD_LIST.forEach(function(m) { sumAi[m] += rc.methods[m].aiLines; });
+          METHOD_LIST.forEach(function(m) {
+            sumOrd[m] += rc.methods[m].orderLines;
+            sumAi[m] += rc.methods[m].aiLines;
+          });
         });
         report.leftRows.forEach(function(lr) {
+          lr.orderLines = sumOrd[lr.method];
           lr.aiLines = sumAi[lr.method];
           lr.aiRate = lr.orderLines > 0 ? Math.round(lr.aiLines / lr.orderLines * 100) + "%" : "0%";
         });
@@ -910,6 +924,7 @@ async function handleExportOrderMethod(req, res) {
         // 重算左表总计
         var lo2 = 0, la2 = 0;
         report.leftRows.forEach(function(lr) { lo2 += lr.orderLines; la2 += lr.aiLines; });
+        report.leftTotal.orderLines = lo2;
         report.leftTotal.aiLines = la2;
         report.leftTotal.aiRate = lo2 > 0 ? Math.round(la2 / lo2 * 100) + "%" : "0%";
 

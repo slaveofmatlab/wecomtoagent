@@ -1694,7 +1694,13 @@
     btn.textContent = "导出中…";
     setStatus("正在生成 Excel…", "loading");
 
-    fetch("/api/export-order-method")
+    // 把看板上选中的筛选分类传给后端，不选 = 导出全部
+    var url = "/api/export-order-method";
+    if (_priorityFilters && _priorityFilters.size > 0) {
+      url += "?categories=" + encodeURIComponent(Array.from(_priorityFilters).join(","));
+    }
+
+    fetch(url)
       .then(function (r) {
         if (!r.ok) return r.json().then(function (d) { throw new Error(d.error || "HTTP " + r.status); });
         return r.blob();

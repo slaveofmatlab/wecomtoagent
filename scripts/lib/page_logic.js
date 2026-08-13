@@ -243,6 +243,29 @@ function determineOrderMethod(msgtype, filename) {
   return null; // 非下单相关消息类型（revoke/voice/video等）
 }
 
+/**
+ * 群 → 下单方式分类（9 种），与 index.html priorityCategory() 完全一致。
+ * 返回 null 表示该群不在 priority_groups.json 配置中（仅"全部"视图出现）。
+ * @param {string} groupName 群名
+ * @param {object} groupsConfig priority_groups.json 的 groups 字段
+ * @returns {string|null} 机器人|手写|图片下单|混合|Excel下单|PDF下单|文本消息|小程序|其他|null
+ */
+function classifyGroupCategory(groupName, groupsConfig) {
+  if ((groupName || "").indexOf("机器人接单群") >= 0) return "机器人";
+  const c = groupsConfig[groupName];
+  if (!c) return null;
+  if (c.category) return c.category;
+  if (c.tag === "非标准") return "手写";
+  if (c.tag !== "标准") return null;
+  const m = c.mainMethod || "";
+  if (!m) return "其他";
+  if (m.indexOf("图片下单") === 0) return "图片下单";
+  if (m.indexOf("图文混发") === 0 || /\d+%/.test(m)) return "混合";
+  const known = ["Excel下单", "PDF下单", "文本消息"];
+  if (known.indexOf(m) >= 0) return m;
+  return "混合";
+}
+
 // 推进表 → room_name → companyKey 映射
 function buildRoomCompanyMap(progressRows) {
   var map = {};
@@ -991,6 +1014,7 @@ module.exports = {
   parsePendingWecom,
   parseWecomProgress,
   calcPendingTotals,
+  classifyGroupCategory,
   determineOrderMethod,
   buildRoomCompanyMap,
   parseWecomLogForSummary,

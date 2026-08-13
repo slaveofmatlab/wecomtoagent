@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const XLSX = require("xlsx");
 const Busboy = require("busboy");
-const { buildPageData, findFile, buildOrderMethodReport, parsePendingWecom, parseWecomProgress, parseSalesFull, normalizeText } = require("./scripts/lib/page_logic");
+const { buildPageData, findFile, buildOrderMethodReport, classifyGroupCategory, parsePendingWecom, parseWecomProgress, parseSalesFull, normalizeText } = require("./scripts/lib/page_logic");
 const ExcelJS = require("exceljs");
 
 const ROOT = __dirname;
@@ -381,20 +381,30 @@ async function handleUpload(req, res) {
     }; }),
   };
 
-  // ---- 用最新待转单重算所有历史日期 ----
+  // ---- 用累积待转单池重算所有历史日期 ----
   var MINI_PROGRAM = {};
   MINI_PROGRAM["KHXMD10235"] = true;
 
-  // 构建匹配索引（从当天上传的待转单）
+  // 构建匹配索引（从累积待转单池，而不是当天上传的待转单）
+  // 根因修复：当天待转单文件可能是"增量/精简"的（已转单会被归档移出），缺少历史日期的
+  // "已转"记录，导致重算历史日期时 orderAi 被错误覆盖成小数字。累积池跨天累积了所有
+  // 历史待转单（pending_cumulative.json），用它匹配才能保证历史 orderAi 稳定不丢。
   var matchByCust = new Map();
   var matchBySales = new Map();
-  for (var pi = 0; pi < pendingRows.length; pi++) {
-    var pr = pendingRows[pi];
-    if (normalizeText(pr.createdBy || "") !== "供应链管理员") continue;
-    var cn = normalizeText(pr.customerOrderNo);
-    var sn = normalizeText(pr.salesOrderNo);
-    if (cn && !matchByCust.has(cn)) matchByCust.set(cn, pr.transferStatus);
-    if (sn && !matchBySales.has(sn)) matchBySales.set(sn, pr.transferStatus);
+  for (var ck in currentCumulativePending) {
+    var ce = currentCumulativePending[ck];
+    if (!ce) continue;
+    var status = ce.t || '';
+    if (ck.charAt(0) === '_') {
+      // key 是 '_销售订单号'（客户订单号为空的兜底）
+      var sn = ck.slice(1);
+      if (sn && !matchBySales.has(sn)) matchBySales.set(sn, status);
+    } else {
+      // key 是客户订单号
+      if (ck && !matchByCust.has(ck)) matchByCust.set(ck, status);
+    }
+    // 销售订单号兜底索引（无论 key 类型都建立）
+    if (ce.s && !matchBySales.has(ce.s)) matchBySales.set(ce.s, status);
   }
 
   var dateKeys = Object.keys(storedSalesByDate).sort();
@@ -407,15 +417,22 @@ async function handleUpload(req, res) {
       aitOk[stored.allItOkCodes[ai]] = true;
     }
 
-    var total = 0, aiDone = 0, aiTotal = 0;
+    var total = 0, aiDone = 0;
+    var companyAi = {};  // 公司显示名 → AI 已转行数（与顶层同口径，保证明细和总计一致）
     for (var si = 0; si < stored.sales.length; si++) {
       var sr = stored.sales[si];
       if (!sr.h || !aitOk[sr.h]) continue;
       total++;
-      if (MINI_PROGRAM[sr.h]) { aiTotal++; aiDone++; }
+      var isAi = false;
+      if (MINI_PROGRAM[sr.h]) { isAi = true; }
       else {
         var ps = matchByCust.get(sr.c) || matchBySales.get(sr.o);
-        if (ps) { aiTotal++; if (ps.indexOf("已转") >= 0) aiDone++; }
+        if (ps && ps.indexOf("已转") >= 0) isAi = true;
+      }
+      if (isAi) {
+        aiDone++;
+        var owner = stored.codeToCompany && stored.codeToCompany[sr.h];
+        if (owner) companyAi[owner.name] = (companyAi[owner.name] || 0) + 1;
       }
     }
 
@@ -433,10 +450,17 @@ async function handleUpload(req, res) {
         ts: new Date().toISOString(),
       };
     } else {
-      // 保留首次写入的 registered/itOk/configRate/companies，只更新匹配相关字段
+      // 保留首次写入的 registered/itOk/configRate，重算匹配相关字段
       currentTrends[trendKey].orderTotal = total;
       currentTrends[trendKey].orderAi = aiDone;
       currentTrends[trendKey].aiRate = total > 0 ? aiDone / total : null;
+    }
+    // 重算 companies 明细的 AI 数（同样用累积池口径），保持顶层 orderAi 与明细之和一致
+    if (currentTrends[trendKey].companies) {
+      currentTrends[trendKey].companies.forEach(function (c) {
+        c.orderAiCount = companyAi[c.operationCompany] || 0;
+        c.aiRate = c.orderTotal > 0 ? c.orderAiCount / c.orderTotal : null;
+      });
     }
     currentTrends[trendKey].ts = new Date().toISOString();
   }
@@ -721,214 +745,141 @@ async function handleExportOrderMethod(req, res) {
       return;
     }
 
-    const { salesRows, pendingRows, progressRows, logSummary, cutoffDate, companySummary } = currentPageData;
+    const { cutoffDate } = currentPageData;
 
-    if (!salesRows || !pendingRows || !progressRows) {
-      res.writeHead(400, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "数据不完整" }));
-      return;
-    }
+    // ---- 解析 URL 参数：?categories=机器人,图片下单,Excel下单 ----
+    const urlParams = new URLSearchParams(req.url.split("?")[1] || "");
+    const categoriesParam = (urlParams.get("categories") || "").trim();
+    const selectedCategories = categoriesParam
+      ? categoriesParam.split(",").map(function (s) { return s.trim(); }).filter(Boolean)
+      : [];
 
-    // 与看板 priorityCategory() 完全一致的分类逻辑
-    var syntheticLogSummary = logSummary || {};
+    // ---- 加载 priority_groups.json ----
+    var pgGroups = {};
+    try {
+      var pgPath = path.join(ROOT, "basicData", "priority_groups.json");
+      if (fs.existsSync(pgPath)) {
+        pgGroups = (JSON.parse(fs.readFileSync(pgPath, "utf8")).groups) || {};
+      }
+    } catch (e) { console.error("加载 priority_groups.json 失败:", e.message); }
+
+    // ---- 从群维度汇总按分类聚合 ----
     var gsRows = (currentPageData.groupSummary && currentPageData.groupSummary.rows) || [];
-    if (gsRows.length > 0) {
-      var pgGroups = {};
-      try {
-        var pgPath = path.join(ROOT, "basicData", "priority_groups.json");
-        if (fs.existsSync(pgPath)) {
-          pgGroups = (JSON.parse(fs.readFileSync(pgPath, "utf8")).groups) || {};
-        }
-      } catch(e) {}
+    var ALL_CATEGORIES = ["机器人", "手写", "图片下单", "混合", "Excel下单", "PDF下单", "文本消息", "小程序", "其他"];
+    var categories = selectedCategories.length > 0 ? selectedCategories : ALL_CATEGORIES;
 
-      var companyMethods = {};
-      for (var gi = 0; gi < gsRows.length; gi++) {
-        var gr = gsRows[gi];
-        var ck = gr.operationCompanyKey;
-        if (!ck || !gr.orderTotal) continue;
-        var c = pgGroups[gr.groupName] || {};
+    // categoryOrderLines[category] = { orderLines, aiLines }
+    var catTotals = {};
+    categories.forEach(function (c) { catTotals[c] = { orderLines: 0, aiLines: 0 }; });
 
-        // 完全复制看板 priorityCategory 逻辑
-        var cat;
-        if ((gr.groupName || "").indexOf("机器人接单群") >= 0) {
-          cat = "机器人";
-        } else if (!c || Object.keys(c).length === 0) {
-          continue;  // 不在配置里的群跳过
-        } else if (c.category) {
-          cat = c.category;
-        } else if (c.tag === "非标准") {
-          cat = "手写";
-        } else if (c.tag !== "标准") {
-          continue;
-        } else {
-          var m = c.mainMethod || "";
-          if (!m) { cat = "其他"; }
-          else if (m.indexOf("图片下单") === 0) { cat = "图片下单"; }
-          else if (m.indexOf("图文混发") === 0 || /\d+%/.test(m)) { cat = "混合"; }
-          else if (["Excel下单","PDF下单","文本消息"].indexOf(m) >= 0) { cat = m; }
-          else { cat = "混合"; }
-        }
+    // companyKey → { name, cat → { orderLines, aiLines } }
+    var companyData = {};
 
-        // 机器人 → Excel；其他分类直接映射
-        var method;
-        if (cat === "机器人") { method = "Excel下单"; }
-        else { method = cat; }
+    for (var gi = 0; gi < gsRows.length; gi++) {
+      var gr = gsRows[gi];
+      var cat = classifyGroupCategory(gr.groupName, pgGroups);
+      if (cat === null) cat = "混合"; // 不在配置里的群归入混合
+      if (categories.indexOf(cat) < 0) continue; // 不在选中分类里，跳过
 
-        if (!companyMethods[ck]) companyMethods[ck] = {};
-        companyMethods[ck][method] = (companyMethods[ck][method] || 0) + gr.orderTotal;
+      var ck = gr.operationCompanyKey;
+      if (!ck) continue;
+
+      if (!companyData[ck]) {
+        companyData[ck] = { name: gr.operationCompany, cats: {} };
+        categories.forEach(function (c) { companyData[ck].cats[c] = { orderLines: 0, aiLines: 0 }; });
       }
-      var built = {};
-      for (var ck2 in companyMethods) {
-        var methods = companyMethods[ck2];
-        var stats = [];
-        var total = 0;
-        for (var mt in methods) { stats.push({ label: mt, count: methods[mt], processed: true }); total += methods[mt]; }
-        stats.sort(function(a,b){ return b.count - a.count; });
-        var remarkParts = stats.slice(0,2).map(function(s){ return s.label + ' ' + Math.round(s.count/total*100) + '%'; });
-        built[ck2] = { methodStats: stats, remark: remarkParts.join('，') };
-      }
-      for (var ck4 in built) { syntheticLogSummary[ck4] = built[ck4]; }
+
+      companyData[ck].cats[cat].orderLines += gr.orderTotal;
+      companyData[ck].cats[cat].aiLines += (gr.orderAiCount || 0);
+
+      catTotals[cat].orderLines += gr.orderTotal;
+      catTotals[cat].aiLines += (gr.orderAiCount || 0);
     }
 
-    // 直接用看板计算时的 pendingRows，不再从累积池重建（确保导出和看板同口径）
-    const report = buildOrderMethodReport(salesRows, pendingRows, progressRows, syntheticLogSummary);
+    // ---- 组装左表（按分类） ----
+    var grandOrder = 0, grandAi = 0;
+    var leftRows = categories.map(function (cat) {
+      var t = catTotals[cat];
+      grandOrder += t.orderLines;
+      grandAi += t.aiLines;
+      return {
+        method: cat,
+        orderLines: t.orderLines,
+        aiLines: t.aiLines,
+        aiRate: t.orderLines > 0 ? Math.round(t.aiLines / t.orderLines * 100) + "%" : "0%",
+      };
+    });
+    var leftTotal = {
+      method: "总计",
+      orderLines: grandOrder,
+      aiLines: grandAi,
+      aiRate: grandOrder > 0 ? Math.round(grandAi / grandOrder * 100) + "%" : "0%",
+    };
 
-    // ==== patch: 用群级别真实订单数 + AI 覆盖比例分配，确保与看板一致 ====
-    (function patchFromGroups() {
-      try {
-        var gRows = (currentPageData.groupSummary && currentPageData.groupSummary.rows) || [];
-        if (!gRows.length) return;
-        var pgPath = path.join(ROOT, "basicData", "priority_groups.json");
-        if (!fs.existsSync(pgPath)) return;
-        var pg = (JSON.parse(fs.readFileSync(pgPath, "utf8")).groups) || {};
+    // ---- 组装右表（公司 × 分类） ----
+    var rightCompanies = [];
+    var rightTotals = { summary: { orderLines: 0, aiLines: 0, aiRate: "0%" }, methods: {} };
+    categories.forEach(function (c) { rightTotals.methods[c] = { orderLines: 0, aiLines: 0, aiRate: "0%" }; });
 
-        var METHOD_LIST = report.methods;
-        var orderByCoMethod = {};
-        var aiByCoMethod = {};
+    var companyKeys = Object.keys(companyData).sort(function (a, b) {
+      var ta = 0, tb = 0;
+      categories.forEach(function (c) { ta += companyData[a].cats[c].orderLines; tb += companyData[b].cats[c].orderLines; });
+      return tb - ta;
+    });
 
-        for (var i = 0; i < gRows.length; i++) {
-          var gr = gRows[i];
-          var ck = gr.operationCompanyKey;
-          if (!ck || !gr.orderTotal) continue;
-          var cfg = pg[gr.groupName];
+    for (var ci = 0; ci < companyKeys.length; ci++) {
+      var ck = companyKeys[ci];
+      var cd = companyData[ck];
+      var compOrder = 0, compAi = 0;
+      var compMethods = {};
+      categories.forEach(function (cat) {
+        var d = cd.cats[cat];
+        compOrder += d.orderLines;
+        compAi += d.aiLines;
+        var rate = d.orderLines > 0 ? Math.round(d.aiLines / d.orderLines * 100) + "%" : "0%";
+        compMethods[cat] = { orderLines: d.orderLines, aiLines: d.aiLines, aiRate: rate };
+        rightTotals.methods[cat].orderLines += d.orderLines;
+        rightTotals.methods[cat].aiLines += d.aiLines;
+      });
+      rightTotals.summary.orderLines += compOrder;
+      rightTotals.summary.aiLines += compAi;
 
-          var cat;
-          if ((gr.groupName || "").indexOf("机器人接单群") >= 0) cat = "机器人";
-          else if (!cfg || !Object.keys(cfg).length) cat = "混合";
-          else if (cfg.category) cat = cfg.category;
-          else if (cfg.tag === "非标准") cat = "手写";
-          else if (cfg.tag !== "标准") cat = "混合";
-          else {
-            var mm = cfg.mainMethod || "";
-            if (!mm) cat = "混合";
-            else if (mm.indexOf("图片下单") === 0) cat = "图片下单";
-            else if (mm.indexOf("图文混发") === 0 || /\d+%/.test(mm)) cat = "混合";
-            else if (["Excel下单", "PDF下单", "文本消息"].indexOf(mm) >= 0) cat = mm;
-            else cat = "混合";
-          }
-          var method = cat === "机器人" ? "Excel下单" : cat;
-          if (METHOD_LIST.indexOf(method) < 0) method = "混合";
+      rightCompanies.push({
+        company: cd.name,
+        companyKey: ck,
+        summary: {
+          orderLines: compOrder,
+          aiLines: compAi,
+          aiRate: compOrder > 0 ? Math.round(compAi / compOrder * 100) + "%" : "0%",
+        },
+        methods: compMethods,
+      });
+    }
 
-          if (!aiByCoMethod[ck]) aiByCoMethod[ck] = {};
-          aiByCoMethod[ck][method] = (aiByCoMethod[ck][method] || 0) + gr.orderAiCount;
-          if (!orderByCoMethod[ck]) orderByCoMethod[ck] = {};
-          orderByCoMethod[ck][method] = (orderByCoMethod[ck][method] || 0) + gr.orderTotal;
-        }
+    rightTotals.summary.aiRate = rightTotals.summary.orderLines > 0
+      ? Math.round(rightTotals.summary.aiLines / rightTotals.summary.orderLines * 100) + "%" : "0%";
+    categories.forEach(function (cat) {
+      var rt = rightTotals.methods[cat];
+      rt.aiRate = rt.orderLines > 0 ? Math.round(rt.aiLines / rt.orderLines * 100) + "%" : "0%";
+    });
 
-        // 逐公司覆盖订单行数和 AI 数
-        report.rightCompanies.forEach(function(rc) {
-          var aiMap = aiByCoMethod[rc.companyKey];
-          var ordMap = orderByCoMethod[rc.companyKey];
-
-          if (ordMap) {
-            METHOD_LIST.forEach(function(m) { if (typeof ordMap[m] === "number") rc.methods[m].orderLines = ordMap[m]; });
-            var ordTotal = 0; METHOD_LIST.forEach(function(m) { ordTotal += rc.methods[m].orderLines; });
-            var ordGap = rc.summary.orderLines - ordTotal;
-            if (ordGap !== 0) rc.methods["混合"].orderLines = (rc.methods["混合"].orderLines || 0) + ordGap;
-          }
-          if (aiMap) {
-            METHOD_LIST.forEach(function(m) { if (typeof aiMap[m] === "number") rc.methods[m].aiLines = aiMap[m]; });
-            var aiTotal = 0; METHOD_LIST.forEach(function(m) { aiTotal += rc.methods[m].aiLines; });
-            var aiGap = rc.summary.aiLines - aiTotal;
-            if (aiGap !== 0) rc.methods["混合"].aiLines = (rc.methods["混合"].aiLines || 0) + aiGap;
-          }
-
-          METHOD_LIST.forEach(function(m) {
-            rc.methods[m].aiRate = rc.methods[m].orderLines > 0
-              ? Math.round(rc.methods[m].aiLines / rc.methods[m].orderLines * 100) + "%" : "0%";
-          });
-        });
-
-        // 左表从右表重新汇总
-        var sumOrd = {}; var sumAi = {};
-        METHOD_LIST.forEach(function(m) { sumOrd[m] = 0; sumAi[m] = 0; });
-        report.rightCompanies.forEach(function(rc) {
-          METHOD_LIST.forEach(function(m) {
-            sumOrd[m] += rc.methods[m].orderLines;
-            sumAi[m] += rc.methods[m].aiLines;
-          });
-        });
-        report.leftRows.forEach(function(lr) {
-          lr.orderLines = sumOrd[lr.method];
-          lr.aiLines = sumAi[lr.method];
-          lr.aiRate = lr.orderLines > 0 ? Math.round(lr.aiLines / lr.orderLines * 100) + "%" : "0%";
-        });
-
-        // 左表总计重算
-        var lo = 0, la = 0;
-        report.leftRows.forEach(function(lr) { lo += lr.orderLines; la += lr.aiLines; });
-        report.leftTotal.orderLines = lo;
-        report.leftTotal.aiLines = la;
-        report.leftTotal.aiRate = lo > 0 ? Math.round(la / lo * 100) + "%" : "0%";
-
-        // 右表总计重算
-        var rso = 0, rsa = 0, rmo = {}, rma = {};
-        METHOD_LIST.forEach(function(m) { rmo[m] = 0; rma[m] = 0; });
-        report.rightCompanies.forEach(function(rc) {
-          rso += rc.summary.orderLines; rsa += rc.summary.aiLines;
-          METHOD_LIST.forEach(function(m) { rmo[m] += rc.methods[m].orderLines; rma[m] += rc.methods[m].aiLines; });
-        });
-        report.rightTotals.summary.aiLines = rsa;
-        report.rightTotals.summary.aiRate = rso > 0 ? Math.round(rsa / rso * 100) + "%" : "0%";
-        METHOD_LIST.forEach(function(m) {
-          report.rightTotals.methods[m].aiLines = rma[m];
-          report.rightTotals.methods[m].aiRate = rmo[m] > 0 ? Math.round(rma[m] / rmo[m] * 100) + "%" : "0%";
-        });
-      } catch(e) { console.error("patchFromGroups error:", e.message); }
-    })();
-
-    // --- 创建 Excel 工作簿 ---
-    const wb = new ExcelJS.Workbook();
-    const ws = wb.addWorksheet("按下单形式统计");
+    // --- 创建 Excel 工作簿（动态列数） ---
+    var wb = new ExcelJS.Workbook();
+    var ws = wb.addWorksheet("按下单形式统计");
 
     // 颜色常量
-    const C_HEADER_BG = "FFAFECEB";
-    const C_TOTAL_BG = "FFAFECEB";
-    const C_LEFT_DATA_BG = "FFFFFFFF";
-    const C_LEFT_HIGHLIGHT_BG = "FFF8CBAD";
-    const C_RIGHT_SUMMARY_BG = "FFFFFF00";
-    const C_RIGHT_DATA_BG = "FFFCE4D6";
-    const C_RIGHT_COMPANY_BG = "FF404040";
-    const C_BORDER = "FFA6A6A6";
-    const C_TEXT = "FF000000";
-    const C_TEXT_WHITE = "FFFFFFFF";
+    var C_HEADER_BG = "FFAFECEB";
+    var C_TOTAL_BG = "FFAFECEB";
+    var C_LEFT_DATA_BG = "FFFFFFFF";
+    var C_RIGHT_SUMMARY_BG = "FFFFFF00";
+    var C_RIGHT_DATA_BG = "FFFCE4D6";
+    var C_RIGHT_COMPANY_BG = "FF404040";
+    var C_BORDER = "FFA6A6A6";
+    var C_TEXT = "FF000000";
+    var C_TEXT_WHITE = "FFFFFFFF";
 
-    const ALL_METHODS = report.methods;
+    var RIGHT_START_COL = 6; // F列
 
-    // ===== 左表（A-D列）=====
-    // 表头行 1
-    const leftHeaders = ["下单方式", "订单行数", "AI已转", "转单率"];
-    // 子表头行 2（左表无子表头，留空）
-
-    // ===== 右表（F列开始）=====
-    // 右表结构：
-    // F: 所属公司
-    // G-I: 汇总(订单行数, AI已转, 转单率)
-    // 然后每个下单方式 3 列
-
-    const RIGHT_START_COL = 6; // F列（1-indexed）
-
-    // 样式辅助
     function applyCellStyle(cell, bg, fontColor, bold, fontName, fontSize, halign, borderStyle) {
       cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: bg } };
       cell.font = {
@@ -937,11 +888,7 @@ async function handleExportOrderMethod(req, res) {
         name: fontName || "微软雅黑",
         size: fontSize || 10,
       };
-      cell.alignment = {
-        horizontal: halign || "center",
-        vertical: "middle",
-        wrapText: false,
-      };
+      cell.alignment = { horizontal: halign || "center", vertical: "middle", wrapText: false };
       cell.border = {
         top: { style: borderStyle || "thin", color: { argb: C_BORDER } },
         bottom: { style: borderStyle || "thin", color: { argb: C_BORDER } },
@@ -950,35 +897,24 @@ async function handleExportOrderMethod(req, res) {
       };
     }
 
-    function headerStyle(cell) { applyCellStyle(cell, C_HEADER_BG, C_TEXT, true, "微软雅黑", 10, "center", "thin"); }
-    function totalStyle(cell) { applyCellStyle(cell, C_TOTAL_BG, C_TEXT, true, "微软雅黑", 10, "center", "thin"); }
-    function leftDataStyle(cell, highlight) {
-      applyCellStyle(cell, highlight ? C_LEFT_HIGHLIGHT_BG : C_LEFT_DATA_BG, C_TEXT, false, "微软雅黑", 10, "center", "thin");
-    }
-    function rightCompanyStyle(cell) {
-      applyCellStyle(cell, C_RIGHT_COMPANY_BG, C_TEXT_WHITE, false, "微软雅黑", 10, "left", "thin");
-    }
-    function rightSummaryStyle(cell) {
-      applyCellStyle(cell, C_RIGHT_SUMMARY_BG, C_TEXT, false, "微软雅黑", 10, "center", "thin");
-    }
-    function rightDataStyle(cell) {
-      applyCellStyle(cell, C_RIGHT_DATA_BG, C_TEXT, false, "微软雅黑", 10, "center", "thin");
-    }
+    function headerStyle(cell) { applyCellStyle(cell, C_HEADER_BG, C_TEXT, true); }
+    function totalStyle(cell) { applyCellStyle(cell, C_TOTAL_BG, C_TEXT, true); }
+    function rightCompanyStyle(cell) { applyCellStyle(cell, C_RIGHT_COMPANY_BG, C_TEXT_WHITE, false, "微软雅黑", 10, "left"); }
+    function rightSummaryStyle(cell) { applyCellStyle(cell, C_RIGHT_SUMMARY_BG, C_TEXT, false); }
+    function rightDataStyle(cell) { applyCellStyle(cell, C_RIGHT_DATA_BG, C_TEXT, false); }
 
     // 列宽
     ws.getColumn(1).width = 12;
     ws.getColumn(2).width = 10;
     ws.getColumn(3).width = 10;
     ws.getColumn(4).width = 10;
-    ws.getColumn(5).width = 5;  // 左右表间隔
+    ws.getColumn(5).width = 5;
 
-    // 右表列宽
-    ws.getColumn(RIGHT_START_COL).width = 14;  // 所属公司
+    ws.getColumn(RIGHT_START_COL).width = 16;
     var rightCol = RIGHT_START_COL + 1;
-    // 汇总3列 + 6个方法各3列
     ws.getColumn(rightCol).width = 9; ws.getColumn(rightCol + 1).width = 9; ws.getColumn(rightCol + 2).width = 9;
     rightCol += 3;
-    for (var mi = 0; mi < ALL_METHODS.length; mi++) {
+    for (var mi = 0; mi < categories.length; mi++) {
       ws.getColumn(rightCol).width = 9; ws.getColumn(rightCol + 1).width = 9; ws.getColumn(rightCol + 2).width = 9;
       rightCol += 3;
     }
@@ -986,196 +922,122 @@ async function handleExportOrderMethod(req, res) {
     // ---- 行 1：顶层表头 ----
     var row1 = ws.getRow(1);
     row1.height = 22;
-    // 左表表头
-    for (var ci = 0; ci < leftHeaders.length; ci++) {
-      headerStyle(row1.getCell(ci + 1));
-      row1.getCell(ci + 1).value = leftHeaders[ci];
-    }
-    // 间隔
-    applyCellStyle(row1.getCell(5), C_HEADER_BG, C_TEXT, false, "微软雅黑", 10, "center", "thin");
-    // 右表表头：所属公司 + 汇总(合并3列) + 各下单方式(合并3列)
+    var leftHeaders = ["下单方式", "订单行数", "AI已转", "转单率"];
+    for (var ci2 = 0; ci2 < leftHeaders.length; ci2++) { headerStyle(row1.getCell(ci2 + 1)); row1.getCell(ci2 + 1).value = leftHeaders[ci2]; }
+    applyCellStyle(row1.getCell(5), C_HEADER_BG, C_TEXT, false);
+
     headerStyle(row1.getCell(RIGHT_START_COL));
     row1.getCell(RIGHT_START_COL).value = "所属公司";
-    // 汇总合并 G-I
     ws.mergeCells(1, RIGHT_START_COL + 1, 1, RIGHT_START_COL + 3);
     headerStyle(row1.getCell(RIGHT_START_COL + 1));
     row1.getCell(RIGHT_START_COL + 1).value = "汇总";
 
     rightCol = RIGHT_START_COL + 4;
-    for (var mj = 0; mj < ALL_METHODS.length; mj++) {
+    for (var mj = 0; mj < categories.length; mj++) {
       ws.mergeCells(1, rightCol, 1, rightCol + 2);
       headerStyle(row1.getCell(rightCol));
-      row1.getCell(rightCol).value = ALL_METHODS[mj];
+      row1.getCell(rightCol).value = categories[mj];
       rightCol += 3;
     }
 
-    // ---- 行 2：子表头（左表空，右表：汇总子列+各方法子列）----
+    // ---- 行 2：子表头 ----
     var row2 = ws.getRow(2);
     row2.height = 20;
-    // 左表区域空（合并行）
-    for (var cj = 1; cj <= 4; cj++) {
-      applyCellStyle(row2.getCell(cj), C_HEADER_BG, C_TEXT, false, "微软雅黑", 10, "center", "thin");
-    }
-    applyCellStyle(row2.getCell(5), C_HEADER_BG, C_TEXT, false, "微软雅黑", 10, "center", "thin");
-    // 右表子表头
+    for (var cj = 1; cj <= 5; cj++) applyCellStyle(row2.getCell(cj), C_HEADER_BG, C_TEXT, false);
     headerStyle(row2.getCell(RIGHT_START_COL));
 
     var subCol = RIGHT_START_COL + 1;
     var subHeaders = ["订单行数", "AI已转", "转单率"];
-    // 汇总子列
-    for (var sk = 0; sk < subHeaders.length; sk++) {
-      headerStyle(row2.getCell(subCol));
-      row2.getCell(subCol).value = subHeaders[sk];
-      subCol++;
-    }
-    // 各方法子列
-    for (var mk = 0; mk < ALL_METHODS.length; mk++) {
-      for (var sl = 0; sl < subHeaders.length; sl++) {
-        headerStyle(row2.getCell(subCol));
-        row2.getCell(subCol).value = subHeaders[sl];
-        subCol++;
-      }
+    for (var sk = 0; sk < subHeaders.length; sk++) { headerStyle(row2.getCell(subCol)); row2.getCell(subCol).value = subHeaders[sk]; subCol++; }
+    for (var mk = 0; mk < categories.length; mk++) {
+      for (var sl = 0; sl < subHeaders.length; sl++) { headerStyle(row2.getCell(subCol)); row2.getCell(subCol).value = subHeaders[sl]; subCol++; }
     }
 
-    // ---- 数据行 ----
-    var leftDataCount = report.leftRows.length;   // 6
-    var rightDataCount = report.rightCompanies.length; // N (variable)
-
-    // 左表数据行（从 row 3 开始）
-    for (var ri = 0; ri < leftDataCount; ri++) {
-      var lr = report.leftRows[ri];
+    // ---- 左表数据行（从 row 3 开始） ----
+    for (var ri = 0; ri < leftRows.length; ri++) {
+      var lr = leftRows[ri];
       var row = ws.getRow(3 + ri);
       row.height = 20;
-
-      // 后3行（Excel下单、混合、手写）的 AI/率列高亮
-      var highlight = ri >= 3;
-
-      leftDataStyle(row.getCell(1), false);
+      applyCellStyle(row.getCell(1), C_LEFT_DATA_BG, C_TEXT, false, "微软雅黑", 10, "left");
       row.getCell(1).value = lr.method;
-      row.getCell(1).alignment = { horizontal: "left", vertical: "middle" };
-
-      leftDataStyle(row.getCell(2), false);
-      row.getCell(2).value = lr.orderLines;
-
-      leftDataStyle(row.getCell(3), highlight);
-      row.getCell(3).value = lr.aiLines;
-
-      leftDataStyle(row.getCell(4), highlight);
-      row.getCell(4).value = lr.aiRate;
-
-      // 间隔列样式
-      applyCellStyle(row.getCell(5), C_LEFT_DATA_BG, C_TEXT, false, "微软雅黑", 10, "center", "thin");
+      applyCellStyle(row.getCell(2), C_LEFT_DATA_BG, C_TEXT, false); row.getCell(2).value = lr.orderLines;
+      applyCellStyle(row.getCell(3), C_LEFT_DATA_BG, C_TEXT, false); row.getCell(3).value = lr.aiLines;
+      applyCellStyle(row.getCell(4), C_LEFT_DATA_BG, C_TEXT, false); row.getCell(4).value = lr.aiRate;
+      applyCellStyle(row.getCell(5), C_LEFT_DATA_BG, C_TEXT, false);
     }
 
-    // 左表总计行（紧接着数据行）
-    var leftTotalRowNum = 3 + leftDataCount;  // row 9
+    // 左表总计行
+    var leftTotalRowNum = 3 + leftRows.length;
     var ltRow = ws.getRow(leftTotalRowNum);
     ltRow.height = 22;
-    totalStyle(ltRow.getCell(1));
-    ltRow.getCell(1).value = report.leftTotal.method;
-    totalStyle(ltRow.getCell(2));
-    ltRow.getCell(2).value = report.leftTotal.orderLines;
-    totalStyle(ltRow.getCell(3));
-    ltRow.getCell(3).value = report.leftTotal.aiLines;
-    totalStyle(ltRow.getCell(4));
-    ltRow.getCell(4).value = report.leftTotal.aiRate;
-    applyCellStyle(ltRow.getCell(5), C_TOTAL_BG, C_TEXT, false, "微软雅黑", 10, "center", "thin");
+    totalStyle(ltRow.getCell(1)); ltRow.getCell(1).value = leftTotal.method;
+    totalStyle(ltRow.getCell(2)); ltRow.getCell(2).value = leftTotal.orderLines;
+    totalStyle(ltRow.getCell(3)); ltRow.getCell(3).value = leftTotal.aiLines;
+    totalStyle(ltRow.getCell(4)); ltRow.getCell(4).value = leftTotal.aiRate;
+    applyCellStyle(ltRow.getCell(5), C_TOTAL_BG, C_TEXT, false);
 
-    // 左表下方空行填白色（左表结束后，右表可能还有更多行）
-    // 空行不需要填充，保持空白即可
-
-    // 右表数据行（从 row 3 开始，与左表顶部对齐）
-    for (var rj = 0; rj < rightDataCount; rj++) {
-      var rc = report.rightCompanies[rj];
+    // ---- 右表数据行 ----
+    for (var rj = 0; rj < rightCompanies.length; rj++) {
+      var rc = rightCompanies[rj];
       var row2b = ws.getRow(3 + rj);
-      if (3 + rj > leftTotalRowNum) row2b.height = 20; // 只对超出左表的行设置高度
 
-      // F: 公司名
       rightCompanyStyle(row2b.getCell(RIGHT_START_COL));
       row2b.getCell(RIGHT_START_COL).value = rc.company;
 
-      // G-I: 汇总
       rightCol = RIGHT_START_COL + 1;
-      rightSummaryStyle(row2b.getCell(rightCol));
-      row2b.getCell(rightCol).value = rc.summary.orderLines;
-      rightCol++;
-      rightSummaryStyle(row2b.getCell(rightCol));
-      row2b.getCell(rightCol).value = rc.summary.aiLines;
-      rightCol++;
-      rightSummaryStyle(row2b.getCell(rightCol));
-      row2b.getCell(rightCol).value = rc.summary.aiRate;
+      rightSummaryStyle(row2b.getCell(rightCol)); row2b.getCell(rightCol).value = rc.summary.orderLines; rightCol++;
+      rightSummaryStyle(row2b.getCell(rightCol)); row2b.getCell(rightCol).value = rc.summary.aiLines; rightCol++;
+      rightSummaryStyle(row2b.getCell(rightCol)); row2b.getCell(rightCol).value = rc.summary.aiRate;
 
-      // 各下单方式
       rightCol = RIGHT_START_COL + 4;
-      for (var mk2 = 0; mk2 < ALL_METHODS.length; mk2++) {
-        var md = rc.methods[ALL_METHODS[mk2]] || { orderLines: 0, aiLines: 0, aiRate: "0%" };
-        rightDataStyle(row2b.getCell(rightCol));
-        row2b.getCell(rightCol).value = md.orderLines;
-        rightCol++;
-        rightDataStyle(row2b.getCell(rightCol));
-        row2b.getCell(rightCol).value = md.aiLines;
-        rightCol++;
-        rightDataStyle(row2b.getCell(rightCol));
-        row2b.getCell(rightCol).value = md.aiRate;
-        rightCol++;
+      for (var mk2 = 0; mk2 < categories.length; mk2++) {
+        var md = rc.methods[categories[mk2]] || { orderLines: 0, aiLines: 0, aiRate: "0%" };
+        rightDataStyle(row2b.getCell(rightCol)); row2b.getCell(rightCol).value = md.orderLines; rightCol++;
+        rightDataStyle(row2b.getCell(rightCol)); row2b.getCell(rightCol).value = md.aiLines; rightCol++;
+        rightDataStyle(row2b.getCell(rightCol)); row2b.getCell(rightCol).value = md.aiRate; rightCol++;
       }
 
-      // 给超出左表范围的行补充左表区域的样式（用空白样式）
+      // 超出左表的行填充白色
       if (3 + rj > leftTotalRowNum) {
         for (var fc = 1; fc <= 5; fc++) {
-          applyCellStyle(row2b.getCell(fc), "FFFFFFFF", C_TEXT, false, "微软雅黑", 10, "center", "thin");
+          applyCellStyle(row2b.getCell(fc), "FFFFFFFF", C_TEXT, false);
           row2b.getCell(fc).value = null;
         }
       }
-
-      // 设置行高（避免覆盖左表总计行高度）
       if (3 + rj < leftTotalRowNum) row2b.height = 20;
       else if (3 + rj > leftTotalRowNum) row2b.height = 20;
     }
 
     // 右表总计行
-    var rightTotalRowNum = 3 + rightDataCount;
+    var rightTotalRowNum = 3 + rightCompanies.length;
     var rtRow = ws.getRow(rightTotalRowNum);
     rtRow.height = 22;
 
-    // 左表区域在右表总计行填充白色（左表总计已在上方）
-    for (var fc = 1; fc <= 5; fc++) {
-      applyCellStyle(rtRow.getCell(fc), "FFFFFFFF", C_TEXT, false, "微软雅黑", 10, "center", "thin");
-      rtRow.getCell(fc).value = null;
+    for (var fc2 = 1; fc2 <= 5; fc2++) {
+      applyCellStyle(rtRow.getCell(fc2), "FFFFFFFF", C_TEXT, false);
+      rtRow.getCell(fc2).value = null;
     }
 
-    // 右表总计
     totalStyle(rtRow.getCell(RIGHT_START_COL));
     rtRow.getCell(RIGHT_START_COL).value = "总计";
 
     rightCol = RIGHT_START_COL + 1;
-    totalStyle(rtRow.getCell(rightCol));
-    rtRow.getCell(rightCol).value = report.rightTotals.summary.orderLines;
-    rightCol++;
-    totalStyle(rtRow.getCell(rightCol));
-    rtRow.getCell(rightCol).value = report.rightTotals.summary.aiLines;
-    rightCol++;
-    totalStyle(rtRow.getCell(rightCol));
-    rtRow.getCell(rightCol).value = report.rightTotals.summary.aiRate;
+    totalStyle(rtRow.getCell(rightCol)); rtRow.getCell(rightCol).value = rightTotals.summary.orderLines; rightCol++;
+    totalStyle(rtRow.getCell(rightCol)); rtRow.getCell(rightCol).value = rightTotals.summary.aiLines; rightCol++;
+    totalStyle(rtRow.getCell(rightCol)); rtRow.getCell(rightCol).value = rightTotals.summary.aiRate;
 
     rightCol = RIGHT_START_COL + 4;
-    for (var mn = 0; mn < ALL_METHODS.length; mn++) {
-      var rtm = report.rightTotals.methods[ALL_METHODS[mn]] || { orderLines: 0, aiLines: 0, aiRate: "0%" };
-      totalStyle(rtRow.getCell(rightCol));
-      rtRow.getCell(rightCol).value = rtm.orderLines;
-      rightCol++;
-      totalStyle(rtRow.getCell(rightCol));
-      rtRow.getCell(rightCol).value = rtm.aiLines;
-      rightCol++;
-      totalStyle(rtRow.getCell(rightCol));
-      rtRow.getCell(rightCol).value = rtm.aiRate;
-      rightCol++;
+    for (var mn = 0; mn < categories.length; mn++) {
+      var rtm = rightTotals.methods[categories[mn]] || { orderLines: 0, aiLines: 0, aiRate: "0%" };
+      totalStyle(rtRow.getCell(rightCol)); rtRow.getCell(rightCol).value = rtm.orderLines; rightCol++;
+      totalStyle(rtRow.getCell(rightCol)); rtRow.getCell(rightCol).value = rtm.aiLines; rightCol++;
+      totalStyle(rtRow.getCell(rightCol)); rtRow.getCell(rightCol).value = rtm.aiRate; rightCol++;
     }
 
     // ---- 生成 buffer 并返回 ----
-    const buffer = await wb.xlsx.writeBuffer();
+    var buffer = await wb.xlsx.writeBuffer();
 
-    const fileName = "按下单形式统计_" + (cutoffDate || "data") + ".xlsx";
+    var fileName = "按下单形式统计_" + (cutoffDate || "data") + ".xlsx";
     res.writeHead(200, {
       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "Content-Disposition": "attachment; filename=\"" + encodeURIComponent(fileName) + "\"",

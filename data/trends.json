@@ -2531,8 +2531,8 @@
     "itOk": 260,
     "configRate": 1,
     "orderTotal": 1152,
-    "orderAi": 23,
-    "aiRate": 0.019965277777777776,
+    "orderAi": 246,
+    "aiRate": 0.21354166666666666,
     "companies": [
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
@@ -2637,7 +2637,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-13T02:47:57.512Z"
+    "ts": "2026-08-13T03:01:16.863Z"
   },
   "08-06": {
     "cutoff": "0806",
@@ -2645,14 +2645,14 @@
     "itOk": 261,
     "configRate": 1.0038461538461538,
     "orderTotal": 1642,
-    "orderAi": 18,
-    "aiRate": 0.010962241169305725,
+    "orderAi": 239,
+    "aiRate": 0.14555420219244825,
     "companies": [
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
         "orderTotal": 867,
-        "orderAiCount": 0,
-        "aiRate": 0
+        "orderAiCount": 1,
+        "aiRate": 0.0011534025374855825
       },
       {
         "operationCompany": "三亚德立安食品有限公司",
@@ -2751,7 +2751,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-13T02:47:57.512Z"
+    "ts": "2026-08-13T03:01:16.865Z"
   },
   "08-07": {
     "cutoff": "0807",
@@ -2759,8 +2759,8 @@
     "itOk": 261,
     "configRate": 1.0038461538461538,
     "orderTotal": 1142,
-    "orderAi": 13,
-    "aiRate": 0.01138353765323993,
+    "orderAi": 333,
+    "aiRate": 0.29159369527145357,
     "companies": [
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
@@ -2771,8 +2771,8 @@
       {
         "operationCompany": "三亚德立安食品有限公司",
         "orderTotal": 213,
-        "orderAiCount": 131,
-        "aiRate": 0.6150234741784038
+        "orderAiCount": 133,
+        "aiRate": 0.6244131455399061
       },
       {
         "operationCompany": "西安/丰厨(上海)供应链管理有限公司",
@@ -2865,7 +2865,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-13T02:47:57.513Z"
+    "ts": "2026-08-13T03:01:16.866Z"
   },
   "08-10": {
     "cutoff": "0810",
@@ -2873,8 +2873,8 @@
     "itOk": 261,
     "configRate": 1.0038461538461538,
     "orderTotal": 2056,
-    "orderAi": 32,
-    "aiRate": 0.01556420233463035,
+    "orderAi": 566,
+    "aiRate": 0.27529182879377434,
     "companies": [
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
@@ -2909,8 +2909,8 @@
       {
         "operationCompany": "广州益嘉德立安食品有限公司",
         "orderTotal": 80,
-        "orderAiCount": 79,
-        "aiRate": 0.9875
+        "orderAiCount": 80,
+        "aiRate": 1
       },
       {
         "operationCompany": "成都/丰厨(上海)供应链管理有限公司",
@@ -2939,8 +2939,8 @@
       {
         "operationCompany": "深圳市德立安食品有限公司",
         "orderTotal": 29,
-        "orderAiCount": 27,
-        "aiRate": 0.9310344827586207
+        "orderAiCount": 29,
+        "aiRate": 1
       },
       {
         "operationCompany": "益海嘉里德立安（杭州）食品有限公司",
@@ -2979,7 +2979,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-13T02:47:57.513Z"
+    "ts": "2026-08-13T03:01:16.869Z"
   },
   "08-11": {
     "cutoff": "0811",
@@ -2987,8 +2987,8 @@
     "itOk": 261,
     "configRate": 1.0038461538461538,
     "orderTotal": 1078,
-    "orderAi": 24,
-    "aiRate": 0.022263450834879406,
+    "orderAi": 395,
+    "aiRate": 0.36641929499072357,
     "companies": [
       {
         "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
@@ -2999,8 +2999,8 @@
       {
         "operationCompany": "三亚德立安食品有限公司",
         "orderTotal": 171,
-        "orderAiCount": 123,
-        "aiRate": 0.7192982456140351
+        "orderAiCount": 125,
+        "aiRate": 0.7309941520467836
       },
       {
         "operationCompany": "西安/丰厨(上海)供应链管理有限公司",
@@ -3017,8 +3017,8 @@
       {
         "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
         "orderTotal": 77,
-        "orderAiCount": 47,
-        "aiRate": 0.6103896103896104
+        "orderAiCount": 69,
+        "aiRate": 0.8961038961038961
       },
       {
         "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
@@ -3093,7 +3093,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-13T02:47:57.513Z"
+    "ts": "2026-08-13T03:01:16.870Z"
   },
   "08-12": {
     "cutoff": "0812",
@@ -3207,6 +3207,6 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-13T02:47:57.606Z"
+    "ts": "2026-08-13T03:01:16.871Z"
   }
 }

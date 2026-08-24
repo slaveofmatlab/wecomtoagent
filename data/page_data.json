@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-21T00:54:37.439Z",
+  "generatedAt": "2026-08-24T01:29:11.276Z",
   "cutoffDate": "0820",
   "sources": {
     "salesPath": null,
@@ -8,8 +8,8 @@
   },
   "pendingTotals": {
     "total": 5470,
-    "transferred": 5361,
-    "notTransferred": 109
+    "transferred": 5378,
+    "notTransferred": 92
   },
   "companySummary": {
     "rows": [

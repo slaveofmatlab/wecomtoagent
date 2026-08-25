@@ -2637,7 +2637,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-24T01:38:05.372Z"
+    "ts": "2026-08-25T11:23:10.825Z"
   },
   "08-06": {
     "cutoff": "0806",
@@ -2751,7 +2751,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-24T01:38:05.373Z"
+    "ts": "2026-08-25T11:23:10.913Z"
   },
   "08-07": {
     "cutoff": "0807",
@@ -2865,7 +2865,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-24T01:38:05.374Z"
+    "ts": "2026-08-25T11:23:10.914Z"
   },
   "08-10": {
     "cutoff": "0810",
@@ -2979,7 +2979,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-24T01:38:05.374Z"
+    "ts": "2026-08-25T11:23:10.916Z"
   },
   "08-11": {
     "cutoff": "0811",
@@ -3093,7 +3093,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-24T01:38:05.375Z"
+    "ts": "2026-08-25T11:23:10.917Z"
   },
   "08-12": {
     "cutoff": "0812",
@@ -3207,7 +3207,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-24T01:38:05.375Z"
+    "ts": "2026-08-25T11:23:10.918Z"
   },
   "08-13": {
     "cutoff": "0813",
@@ -3321,7 +3321,7 @@
         "aiRate": null
       }
     ],
-    "ts": "2026-08-24T01:38:05.376Z"
+    "ts": "2026-08-25T11:23:10.918Z"
   },
   "08-17": {
     "cutoff": "0817",
@@ -3892,5 +3892,119 @@
       }
     ],
     "ts": "2026-08-24T01:38:05.378Z"
+  },
+  "08-24": {
+    "cutoff": "0824",
+    "registered": 282,
+    "itOk": 283,
+    "configRate": 1.00354609929078,
+    "orderTotal": 1860,
+    "orderAi": 699,
+    "aiRate": 0.3758064516129032,
+    "companies": [
+      {
+        "operationCompany": "上海/丰厨(上海)供应链管理有限公司",
+        "orderTotal": 1065,
+        "orderAiCount": 191,
+        "aiRate": 0.17934272300469484
+      },
+      {
+        "operationCompany": "三亚德立安食品有限公司",
+        "orderTotal": 249,
+        "orderAiCount": 172,
+        "aiRate": 0.6907630522088354
+      },
+      {
+        "operationCompany": "浙江/丰厨(上海)供应链管理有限公司",
+        "orderTotal": 121,
+        "orderAiCount": 121,
+        "aiRate": 1
+      },
+      {
+        "operationCompany": "郑州/丰厨(上海)供应链管理有限公司",
+        "orderTotal": 83,
+        "orderAiCount": 0,
+        "aiRate": 0
+      },
+      {
+        "operationCompany": "北京/丰厨(上海)供应链管理有限公司",
+        "orderTotal": 74,
+        "orderAiCount": 73,
+        "aiRate": 0.9864864864864865
+      },
+      {
+        "operationCompany": "西安/丰厨(上海)供应链管理有限公司",
+        "orderTotal": 64,
+        "orderAiCount": 0,
+        "aiRate": 0
+      },
+      {
+        "operationCompany": "广州益嘉德立安食品有限公司",
+        "orderTotal": 63,
+        "orderAiCount": 63,
+        "aiRate": 1
+      },
+      {
+        "operationCompany": "重庆/丰厨(成都)供应链管理有限公司",
+        "orderTotal": 30,
+        "orderAiCount": 0,
+        "aiRate": 0
+      },
+      {
+        "operationCompany": "成都/丰厨(上海)供应链管理有限公司",
+        "orderTotal": 28,
+        "orderAiCount": 0,
+        "aiRate": 0
+      },
+      {
+        "operationCompany": "益海嘉里德立安(陕西)食品有限公司",
+        "orderTotal": 27,
+        "orderAiCount": 26,
+        "aiRate": 0.9629629629629629
+      },
+      {
+        "operationCompany": "深圳市德立安食品有限公司",
+        "orderTotal": 23,
+        "orderAiCount": 22,
+        "aiRate": 0.9565217391304348
+      },
+      {
+        "operationCompany": "益海嘉里德立安（杭州）食品有限公司",
+        "orderTotal": 22,
+        "orderAiCount": 20,
+        "aiRate": 0.9090909090909091
+      },
+      {
+        "operationCompany": "益彩（上海）供应链管理有限公司",
+        "orderTotal": 9,
+        "orderAiCount": 9,
+        "aiRate": 1
+      },
+      {
+        "operationCompany": "成都/丰厨(成都)供应链管理有限公司",
+        "orderTotal": 2,
+        "orderAiCount": 2,
+        "aiRate": 1
+      },
+      {
+        "operationCompany": "益海嘉里德立安(上海)食品有限公司",
+        "orderTotal": 0,
+        "orderAiCount": 0,
+        "aiRate": null
+      },
+      {
+        "operationCompany": "益海嘉里食品营销有限公司上海分公司",
+        "orderTotal": 0,
+        "orderAiCount": 0,
+        "aiRate": null
+      },
+      {
+        "operationCompany": "益海津农德立安（天津）供应链管理有限公司",
+        "orderTotal": 0,
+        "orderAiCount": 0,
+        "aiRate": null
+      }
+    ],
+    "ts": "2026-08-25T11:23:10.919Z"
   }
 }
